@@ -22,6 +22,6 @@
     - 메서드는 행위와 명사로 표현한다. ex) User readUser(Long id);
     - 패키지는 비즈니스 단위로 분리하고 하위에 기능별로 패키지를 분리한다.
     - 응답과 요청 DTO 객체는 분리하여 작성하고 postfix는 작성하지 않는다. ex) UserReponse, UserRequest
-    - Entity의 DTO 변환 메서드는 해당 DTO에 작성한다. ex) User of(UserRepsonse res)를 UserResponse에 작성
+    - Entity의 DTO 변환 메서드는 해당 DTO에 작성한다. ex) UserResponse of(User user)를 UserResponse에 작성
     - 단일 Entity 반환 메서드는 Optional.of 메서드를 활용하여 DTO로 변환한다.
     - Entity 리스트 반환 시 Stream API를 활용하여 DTO로 변환한다.
