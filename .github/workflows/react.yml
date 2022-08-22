@@ -15,7 +15,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: "frontend/project/**"
+        working-directory: "frontend/project"
         
     steps:
     - uses: actions/checkout@v3
