@@ -6,8 +6,14 @@ name: React build
 on:
   push:
     branches: [ "develop" ]
+    paths: 
+       - 'frontend/project/**'
+       - '.github/workflows/react.yml'
   pull_request:
     branches: [ "develop" ]
+    paths:
+       - 'frontend/project/**'
+       - '.github/workflows/react.yml'
 
 jobs:
   build:
