@@ -7,9 +7,6 @@ name: Spring Boot & Gradle CI/CD
 # Event Trigger
 # master branch에 push 또는 pull request가 발생할 경우 동작
 # branch 단위 외에도, tag나 cron 식 등을 사용할 수 있음 
-defaults:
-  run:
-    working-directory: "backend/project/**"
 
 
 on:
@@ -25,6 +22,10 @@ jobs:
   build:
     # 실행 환경 지정
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: "backend/project/**"
 
     # Task의 sequence를 명시한다.
     steps:
@@ -36,7 +37,6 @@ jobs:
         java-version: 1.8
 
     - name: Grant execute permission for gradlew
-      working-directory: backend/project
       run: chmod +x ./gradlew
     
     - name: Build with Gradle
