@@ -10,8 +10,11 @@ name: Spring Boot & Gradle CI/CD
 on:
   push:
     branches: [ develop ]
+    paths:
+      - "backend/project/**"
   pull_request:
     branches: [ develop ]
+
 
 jobs:
   build:
