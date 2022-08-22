@@ -10,8 +10,14 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "develop" ]
+    paths: 
+       - 'backend/project/**'
+       - '.github/workflows/gradle3.yml'
   pull_request:
     branches: [ "develop" ]
+    paths: 
+       - 'backend/project/**'
+       - '.github/workflows/gradle3.yml'
 
 permissions:
   contents: read
