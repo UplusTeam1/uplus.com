@@ -11,6 +11,7 @@ defaults:
   run:
     working-directory: "backend/project/**"
 
+
 on:
   push:
     branches: [ develop ]
@@ -33,8 +34,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    
+
     - name: Grant execute permission for gradlew
+      working-directory: backend/project
       run: chmod +x ./gradlew
     
     - name: Build with Gradle
