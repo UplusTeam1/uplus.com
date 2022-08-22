@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@develop
+    - uses: actions/checkout@v3
     
     - name: Install Dependencies    # 의존 파일 설치
       run: npm install
