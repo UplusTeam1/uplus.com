@@ -34,4 +34,4 @@ jobs:
     
     - name: Build with Gradle
       working-directory: backend/project
-      run: ./gradlew clean build
+      run: ./gradlew --debug build
