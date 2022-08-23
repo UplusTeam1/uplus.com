@@ -41,7 +41,7 @@ jobs:
     - name: Build                   # React Build
       run: npm run build
 
-      # aws user 연결
+    # GitHub Actions CLI 환경에서 S3 사용자 권한의 aws 접속
     - name: Configure AWS credentials 
       uses: aws-actions/configure-aws-credentials@v1 
       with: 
