@@ -45,11 +45,7 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-          
-    # npm 패키지 설치
-    - name: install npm dependencies
-      run: npm ci
-      
+
     - name: Test
       run: npm test
       env:
