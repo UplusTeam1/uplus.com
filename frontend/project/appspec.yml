@@ -7,8 +7,8 @@ files:
     overwrite: yes
 permissions:
   - object: /usr/share/uplus-fe
-    owner: root
-    group: root
+    owner: ubuntu
+    group: ubuntu
     mode: 755
 hooks:
   AfterInstall:
