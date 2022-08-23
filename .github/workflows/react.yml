@@ -45,8 +45,8 @@ jobs:
 #       env:
 #         CI: true
 
-#     - name: Build                   # React Build
-#       run: npm run build
+    - name: Build                   # React Build
+      run: npm run build
 
 #     # GitHub Actions CLI 환경에서 S3 사용자 권한의 aws 접속
 #     - name: Configure AWS credentials 
