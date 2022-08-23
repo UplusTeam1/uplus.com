@@ -9,12 +9,12 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "feature/be/project_setting"]
     paths: 
        - 'backend/project/**'
        - '.github/workflows/gradle3.yml'
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "feature/be/project_setting"]
     paths: 
        - 'backend/project/**'
        - '.github/workflows/gradle3.yml'
@@ -27,7 +27,7 @@ jobs:
   
     defaults:
       run:
-        working-directory: "frontend/project/**"
+        working-directory: "backend/project/**"
         
     runs-on: ubuntu-latest
 
