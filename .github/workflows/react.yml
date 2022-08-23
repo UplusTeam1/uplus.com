@@ -45,6 +45,9 @@ jobs:
 #       env:
 #         CI: true
 
+    - name: Install Yarn
+      run: npm install -g yarn
+
     - name: Build                   # React Build
       run: npm run build
 
