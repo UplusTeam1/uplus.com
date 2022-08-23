@@ -41,6 +41,14 @@ jobs:
     - name: Grant execute permission for gradlew
       working-directory: backend/project
       run: chmod +x ./gradlew
+      
+    - name: Setup MySQL
+      uses: samin/mysql-action@v1
+      with:
+        character set server: 'utf8' 
+        mysql database: 'mydb.cfwoneu3jua9.ap-northeast-2.rds.amazonaws.com' 
+        mysql user: 'admin'
+        mysql password: ${{ secrets.MYSQL_PASSWORD }} # github Secret 탭에서 설정하세요!
     
     - name: Build with Gradle
       working-directory: backend/project
