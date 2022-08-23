@@ -30,30 +30,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-        
     - name: Install dependencies
       run: npm install    
-        # npm cache : https://github.com/actions/cache/blob/main/examples.md#node---npm
-    - name: Get npm cache directory
-      id: npm-cache-dir
-      run: |
-        echo "::set-output name=dir::$(npm config get cache)"
-    - uses: actions/cache@v3
-      id: npm-cache
-      with:
-        path: ${{ steps.npm-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
-    - name: Build                   # React Build
-      run: npm run build
-
+      
     - name: Test
       run: npm test
       env:
         CI: true
 
+    - name: Build                   # React Build
+      run: npm run build
 
     # GitHub Actions CLI 환경에서 S3 사용자 권한의 aws 접속
     - name: Configure AWS credentials 
@@ -62,10 +48,3 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_S3_ACCESS_KEY_ID }} 
         aws-secret-access-key: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY_ID }} 
         aws-region: ap-northeast-2
-        
-    # react 빌드한 /build를 s3로 업로드
-    - name: Upload /build to S3
-      env:
-        BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME}}
-      run: |
-        aws s3 cp --recursive --region ap-northeast-2 build s3://$BUCKET_NAME
