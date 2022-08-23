@@ -27,7 +27,7 @@ jobs:
   
     defaults:
       run:
-        working-directory: "frontend/project/**"
+        working-directory: "backend/project/**"
         
     runs-on: ubuntu-latest
 
