@@ -46,13 +46,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
+    - name: Build                   # React Build
+      run: npm run build
+
     - name: Test
       run: npm test
       env:
         CI: true
 
-    - name: Build                   # React Build
-      run: npm run build
 
     # GitHub Actions CLI 환경에서 S3 사용자 권한의 aws 접속
     - name: Configure AWS credentials 
