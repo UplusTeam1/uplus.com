@@ -38,17 +38,14 @@ jobs:
       with:
         java-version: 1.8
         
-    - name: Setup MySQL
-      uses: samin/mysql-action@v1
-      with:
-        character set server: 'utf8'
-        mysql database: 'mydb.cfwoneu3jua9.ap-northeast-2.rds.amazonaws.com'
-        mysql user: 'admin'
-        mysql password: 'dusrnth111'
-        
     - name: Grant execute permission for gradlew
       working-directory: backend/project
       run: chmod +x ./gradlew
+      
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
+      with:
+        arguments: build
     
     - name: Build with Gradle
       working-directory: backend/project
