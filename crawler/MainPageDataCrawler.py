@@ -90,9 +90,9 @@ for device in device_list :
             info["ecom_prd_id"],
             info["ecom_prd_price"],
             info["ecom_prd_brand"],
-            "'"+",".join(color_list)+"'",
+            ",".join(color_list),
             storage,
-            "'"+",".join(pic_paths)+"'"
+            ",".join(pic_paths)
         )
         device_obj_list.append(tmp)
         print("object saved")
@@ -102,7 +102,7 @@ for device in device_list :
 
 sql =  "INSERT INTO DEVICE(code, name, color, storage, stock, price, pic_path) VALUES\n"
 for device in device_obj_list:
-    v = "({},{},{},{},{},{},{}),\n".format(
+    v = "('{}','{}','{}','{}',{},{},'{}'),\n".format(
         device.code,
         device.name,
         device.colors,
