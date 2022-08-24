@@ -1,8 +1,12 @@
 package com.lguplus.project.device.domain.payload;
 
 import com.lguplus.project.device.domain.Device;
-import lombok.Builder;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class DeviceResponse {
     private Long id;
