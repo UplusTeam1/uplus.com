@@ -1,13 +1,11 @@
 import styled from 'styled-components'
-
-const TestText = styled.div`
-  color: ${(props) => props.theme.app.upluspink};
-`
+// components
+import DeviceFilter from '../../components/device/DeviceFilter'
 
 function DeviceListPage() {
   return (
     <>
-      <TestText>DeviceListPage</TestText>
+      <DeviceFilter />
     </>
   )
 }

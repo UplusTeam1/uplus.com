@@ -7,9 +7,9 @@ const ButtonContainer = styled.div`
   align-items: center;
   color: white;
   cursor: pointer;
-  background-color: ${(props) => props.theme.app.upluspink};
+  background-color: ${(props) => props.theme.app.uplusPink};
   &:hover {
-    background: ${(props) => darken(0.1, props.theme.app.upluspink)};
+    background: ${(props) => darken(0.1, props.theme.app.uplusPink)};
   }
   ${({ width, height, radius, size }: ButtonContainerProps) => {
     return css`

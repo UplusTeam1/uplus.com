@@ -11,7 +11,11 @@ const muiTheme: MuiTheme = createTheme({
 export const theme = {
   ...muiTheme,
   app: {
-    upluspink: '#e6007e',
+    uplusPink: '#E6007E',
+    lightGray: '#F8F8F8',
+    divederGray: '#E1E1E1',
+    blackFont: '#000000',
+    grayFont: '#646464',
   },
 }
 
