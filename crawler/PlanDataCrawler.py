@@ -1,7 +1,6 @@
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 text=""
 
@@ -19,7 +18,7 @@ driver.find_element(By.XPATH,"//*[text()='전체보기 (23)']").click()
 sleep(3)
 # plan=driver.find_element('id','__BVID__426').text
 categorylist = driver.find_elements(By.TAG_NAME,"table")
-text+="INSERT INTO PLAN VALUES(name, data, sharing, voice_call, message, price) "
+text+="INSERT INTO test.plan(name, data, sharing, voice_call, message, price) VALUES\n"
 
 for c in categorylist:
     planlist=c.find_elements(By.TAG_NAME,"tr")
@@ -31,17 +30,19 @@ for c in categorylist:
         if '태블릿' in planname :
             continue
         spanlist = plan.find_elements(By.TAG_NAME,"span")
-        text+="("+planname+","
+        text+="('"+planname+"',"
         for span in spanlist:
             current_text = str(span.get_attribute("innerHTML"))
             if 'span' not in current_text and '최신' not in current_text and '<!----> <!----> <!---->' not in current_text:
                 # print(current_text)
                 if '-' == current_text:
-                    text+="사용가능"+","
+                    text+="'사용가능'"+","
+                elif '월' in current_text:
+                    text+=current_text[2:-5]+current_text[-4:-1]
                 else:
-                    text+=current_text.strip()+","
+                    text+="'"+current_text.strip()+"',"
         # print("------------------------------")
-        text=text[:-1]
+        # text=text[:-1]
         text+="),\n"
 
 text = text[:-2]+";"
