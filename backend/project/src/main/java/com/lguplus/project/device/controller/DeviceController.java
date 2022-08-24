@@ -1,4 +1,4 @@
-package com.lguplus.project.device.domain.controller;
+package com.lguplus.project.device.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
