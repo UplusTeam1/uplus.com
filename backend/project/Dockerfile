@@ -1,14 +1,5 @@
-FROM adoptopenjdk:8-jdk-hotspot AS builder
-COPY --chown=gradle:gradle . /home/gradle/src
-WORKDIR /home/gradle/src
-RUN gradle build --daemon
-
-FROM openjdk:8-jre-slim
-
+FROM openjdk:8
+ARG JAR_FILE=github-actions/build/libs/*.jar
+COPY ${JAR_FILE} app.jar
 EXPOSE 8080
-
-RUN mkdir /app
-
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/spring-boot-application.jar
-
-ENTRYPOINT ["java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Djava.security.egd=file:/dev/./urandom","-jar","/app/spring-boot-application.jar"]
+ENTRYPOINT ["java","-jar","/app.jar"]
