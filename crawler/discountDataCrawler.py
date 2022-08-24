@@ -22,7 +22,6 @@ plan_index_list = []
 for plan_name in plan_list:
     plan_name_children = plan_name.find_elements(By.TAG_NAME, "li")
     plan_index_list.append(len(plan_name_children))
-
 plan_index_list = plan_index_list[1:]
 print(plan_index_list)
 
@@ -33,7 +32,7 @@ for index in range(1, plan_index_list[1] + 1):
 for index in range(1, plan_index_list[2] + 1):
     button_xpath_list.append('/html/body/div[5]/div[1]/div/div/div/div/div[3]/div/ul/li[' + str(index) + ']/span')
 
-text="INSERT INTO discount (plan_name, device_code, device_discount) VALUES \n"
+text="INSERT INTO discount (plan_name, code, device_discount) VALUES \n"
 
 def get_data(text):
     plan = driver.find_element(By.CLASS_NAME, 'select-discount').text
@@ -53,6 +52,7 @@ def get_data(text):
         discounts = element.split('\n')[1:]
 
         count_limit = len(discounts) // 7
+        text += '\n'
         for count in range(count_limit):
             data = [plan]
             offset = int(count * 7)
@@ -62,11 +62,9 @@ def get_data(text):
 
             target = discounts[offset + 2].split()
             result = target[4]
-            result = result[:-1]
-            result = result.replace(',', '')
             data.append(result)
             data_result.append(data)
-            row = "(" + "\'" + plan +  "\'" + ", " + "\'" + discounts[offset + 1] +  "\'" + ", " + result + "), \n"
+            row = "(" + plan + ", " + discounts[offset + 1] + ", " + result + "), \n"
             text += row
         
         is_next_page = driver.find_element('xpath', is_next_page).get_attribute('class')
