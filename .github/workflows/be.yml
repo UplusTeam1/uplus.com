@@ -12,12 +12,12 @@ on:
     branches: [ "develop"]
     paths: 
        - 'backend/project/**'
-       - '.github/workflows/gradle3.yml'
+       - '.github/workflows/be.yml'
   pull_request:
     branches: [ "develop"]
     paths: 
        - 'backend/project/**'
-       - '.github/workflows/gradle3.yml'
+       - '.github/workflows/be.yml'
 
 permissions:
   contents: read
