@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 const LogoImage = styled.img`
@@ -15,20 +16,22 @@ UplusLogo.defaultProps = {
 }
 
 function UplusLogo({ color }: UplusLogoProps) {
+  const navigate = useNavigate()
+
   return (
     <>
       {color === 'white' && (
         <LogoImage
           alt="Uplus Logo"
           src="/images/LG_U+_Logo_(white).png"
-          onClick={() => null}
+          onClick={() => navigate(`/`)}
         />
       )}
       {color === 'black' && (
         <LogoImage
           alt="Uplus Logo"
           src="/images/LG_U+_Logo_(black).png"
-          onClick={() => null}
+          onClick={() => navigate(`/`)}
         />
       )}
     </>

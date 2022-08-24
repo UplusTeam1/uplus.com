@@ -2,6 +2,8 @@
 import { Outlet } from 'react-router-dom'
 // styles
 import styled from 'styled-components'
+// components
+import SearchBar from '../components/SearchBar'
 import UplusLogo from '../components/UplusLogo'
 
 const RootContainer = styled.div`
@@ -18,12 +20,20 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   width: 1440px;
-  height: 120px;
+  height: 160px;
 `
 
 function HeaderPage() {
+  const dummyDevice: any = [
+    { title: 'Galaxy 1' },
+    { title: 'Galaxy 2' },
+    { title: 'Iphone 1' },
+    { title: 'Iphone 2' },
+  ]
+
   return (
     <RootContainer>
+      <SearchBar searchList={dummyDevice} />
       <InnerContainer>
         <HeaderContainer>
           <UplusLogo />

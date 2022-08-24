@@ -1,27 +1,65 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+import { darken } from 'polished'
 
 const ButtonContainer = styled.div`
-  width: 100px;
-  height: 40px;
-  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
   cursor: pointer;
   background-color: ${(props) => props.theme.app.upluspink};
+  &:hover {
+    background: ${(props) => darken(0.1, props.theme.app.upluspink)};
+  }
+  ${({ width, height, radius, size }: ButtonContainerProps) => {
+    return css`
+      width: ${width};
+      height: ${height};
+      border-radius: ${radius};
+      font-size: ${size};
+    `
+  }}
 `
 
-interface UplusButtonProps {
-  width: number
-  height: number
-  radius: number
+interface ButtonContainerProps {
+  width: string
+  height: string
+  radius: string
+  size: string
+}
+
+interface UplusButtonProps extends ButtonContainerProps {
+  text: string
+  onClick: () => void
 }
 
 UplusButton.defaultProps = {
-  width: 200,
-  height: 50,
-  radius: 10,
+  width: '200px',
+  height: '50px',
+  radius: '10px',
+  size: '16px',
+  text: 'Button',
 }
 
-function UplusButton({ width, height, radius }: UplusButtonProps) {
-  return <ButtonContainer></ButtonContainer>
+function UplusButton({
+  width,
+  height,
+  radius,
+  size,
+  text,
+  onClick,
+}: UplusButtonProps) {
+  return (
+    <ButtonContainer
+      width={width}
+      height={height}
+      radius={radius}
+      size={size}
+      onClick={() => onClick()}
+    >
+      {text}
+    </ButtonContainer>
+  )
 }
 
 export default UplusButton
