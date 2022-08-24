@@ -75,3 +75,8 @@ jobs:
       run: mkdir -p deploy
       shell: bash
       working-directory: ${{env.working-directory}}
+      
+    # Jar 파일 Copy
+    - name: Copy Jar
+      run: cp ./build/libs/*.jar ./deploy/
+      working-directory: ${{env.working-directory}}
