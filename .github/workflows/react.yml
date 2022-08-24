@@ -74,7 +74,6 @@ jobs:
         aws s3 cp --region ap-northeast-2 ./build-fe.zip s3://uplus-bucket/frontend/project/build-fe.zip
         
     - name: Deploy 
-	# Deploy to EC2
       run: aws deploy create-deployment
         --application-name deploy-App
         --deployment-config-name CodeDeployDefault.AllAtOnce
