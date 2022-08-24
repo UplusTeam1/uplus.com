@@ -94,6 +94,5 @@ jobs:
       run: |
         aws s3 cp \
         --region ap-northeast-2 \
-        --acl private \ 
         ./springboot-intro-build.zip s3://uplus-be/springboot-intro-build.zip
       working-directory: ${{env.working-directory}}
