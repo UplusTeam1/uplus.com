@@ -56,7 +56,7 @@ jobs:
     
     - name: Build with Gradle
       working-directory: ${{env.working-directory}}
-      run: ./gradlew build -Pdev jib -x test
+      run: ./gradlew build
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
