@@ -10,51 +10,51 @@ driver = webdriver.Chrome(chromeDriver, options=options)
 
 driver.get("https://www.lguplus.com/mobile/financing-model")
 
-dataResult = []
-buttonXpathList = []
+data_result = []
+button_xpath_list = []
 plan_set = set()
 
-viewMorePlanButton = driver.find_element('xpath', '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[1]/dl[1]/dd[2]/button')
-viewMorePlanButton.click()
+view_more_plan_button = driver.find_element('xpath', '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[1]/dl[1]/dd[2]/button')
+view_more_plan_button.click()
 
-planList = driver.find_elements(By.CLASS_NAME, 'half-box')
-planIndexList = []
-for planName in planList:
-    planNameChild = planName.find_elements(By.TAG_NAME, "li")
-    planIndexList.append(len(planNameChild))
-planIndexList = planIndexList[1:]
-print(planIndexList)
+plan_list = driver.find_elements(By.CLASS_NAME, 'half-box')
+plan_index_list = []
+for plan_name in plan_list:
+    plan_name_children = plan_name.find_elements(By.TAG_NAME, "li")
+    plan_index_list.append(len(plan_name_children))
+plan_index_list = plan_index_list[1:]
+print(plan_index_list)
 
-for index in range(1, planIndexList[0] + 1):
-    buttonXpathList.append('/html/body/div[5]/div[1]/div/div/div/div/div[1]/div/ul/li[' + str(index) + ']/span')
-for index in range(1, planIndexList[1] + 1):
-    buttonXpathList.append('/html/body/div[5]/div[1]/div/div/div/div/div[2]/div/ul/li[' + str(index) + ']/span')
-for index in range(1, planIndexList[2] + 1):
-    buttonXpathList.append('/html/body/div[5]/div[1]/div/div/div/div/div[3]/div/ul/li[' + str(index) + ']/span')
+for index in range(1, plan_index_list[0] + 1):
+    button_xpath_list.append('/html/body/div[5]/div[1]/div/div/div/div/div[1]/div/ul/li[' + str(index) + ']/span')
+for index in range(1, plan_index_list[1] + 1):
+    button_xpath_list.append('/html/body/div[5]/div[1]/div/div/div/div/div[2]/div/ul/li[' + str(index) + ']/span')
+for index in range(1, plan_index_list[2] + 1):
+    button_xpath_list.append('/html/body/div[5]/div[1]/div/div/div/div/div[3]/div/ul/li[' + str(index) + ']/span')
 
 text="INSERT INTO discount (plan_name, code, device_discount) VALUES \n"
 
 def get_data(text):
-    Plan = driver.find_element(By.CLASS_NAME, 'select-discount').text
-    if '(' in Plan and ')' in Plan:
-        idx = Plan.index(')') + 2
-        Plan = Plan[idx:]
-    if Plan in plan_set:
+    plan = driver.find_element(By.CLASS_NAME, 'select-discount').text
+    if '(' in plan and ')' in plan:
+        idx = plan.index(')') + 2
+        plan = plan[idx:]
+    if plan in plan_set:
         return text
-    plan_set.add(Plan)
-    print(Plan)
+    plan_set.add(plan)
+    print(plan)
 
     while True:
-        nextButton = '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[3]/div[4]/ul/li[8]/button'
-        isNextPage = '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[3]/div[4]/ul/li[8]'
+        next_button = '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[3]/div[4]/ul/li[8]/button'
+        is_next_page = '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[3]/div[4]/ul/li[8]'
         time.sleep(1)
         element = driver.find_element('id', '__BVID__302').text
         discounts = element.split('\n')[1:]
 
-        countLimit = len(discounts) // 7
+        count_limit = len(discounts) // 7
         text += '\n'
-        for count in range(countLimit):
-            data = [Plan]
+        for count in range(count_limit):
+            data = [plan]
             offset = int(count * 7)
 
             data.append(discounts[offset + 0])
@@ -63,24 +63,24 @@ def get_data(text):
             target = discounts[offset + 2].split()
             result = target[4]
             data.append(result)
-            dataResult.append(data)
-            row = "(" + Plan + ", " + discounts[offset + 1] + ", " + result + "), \n"
+            data_result.append(data)
+            row = "(" + plan + ", " + discounts[offset + 1] + ", " + result + "), \n"
             text += row
         
-        isNextPage = driver.find_element('xpath', isNextPage).get_attribute('class')
+        is_next_page = driver.find_element('xpath', is_next_page).get_attribute('class')
         
-        if isNextPage == 'page-item':
-            nextButton = driver.find_element('xpath', nextButton)
-            nextButton.click()
+        if is_next_page == 'page-item':
+            next_button = driver.find_element('xpath', next_button)
+            next_button.click()
         else:
             return text
 
 
-for item in buttonXpathList:
+for item in button_xpath_list:
     driver.get("https://www.lguplus.com/mobile/financing-model")
     time.sleep(5)
-    viewMorePlanButton = driver.find_element('xpath', '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[1]/dl[1]/dd[2]/button')
-    viewMorePlanButton.click()
+    view_more_plan_button = driver.find_element('xpath', '/html/body/div[1]/div/div/div[4]/div[1]/div/div[2]/div/div/div[2]/div[1]/dl[1]/dd[2]/button')
+    view_more_plan_button.click()
 
     choosePlanButton = driver.find_element("xpath", item)
     choosePlanButton.click()
@@ -89,7 +89,7 @@ for item in buttonXpathList:
     selectPlanButton.click()
 
     text = get_data(text)
-    print(len(dataResult))
+    print(len(data_result))
 
 text = text[:-3]
 text += ';'
