@@ -1,0 +1,10 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build Starting on `date`
+      - cd test-project   # 루트에서 프로젝트로 한 depth 더 이동하기
+      - chmod +x ./gradlew  # gradlew 가 있는 위치에서 빌드 명령어 시작
+      - ./gradlew clean build
