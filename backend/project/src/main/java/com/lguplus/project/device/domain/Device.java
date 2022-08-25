@@ -20,7 +20,7 @@ public class Device {
     private String name;
     private String code;
     private String colors;
-    private String storage;
+    private Integer storage;
     @Column(length = 1000)
     private String picPaths;
     private Integer stock;
