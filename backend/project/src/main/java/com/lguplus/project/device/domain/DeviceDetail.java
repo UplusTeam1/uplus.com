@@ -9,7 +9,7 @@ public class DeviceDetail {
     @GeneratedValue
     private Long id;
 
-    private String colors;
+    private String color;
 
     @Column(length = 1000)
     private String picPaths;
