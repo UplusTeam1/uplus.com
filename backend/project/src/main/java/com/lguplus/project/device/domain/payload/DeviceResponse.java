@@ -13,7 +13,7 @@ public class DeviceResponse {
     private String name;
     private String code;
     private String colors;
-    private String storage;
+    private Integer storage;
     private String picPaths;
     private Integer stock;
     private Integer price;
