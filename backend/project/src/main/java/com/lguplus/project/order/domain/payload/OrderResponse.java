@@ -1,5 +1,6 @@
 package com.lguplus.project.order.domain.payload;
 
+import com.lguplus.project.order.domain.Order;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,9 +12,24 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderResponse {
 
-    private Long id;
-    private String join_type;
-    private LocalDateTime join_date;
-    private Integer monthly_fee;
-    private String discount_type;
+    private String orderNumber;
+    private String deviceCode;
+    private String planName;
+    private String joinType;
+    private LocalDateTime joinDate;
+    private Integer monthlyFee;
+    private String discountType;
+
+
+    public static OrderResponse of(Order order){
+        return OrderResponse.builder()
+                .orderNumber(order.getOrderNumber())
+                .deviceCode(order.getDevice().getCode())
+                .planName(order.getPlan().getName())
+                .joinType(order.getJoinType())
+                .joinDate(order.getJoinDate())
+                .monthlyFee(order.getMonthlyFee())
+                .discountType(order.getDiscountType())
+                .build();
+    }
 }
