@@ -19,11 +19,12 @@ public class BenefitOfPlan {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_name")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "name",
+            name = "plan_name")
     private Plan plan;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "benefit_id")
     private Benefit benefit;
 }

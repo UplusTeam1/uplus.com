@@ -17,12 +17,14 @@ public class Discount {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_name")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "name",
+            name = "plan_name")
     private Plan plan;
 
-    @ManyToOne
-    @JoinColumn(name = "device_code")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "code",
+            name = "device_code")
     private Device device;
 
     private int deviceDiscount;

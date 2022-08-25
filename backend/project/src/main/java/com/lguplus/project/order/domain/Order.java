@@ -25,11 +25,13 @@ public class Order {
     private Integer monthlyFee;
     private String discountType;
 
-    @ManyToOne
-    @JoinColumn(name = "device_code")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "code",
+            name = "device_code")
     private Device device;
 
-    @ManyToOne
-    @JoinColumn(name = "plan_name")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "name",
+            name = "plan_name")
     private Plan plan;
 }

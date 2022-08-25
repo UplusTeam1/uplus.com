@@ -16,7 +16,8 @@ public class DeviceDetail {
 
     private Integer stock;
 
-    @ManyToOne
-    @JoinColumn(name = "device_code")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "code",
+            name = "device_code")
     private Device device;
 }
