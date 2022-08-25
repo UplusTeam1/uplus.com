@@ -1,5 +1,6 @@
 package com.lguplus.project.device.domain;
 
+import com.lguplus.project.discount.domain.Discount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,5 +34,8 @@ public class Device {
 
     @OneToMany(mappedBy = "device")
     private List<DeviceDetail> deviceDetails = new ArrayList<>();
+
+    @OneToMany(mappedBy = "device")
+    private List<Discount> discounts = new ArrayList<>();
 
 }

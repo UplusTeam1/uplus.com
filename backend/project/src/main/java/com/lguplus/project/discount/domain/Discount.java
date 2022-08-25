@@ -1,11 +1,10 @@
 package com.lguplus.project.discount.domain;
 
+import com.lguplus.project.device.domain.Device;
+import com.lguplus.project.plan.domain.Plan;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -17,8 +16,14 @@ public class Discount {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-    private String planName;
-    private String deviceCode;
-    private int deviceDiscount;
 
+    @ManyToOne
+    @JoinColumn(name = "plan_name")
+    private Plan plan;
+
+    @ManyToOne
+    @JoinColumn(name = "device_code")
+    private Device device;
+
+    private int deviceDiscount;
 }

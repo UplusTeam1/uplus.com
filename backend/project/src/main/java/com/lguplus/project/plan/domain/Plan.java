@@ -1,14 +1,15 @@
 package com.lguplus.project.plan.domain;
 
+import com.lguplus.project.benefitofplan.domain.BenefitOfPlan;
+import com.lguplus.project.discount.domain.Discount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,4 +33,10 @@ public class Plan {
     private String message;
 
     private Integer price;
+
+    @OneToMany(mappedBy = "plan")
+    private List<Discount> discounts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "plan")
+    private List<BenefitOfPlan> benefitOfPlans = new ArrayList<>();
 }
