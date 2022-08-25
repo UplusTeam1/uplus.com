@@ -19,20 +19,17 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String join_type;
-    private LocalDateTime join_date;
-    private Integer monthly_fee;
-    private String discount_type;
+    private String orderNumber;
+    private String joinType;
+    private LocalDateTime joinDate;
+    private Integer monthlyFee;
+    private String discountType;
 
-    //device_id
     @ManyToOne
-    @JoinColumn(name = "device_id")
+    @JoinColumn(name = "device_code")
     private Device device;
 
-    //plan_id
     @ManyToOne
-    @JoinColumn(name = "plan_id")
+    @JoinColumn(name = "plan_name")
     private Plan plan;
 }
