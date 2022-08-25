@@ -1,4 +1,4 @@
-package com.lguplus.project.benefitofpln.domain;
+package com.lguplus.project.benefitofplan.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
