@@ -29,6 +29,8 @@ public class Device {
 
     private Integer storage;
 
+    private Integer weeklySale;
+
     @OneToMany(mappedBy = "device")
     private List<DeviceDetail> deviceDetails = new ArrayList<>();
 
