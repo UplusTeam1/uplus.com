@@ -17,6 +17,6 @@ public class DeviceDetail {
     private Integer stock;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "device_code")
     private Device device;
 }
