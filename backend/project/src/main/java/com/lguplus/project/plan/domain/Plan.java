@@ -2,10 +2,7 @@ package com.lguplus.project.plan.domain;
 
 import com.lguplus.project.benefitofplan.domain.BenefitOfPlan;
 import com.lguplus.project.discount.domain.Discount;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class Plan implements Serializable {
 
     @Id

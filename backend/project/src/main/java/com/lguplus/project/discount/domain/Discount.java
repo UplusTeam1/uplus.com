@@ -5,13 +5,15 @@ import com.lguplus.project.plan.domain.Plan;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Discount {
+@ToString
+public class Discount implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
