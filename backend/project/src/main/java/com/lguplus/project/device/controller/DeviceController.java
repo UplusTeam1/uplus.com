@@ -25,4 +25,9 @@ public class DeviceController {
     public ResponseEntity<?> getDeviceOptions(@PathVariable String code) {
         return new ResponseEntity<>(deviceServiceByDongWan.getDeviceOptions(code), HttpStatus.OK);
     }
+
+    @GetMapping("price/{code}/{planName}")
+    public ResponseEntity<?> getDevicePrices(@PathVariable String code, @PathVariable String planName) {
+        return new ResponseEntity<>(deviceServiceByDongWan.getDevicePrices(code, planName), HttpStatus.OK);
+    }
 }
