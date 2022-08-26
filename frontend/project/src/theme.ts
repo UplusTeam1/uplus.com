@@ -3,7 +3,10 @@ import { createTheme, Theme as MuiTheme } from '@mui/material/styles'
 const muiTheme: MuiTheme = createTheme({
   palette: {
     primary: {
-      main: '#e6007e',
+      main: '#E6007E',
+    },
+    secondary: {
+      main: '#8A8A8A',
     },
   },
 })
@@ -11,11 +14,14 @@ const muiTheme: MuiTheme = createTheme({
 export const theme = {
   ...muiTheme,
   app: {
+    mainBackground: '#000000',
+    background: '#FFFFFF',
     uplusPink: '#E6007E',
     lightGray: '#F8F8F8',
-    divederGray: '#E1E1E1',
+    dividerGray: '#E1E1E1',
     blackFont: '#000000',
     grayFont: '#646464',
+    whiteFont: '#FFFFFF',
   },
 }
 

@@ -11,7 +11,7 @@ const RootContainer = styled.div`
   display: flex;
   justify-content: center;
   min-width: 1440px;
-  ${({ backgroundColor }: RootContainerProps) => {
+  ${({ backgroundColor }: ContainerProps) => {
     return css`
       background-color: ${backgroundColor};
     `
@@ -22,7 +22,7 @@ const InnerContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 1440px;
-  min-height: 2768px;
+  min-height: 768px;
 `
 const HeaderContainer = styled.div`
   position: fixed;
@@ -31,7 +31,7 @@ const HeaderContainer = styled.div`
   width: 1440px;
   height: 160px;
   z-index: 9;
-  ${({ backgroundColor }: RootContainerProps) => {
+  ${({ backgroundColor }: ContainerProps) => {
     return css`
       background-color: ${backgroundColor};
     `
@@ -45,7 +45,7 @@ const ContentContainer = styled.div`
   padding-top: 160px;
 `
 
-interface RootContainerProps {
+interface ContainerProps {
   backgroundColor: string
 }
 
