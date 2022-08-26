@@ -1,7 +1,14 @@
 package com.lguplus.project.device.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class DeviceDetail {
 
@@ -10,6 +17,8 @@ public class DeviceDetail {
     private Long id;
 
     private String color;
+
+    private String rgb;
 
     @Column(length = 1000)
     private String picPaths;
