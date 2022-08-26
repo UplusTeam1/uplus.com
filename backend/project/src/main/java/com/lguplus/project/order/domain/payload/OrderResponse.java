@@ -5,7 +5,7 @@ import com.lguplus.project.order.domain.JoinType;
 import com.lguplus.project.order.domain.Order;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,7 +18,7 @@ public class OrderResponse {
     private String deviceCode;
     private String planName;
     private JoinType joinType;
-    private LocalDateTime joinDate;
+    private LocalDate joinDate;
     private Integer monthlyFee;
     private DiscountType discountType;
 
