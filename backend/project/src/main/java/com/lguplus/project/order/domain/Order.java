@@ -20,10 +20,15 @@ public class Order {
 
     @Id
     private String orderNumber;
-    private String joinType;
+
+    @Enumerated(EnumType.STRING)
+    private JoinType joinType;
+
     private LocalDateTime joinDate;
     private Integer monthlyFee;
-    private String discountType;
+
+    @Enumerated(EnumType.STRING)
+    private DiscountType discountType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "code",
