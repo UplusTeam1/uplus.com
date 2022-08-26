@@ -1,22 +1,26 @@
-import styled, { css } from 'styled-components'
-import { darken } from 'polished'
+import styled, { css, useTheme } from 'styled-components'
+import { darken, lighten } from 'polished'
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
   cursor: pointer;
-  background-color: ${(props) => props.theme.app.upluspink};
-  &:hover {
-    background: ${(props) => darken(0.1, props.theme.app.upluspink)};
-  }
-  ${({ width, height, radius, size }: ButtonContainerProps) => {
+  ${(props: ButtonContainerProps) => {
     return css`
-      width: ${width};
-      height: ${height};
-      border-radius: ${radius};
-      font-size: ${size};
+      width: ${props.width};
+      height: ${props.height};
+      border-radius: ${props.radius};
+      font-size: ${props.size};
+      color: ${props.fontColor};
+      background-color: ${props.bgColor};
+      &:hover {
+        background: ${darken(0.1, props.bgColor)};
+      }
+      &:active {
+        background: ${darken(0.2, props.bgColor)};
+      }
+      border: ${props.border};
     `
   }}
 `
@@ -26,6 +30,9 @@ interface ButtonContainerProps {
   height: string
   radius: string
   size: string
+  fontColor: string
+  bgColor: string
+  border: string
 }
 
 interface UplusButtonProps extends ButtonContainerProps {
@@ -39,25 +46,26 @@ UplusButton.defaultProps = {
   radius: '10px',
   size: '16px',
   text: 'Button',
+  fontColor: '',
+  bgColor: '',
+  border: '',
 }
 
-function UplusButton({
-  width,
-  height,
-  radius,
-  size,
-  text,
-  onClick,
-}: UplusButtonProps) {
+function UplusButton(props: UplusButtonProps) {
+  const theme = useTheme()
+
   return (
     <ButtonContainer
-      width={width}
-      height={height}
-      radius={radius}
-      size={size}
-      onClick={() => onClick()}
+      width={props.width}
+      height={props.height}
+      radius={props.radius}
+      size={props.size}
+      fontColor={props.fontColor === '' ? theme.app.whiteFont : props.fontColor}
+      bgColor={props.bgColor === '' ? theme.app.uplusPink : props.bgColor}
+      border={props.border}
+      onClick={() => props.onClick()}
     >
-      {text}
+      {props.text}
     </ButtonContainer>
   )
 }

@@ -7,9 +7,10 @@ import {
 } from '@mui/material'
 
 const SearchBarContainer = styled.div`
-  position: absolute;
+  position: fixed;
   margin-top: 60px;
   background-color: white;
+  z-index: 10;
 `
 
 interface SearchBarProps {
