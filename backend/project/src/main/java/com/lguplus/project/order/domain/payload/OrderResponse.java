@@ -1,5 +1,7 @@
 package com.lguplus.project.order.domain.payload;
 
+import com.lguplus.project.order.domain.DiscountType;
+import com.lguplus.project.order.domain.JoinType;
 import com.lguplus.project.order.domain.Order;
 import lombok.*;
 
@@ -15,10 +17,10 @@ public class OrderResponse {
     private String orderNumber;
     private String deviceCode;
     private String planName;
-    private String joinType;
+    private JoinType joinType;
     private LocalDateTime joinDate;
     private Integer monthlyFee;
-    private String discountType;
+    private DiscountType discountType;
 
 
     public static OrderResponse of(Order order){
