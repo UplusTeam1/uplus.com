@@ -48,12 +48,15 @@ jobs:
       
     - name: Make Directory
       run: mkdir -p deploy
+      working-directory: ${{env.working-directory}}
     
     - name: Copy Jar
       run: cp ./build/libs/*.jar ./deploy
+      working-directory: ${{env.working-directory}}
     
     - name: Make zip file
-      run: zip -r -qq -j ./my-lguplus-back.zip ./deploy      
+      run: zip -r -qq -j ./my-lguplus-back.zip ./deploy
+      working-directory: ${{env.working-directory}}
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -63,4 +66,5 @@ jobs:
         aws-region: ap-northeast-2
 
     - name: Upload to AWS S3
-      run: aws s3 cp --region ap-northeast-2 ./my-lguplus-back.zip s3://uplus-be/      
+      run: aws s3 cp --region ap-northeast-2 ./my-lguplus-back.zip s3://uplus-be/
+      working-directory: ${{env.working-directory}}
