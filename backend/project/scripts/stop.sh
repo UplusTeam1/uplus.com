@@ -1,5 +1,4 @@
 #!/bin/bash
-
 JAR_NAME=project-0.0.1-SNAPSHOT.jar
 CURRENT_PID=$(pgrep -fla java | grep $JAR_NAME | awk '{print $1}')
 
