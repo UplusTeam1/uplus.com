@@ -6,7 +6,7 @@ env:
 on:
    push:
      branches: [ "develop" ]
-     paths:
+     paths: 
         - '.github/workflows/react-2.yml'
         - './frontend/project/Dockerfile'
         
