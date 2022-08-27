@@ -68,3 +68,11 @@ jobs:
     - name: Upload to AWS S3
       run: aws s3 cp --region ap-northeast-2 ./my-lguplus-back.zip s3://uplus-be/
       working-directory: ${{env.working-directory}}
+    
+    - name: Deploy to AWS CodeDeploy
+      run: aws deploy create-deployment 
+        --application-name my-lguplus-web-deploy
+        --deployment-group-name my-lguplus-web-deploy-group
+        --file-exists-behavior OVERWRITE 
+        --s3-location bucket=uplus-be,bundleType=zip,key=my-lguplus-back.zip
+        --region ap-northeast-2
