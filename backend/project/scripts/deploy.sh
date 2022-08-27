@@ -1,6 +1,7 @@
 #!/bin/bash
 
-CURRENT_PID=$(pgrep -fla java | grep project-0.0.1-SNAPSHOT | awk '{print $1}')
+JAR_NAME=project-0.0.1-SNAPSHOT.jar
+CURRENT_PID=$(pgrep -fla java | grep $JAR_NAME | awk '{print $1}')
 
 echo "> 실행중 어플리케이션 PID: $CURRENT_PID"
 
@@ -12,11 +13,8 @@ else
     sleep 5
 fi
 
-JAR_NAME=$(ls -tr *.jar | tail -n 1 | tail -n 1)
-
 chmod +x $JAR_NAME
 
 echo "> 애플리케이션 실행: $JAR_NAME"
 
-nohup java -jar \
-    $JAR_NAME > nohup.out 2>&1 &
+nohup java -jar $JAR_NAME > nohup.out 2>&1 &
