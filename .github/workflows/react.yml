@@ -57,7 +57,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: zip create 
-      run: zip -qq -r ./my-lguplus-front.zip ./build
+      run: zip -qq -r ./my-lguplus-front.zip ./deploy
       shell: bash
       working-directory: ${{env.working-directory}}
       
