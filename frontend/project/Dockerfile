@@ -1,3 +1,3 @@
 FROM node:latest
 RUN yarn install
-RUN yarn start
+ENTRYPOINT ["yarn", "build"]
