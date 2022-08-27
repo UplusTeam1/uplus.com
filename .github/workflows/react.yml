@@ -26,7 +26,8 @@ jobs:
         node-version: [14.x]
         
     steps:
-    - uses: actions/checkout@v3    
+    - uses: actions/checkout@v3      
+
     - name: Install Yarn
       run: npm install -g yarn
       working-directory: ${{env.working-directory}}
@@ -40,7 +41,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: zip create 
-      run: zip -qq -r ./build-fe.zip ./build
+      run: zip -qq -r ./my-lguplus-front.zip ./build
       shell: bash
       working-directory: ${{env.working-directory}}
       
@@ -52,5 +53,5 @@ jobs:
         aws-region: ap-northeast-2
 
     - name: Upload to AWS S3
-      run: aws s3 cp --region ap-northeast-2 ./build-fe.zip s3://uplus-be/
+      run: aws s3 cp --region ap-northeast-2 ./my-lguplus-front.zip s3://uplus-be/
       working-directory: ${{env.working-directory}}        
