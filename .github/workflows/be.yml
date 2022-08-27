@@ -58,9 +58,13 @@ jobs:
       run: cp appspec.yml ./deploy
       working-directory: ${{env.working-directory}}
     
+    - name: Copy script
+      run: cp ./scripts/*.sh ./deploy
+      working-directory: ${{env.working-directory}}
+    
     - name: Make zip file
       run: zip -r -qq -j ./my-lguplus-back.zip ./deploy
-      working-directory: ${{env.working-directory}}
+      working-directory: ${{env.working-directory}}      
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
