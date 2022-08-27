@@ -8,7 +8,7 @@ on:
      branches: [ "develop" ]
      paths: 
         - '.github/workflows/react-2.yml'
-        - '.frontend/project/**'
+        - 'frontend/project/**'
         
 jobs:
   build:
