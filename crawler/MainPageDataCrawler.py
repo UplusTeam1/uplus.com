@@ -57,6 +57,7 @@ print(len(device_list))
 
 device_obj_list = []
 # go to detail page and do something... get back when process is done
+count = 0
 for device in device_list : 
     try:
         # get default info from a tag
@@ -100,7 +101,6 @@ for device in device_list :
             pic_list = pic_list.find_elements(By.CSS_SELECTOR, ".lazyLoad")
             for pic in pic_list:
                 pic_paths.append(pic.get_attribute("src"))
-            print(pic_paths)
             tmp_device_detail = DeviceDetail(
                 info["ecom_prd_id"],
                 color_name,
@@ -124,7 +124,8 @@ for device in device_list :
             int(random() * 1000)
         )
         device_obj_list.append(tmp_device)
-        print("object saved")
+        print(count)
+        count += 1
     except Exception as e:
         print(e)
         driver.get("https://www.lguplus.com/mobile/5g-phone?URC_TRM_MANF_CD=all")
