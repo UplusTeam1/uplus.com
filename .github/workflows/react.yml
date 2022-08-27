@@ -4,11 +4,11 @@ env:
   working-directory: ./frontend/project
 
 on:
-  push:
-    branches: [ "develop" ]
-    paths: 
-       - 'frontend/project/**'
-       - '.github/workflows/react.yml'
+#   push:
+#     branches: [ "develop" ]
+#     paths: 
+#        - 'frontend/project/**'
+#        - '.github/workflows/react.yml'
   pull_request:
     branches: [ "develop" ]
     paths:
