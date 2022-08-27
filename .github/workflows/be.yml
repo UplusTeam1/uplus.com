@@ -53,6 +53,10 @@ jobs:
     - name: Copy Jar
       run: cp ./build/libs/*.jar ./deploy
       working-directory: ${{env.working-directory}}
+      
+    - name: Copy appspec
+      run: cp appspec.yml ./deploy
+      working-directory: ${{env.working-directory}}
     
     - name: Make zip file
       run: zip -r -qq -j ./my-lguplus-back.zip ./deploy
