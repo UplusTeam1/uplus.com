@@ -27,7 +27,7 @@ public class DeviceServiceBySangWoo {
                 .collect(Collectors.toList());
     }
 
-    public static List<Map<String, Object>> calculate(Integer devicePrice, Discount discount) {
+    private List<Map<String, Object>> calculate(Integer devicePrice, Discount discount) {
         List list = new ArrayList();
         Integer planCharge = discount.getPlan().getPrice();
         // 공시지원금
