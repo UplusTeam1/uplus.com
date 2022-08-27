@@ -39,6 +39,22 @@ jobs:
     - name: Build
       run: yarn build
       working-directory: ${{env.working-directory}}
+    
+    - name: Make Directory
+      run: mkdir -p deploy
+      working-directory: ${{env.working-directory}}
+      
+    - name: Copy Build
+      run: cp -r ./build ./deploy
+      working-directory: ${{env.working-directory}}
+    
+    - name: Copy appspec
+      run: cp appspec.yml ./deploy
+      working-directory: ${{env.working-directory}}
+    
+    - name: Copy script
+      run: cp ./scripts/*.sh ./deploy
+      working-directory: ${{env.working-directory}}
 
     - name: zip create 
       run: zip -qq -r ./my-lguplus-front.zip ./build
