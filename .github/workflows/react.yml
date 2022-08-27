@@ -40,7 +40,7 @@ jobs:
       working-directory: ${{env.working-directory}}
 
     - name: zip create 
-      run: zip -qq -r ./build-fe.zip .
+      run: zip -qq -r ./build-fe.zip ./build
       shell: bash
       working-directory: ${{env.working-directory}}
       
