@@ -2,11 +2,11 @@
 FROM node:alpine as builder
 
 WORKDIR /usr/src/app
-COPY . ./
+COPY frontend/project/package.json ./
 
-WORKDIR /usr/src/app/frontend/project
-RUN rm -rf package-lock.json
-RUN yarn install
+# WORKDIR /usr/src/app/frontend/project
+# RUN rm -rf package-lock.json
+# RUN yarn install
 
 # WORKDIR /usr/src/app
 
