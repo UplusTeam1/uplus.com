@@ -2,7 +2,6 @@
 FROM node:alpine as builder
 
 COPY package.json .
-COPY package-lock.json ./
 
 RUN yarn build
 
