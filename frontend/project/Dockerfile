@@ -4,12 +4,7 @@ FROM node:alpine as builder
 WORKDIR /usr/src/app
 COPY frontend/project/package.json frontend/project/yarn.lock ./
 
-RUN apk --no-cache --virtual build-dependencies add \
-        python \
-        make \
-        g++ \
-&& yarn install --production \
-&& apk del build-dependencies
+RUN yarn install
 
 # WORKDIR /usr/src/app/frontend/project
 # RUN rm -rf package-lock.json
