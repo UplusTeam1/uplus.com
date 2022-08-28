@@ -1,5 +1,5 @@
 # builder stage
-FROM node:alpine as builder
+FROM node:16
 
 WORKDIR /usr/src/app
 COPY frontend/project ./
