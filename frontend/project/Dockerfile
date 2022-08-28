@@ -2,10 +2,7 @@
 FROM node:alpine as builder
 
 WORKDIR /usr/src/app
-COPY frontend/project/package.json frontend/package/yarn.lock ./
-RUN yarn
-COPY frontend/project ./
-RUN yarn build
+COPY . ./
 
 
 
