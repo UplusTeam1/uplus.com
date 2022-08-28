@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY frontend/project ./
 
 RUN yarn install
+RUN yarn start
 # RUN npm run start
 
 # WORKDIR /usr/src/app/frontend/project
