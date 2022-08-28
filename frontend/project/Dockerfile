@@ -1,5 +1,5 @@
-# builder stage
-FROM node:16
+# node:14 이미지 사용, builder로 별칭
+FROM node:14 AS builder
 
 WORKDIR /usr/src/app
 COPY frontend/project ./
