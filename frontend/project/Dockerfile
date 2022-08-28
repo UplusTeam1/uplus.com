@@ -4,8 +4,7 @@ FROM node:alpine as builder
 WORKDIR /usr/src/app
 COPY frontend/project ./
 
-RUN rm -rf package-lock.json
-RUN yarn install
+RUN npm install
 
 # WORKDIR /usr/src/app/frontend/project
 # RUN rm -rf package-lock.json
