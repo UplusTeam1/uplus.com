@@ -8,7 +8,7 @@ COPY frontend/project/ ./
 
 # RUN npm install
 # RUN yarn install
-RUN yarn start
+RUN yarn build
 
 # RUN npm install -g yarn
 
