@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY . ./
 
 WORKDIR /usr/src/app/frontend/project
+RUN rm -rf package-lock.json
 RUN yarn install
 
 # WORKDIR /usr/src/app
