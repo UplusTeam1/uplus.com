@@ -4,7 +4,7 @@ FROM node:alpine as builder
 WORKDIR /usr/src/app
 COPY . ./
 
-
+WORKDIR /usr/src/app/frontend/project
 
 # WORKDIR /usr/src/app
 
