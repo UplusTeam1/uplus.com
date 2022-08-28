@@ -3,7 +3,7 @@ FROM node:alpine as builder
 
 RUN apt-get update
 RUN apt-get install -y sudo
-RUN yarn build
+RUN sudo yarn build
 
 # WORKDIR '/usr/src/app'
 
