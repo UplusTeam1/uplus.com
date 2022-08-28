@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY . ./
 
 WORKDIR /usr/src/app/frontend/project
+RUN yarn install
 
 # WORKDIR /usr/src/app
 
