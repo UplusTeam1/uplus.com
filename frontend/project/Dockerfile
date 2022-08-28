@@ -1,12 +1,14 @@
 # builder stage
 FROM node:alpine as builder
 
+COPY package.json .
+COPY package-lock.json ./
+
 RUN yarn build
 
 # WORKDIR '/usr/src/app'
 
-# COPY package.json .
-# COPY package-lock.json ./
+
 
 # RUN yarn
 
