@@ -2,6 +2,8 @@
 FROM node:alpine as builder
 
 WORKDIR /usr/src/app
+RUN ls
+
 COPY package.json ./
 # RUN yarn cache clean && yarn --update-checksums
 COPY frontend/project/ ./
