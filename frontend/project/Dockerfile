@@ -1,9 +1,8 @@
 # builder stage
 FROM node:alpine as builder
 
-COPY package.json .
-
-RUN yarn build
+WORKDIR /usr/src/app
+COPY package*.json ./
 
 # WORKDIR '/usr/src/app'
 
