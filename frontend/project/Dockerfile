@@ -2,9 +2,17 @@
 FROM node:alpine as builder
 
 WORKDIR /usr/src/app
-
-COPY frontend/project/package.json ./
+COPY package.json yarn.lock ./
 RUN yarn
+COPY . ./
+RUN yarn build
+
+
+
+# WORKDIR /usr/src/app
+
+# COPY frontend/project/package.json ./
+# RUN yarn
 
 
 # # RUN yarn cache clean && yarn --update-checksums
