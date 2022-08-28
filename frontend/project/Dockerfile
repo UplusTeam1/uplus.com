@@ -1,9 +1,7 @@
 # builder stage
 FROM node:alpine as builder
 
-RUN apt-get update
-RUN apt-get install -y sudo
-RUN sudo yarn build
+RUN sudo npm install -g yarn
 
 # WORKDIR '/usr/src/app'
 
