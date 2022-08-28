@@ -6,6 +6,11 @@ COPY package*.json ./
 
 RUN yarn
 
+# 로컬에 node_module 있으면 지워줄 것
+COPY ./ ./
+
+RUN yarn build
+
 # WORKDIR '/usr/src/app'
 
 
