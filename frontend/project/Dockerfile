@@ -4,6 +4,8 @@ FROM node:alpine as builder
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN yarn cache clean && yarn --update-checksums
+COPY frontend/project/ ./
+
 # RUN yarn install
 # RUN yarn start
 
