@@ -2,7 +2,7 @@ name: FE Dockerize and Deploy
 
 env:
   working-directory: ./frontend/project
-  ECR_REPOSITORY: my-lguplus-ecr
+  ECR_REPOSITORY: lguplus
   IMAGE_TAG: latest
 
 on:
