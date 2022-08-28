@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 COPY frontend/project ./
 
 RUN npm install
+RUN npm run start
 
 # WORKDIR /usr/src/app/frontend/project
 # RUN rm -rf package-lock.json
