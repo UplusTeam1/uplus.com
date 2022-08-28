@@ -2,9 +2,9 @@
 FROM node:alpine as builder
 
 WORKDIR /usr/src/app
-COPY frontend/project/package.json frontend/project/yarn.lock ./
+COPY frontend/project ./
 
-RUN yarn install
+RUN npm install -g yarn
 
 # WORKDIR /usr/src/app/frontend/project
 # RUN rm -rf package-lock.json
