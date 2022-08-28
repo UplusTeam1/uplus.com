@@ -6,8 +6,8 @@ COPY package*.json ./
 RUN yarn cache clean && yarn --update-checksums
 COPY frontend/project/ ./
 
-RUN npm install
-RUN yarn install
+# RUN npm install
+# RUN yarn install
 RUN yarn start
 
 # RUN npm install -g yarn
