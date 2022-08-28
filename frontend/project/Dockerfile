@@ -4,6 +4,7 @@ FROM node:16
 WORKDIR /usr/src/app
 COPY frontend/project ./
 
+RUN npm install -g yarn
 RUN yarn install
 # RUN npm run start
 
