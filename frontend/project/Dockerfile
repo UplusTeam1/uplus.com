@@ -4,7 +4,7 @@ FROM node:alpine as builder
 WORKDIR /usr/src/app
 
 COPY frontend/project/package.json ./
-RUN yarn build
+RUN yarn
 
 
 # # RUN yarn cache clean && yarn --update-checksums
