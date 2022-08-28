@@ -3,13 +3,16 @@ FROM node:alpine as builder
 
 WORKDIR /usr/src/app
 
-COPY package-lock.json ./
-# RUN yarn cache clean && yarn --update-checksums
-COPY frontend/project/ ./
-
-# RUN npm install
-# RUN yarn install
+COPY package*.json ./
 RUN yarn build
+
+
+# # RUN yarn cache clean && yarn --update-checksums
+# COPY frontend/project/ ./
+
+# # RUN npm install
+# # RUN yarn install
+# RUN yarn build
 
 # RUN npm install -g yarn
 
