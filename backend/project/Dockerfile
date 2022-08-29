@@ -15,7 +15,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew bootJar 
 # gradlew를 사용하여 실행 가능한 jar 파일 생성
 
-# FROM adoptopenjdk:8-jdk-hotspot 
+FROM adoptopenjdk:8-jdk-hotspot 
 # 베이스 이미지
 COPY --from=builder build/libs/*.jar app.jar 
 # builder 이미지에서 build/libs/*.jar 파일을 app.jar로 복사
