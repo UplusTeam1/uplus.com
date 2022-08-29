@@ -2,12 +2,10 @@ package com.lguplus.project.device.controller;
 
 import com.lguplus.project.device.service.DeviceServiceBySangWoo;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import com.lguplus.project.device.service.DeviceServiceByDongWan;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,10 @@ public class DeviceController {
 
     @Operation(summary = "Get Single Device Options By DeviceCode")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK!")
+            @ApiResponse(code = 200, message = "OK!"),
+            @ApiResponse(code = 404, message =
+                    "code : " + "code" + "\n" +
+                    "Exception : Device Not Found")
     })
     @GetMapping("/{code}")
     public ResponseEntity<?> getDeviceOptions(@PathVariable String code) {
@@ -37,7 +38,11 @@ public class DeviceController {
 
     @Operation(summary = "Get Single Device Prices By DeviceCode And Plan Name")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK!")
+            @ApiResponse(code = 200, message = "OK!"),
+            @ApiResponse(code = 404, message =                        
+                    "code : " + "code" + "\n" +
+                    "planName : " + "planName" + "\n" +
+                    "Exception : Device And PlanName Not Found")
     })
     @GetMapping("price/{code}/{planName}")
     public ResponseEntity<?> getDevicePrices(@PathVariable String code, @PathVariable String planName) {
