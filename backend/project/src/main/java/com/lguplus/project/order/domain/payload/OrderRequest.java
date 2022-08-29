@@ -2,12 +2,16 @@ package com.lguplus.project.order.domain.payload;
 
 import com.lguplus.project.order.domain.DiscountType;
 import com.lguplus.project.order.domain.JoinType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class OrderRequest {
+@AllArgsConstructor
+public class OrderRequest implements Serializable {
 
     private String deviceCode;
     private String planName;

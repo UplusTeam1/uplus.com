@@ -6,6 +6,7 @@ import com.lguplus.project.order.domain.Order;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class OrderResponse {
 
     public static OrderResponse of(Order order){
         return OrderResponse.builder()
-                .orderNumber(order.getOrderNumber())
+                .orderNumber(order.getJoinDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"))+order.getOrderNumber())
                 .deviceCode(order.getDevice().getCode())
                 .planName(order.getPlan().getName())
                 .joinType(order.getJoinType())
