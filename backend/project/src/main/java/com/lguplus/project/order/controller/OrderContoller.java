@@ -19,7 +19,8 @@ public class OrderContoller {
 
     @Operation(summary = "Order List")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK!")
+            @ApiResponse(code = 200, message = "OK!"),
+            @ApiResponse(code = 404, message = "Exception : Order Not Found")
     })
     @GetMapping
     public ResponseEntity<?> getOrders(){
@@ -28,7 +29,8 @@ public class OrderContoller {
 
     @Operation(summary = "Create Order")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK!")
+            @ApiResponse(code = 200, message = "OK!"),
+            @ApiResponse(code = 404, message = "Exception : Create Order Failed")
     })
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest orderRequest) {
@@ -37,7 +39,8 @@ public class OrderContoller {
 
     @Operation(summary = "Delete Order")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK!")
+            @ApiResponse(code = 200, message = "OK!"),
+            @ApiResponse(code = 404, message = "Exception : Order Not Found")
     })
     @DeleteMapping("/{orderNumber}")
     public ResponseEntity<?> deleteOrder(@PathVariable Long orderNumber){
