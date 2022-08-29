@@ -18,7 +18,7 @@ public class PlanResponse {
 
     private String sharing;
 
-    private String voice_call;
+    private String voiceCall;
 
     private String message;
 
@@ -30,7 +30,7 @@ public class PlanResponse {
                 .name(plan.getName())
                 .data(plan.getData())
                 .sharing(plan.getSharing())
-                .voice_call(plan.getVoice_call())
+                .voiceCall(plan.getVoiceCall())
                 .message(plan.getMessage())
                 .price(plan.getPrice())
                 .build();
