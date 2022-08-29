@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/app/front
+    destination: /home/ec2-user/app/back
     overwrite: yes
 
 permissions:

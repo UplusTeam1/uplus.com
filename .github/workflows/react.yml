@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: React build
+name: React Deploy to AWS EC2
 
 env:
   working-directory: ./frontend/project
@@ -10,7 +7,7 @@ on:
   push:
     branches: [ "develop" ]
     paths: 
-       - 'frontend/project/**'
+#        - 'frontend/project/**'
        - '.github/workflows/react.yml'
   pull_request:
     branches: [ "develop" ]
@@ -29,19 +26,7 @@ jobs:
         node-version: [14.x]
         
     steps:
-    - uses: actions/checkout@v3
-    
-    
-#     - name: Use Node.js 12.x
-#       uses: actions/setup-node@v1
-#       with:
-#         node-version: 12.x
-  
-      
-#     - name: Test
-#       run: npm test
-#       env:
-#         CI: true
+    - uses: actions/checkout@v3      
 
     - name: Install Yarn
       run: npm install -g yarn
@@ -51,43 +36,46 @@ jobs:
       run: yarn install
       working-directory: ${{env.working-directory}}
       
-    - name: Build                   # React Build
+    - name: Build
       run: yarn build
+      working-directory: ${{env.working-directory}}
+    
+    - name: Make Directory
+      run: mkdir -p deploy
+      working-directory: ${{env.working-directory}}
+      
+    - name: Copy Build
+      run: cp -r ./build ./deploy
+      working-directory: ${{env.working-directory}}
+    
+    - name: Copy appspec
+      run: cp appspec.yml ./deploy
+      working-directory: ${{env.working-directory}}
+    
+    - name: Copy script
+      run: cp ./scripts/*.sh ./deploy
       working-directory: ${{env.working-directory}}
 
     - name: zip create 
-      # zip 파일을 만듭니다(파일명은 자유, 대신 아래 workflow에 적을 파일명과 동일하게 맞춰주세요).
-      run: zip -qq -r ./build-fe.zip .
+      run: zip -qq -r ./my-lguplus-front.zip ./deploy
       shell: bash
       working-directory: ${{env.working-directory}}
       
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_S3_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY_ID }}
-        aws-region: ${{ secrets.AWS_REGION }}
-      
-      # Upload build file to S3
-    - name: Upload to S3 
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_S3_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY_ID }}
-      run: |
-        aws s3 cp --region ap-northeast-2 ./build-fe.zip s3://uplus-bucket/frontend/project/build-fe.zip
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+
+    - name: Upload to AWS S3
+      run: aws s3 cp --region ap-northeast-2 ./my-lguplus-front.zip s3://uplus-be/
       working-directory: ${{env.working-directory}}
-        
-#     - name: Deploy 
-#       run: aws deploy create-deployment
-#         --application-name deploy-App
-#         --deployment-config-name CodeDeployDefault.AllAtOnce
-#         --deployment-group-name private-deploy
-#         --s3-location bucket=uplus-bucket,key=frontend/project/build-fe.zip,bundleType=zip
-#       working-directory: ${{env.working-directory}}
-#     # GitHub Actions CLI 환경에서 S3 사용자 권한의 aws 접속
-#     - name: Configure AWS credentials 
-#       uses: aws-actions/configure-aws-credentials@v1 
-#       with: 
-#         aws-access-key-id: ${{ secrets.AWS_S3_ACCESS_KEY_ID }} 
-#         aws-secret-access-key: ${{ secrets.AWS_S3_SECRET_ACCESS_KEY_ID }} 
-#         aws-region: ap-northeast-2
+      
+    - name: Deploy to AWS CodeDeploy
+      run: aws deploy create-deployment 
+        --application-name my-lguplus-web-deploy
+        --deployment-group-name my-lguplus-web-front-deploy
+        --file-exists-behavior OVERWRITE 
+        --s3-location bucket=uplus-be,bundleType=zip,key=my-lguplus-front.zip
+        --region ap-northeast-2

@@ -18,13 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class DeviceController {
 
     private final DeviceServiceBySangWoo deviceServiceBySangWoo;
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getDevice(@PathVariable Long id) {
-        return new ResponseEntity<>(id + "조회", HttpStatus.OK);
-    }
-    @Autowired
-    DeviceServiceByDongWan deviceServiceByDongWan;
+    private final DeviceServiceByDongWan deviceServiceByDongWan;
 
     @Operation(summary = "Device List Test")
     @GetMapping
