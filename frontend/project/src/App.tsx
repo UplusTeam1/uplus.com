@@ -6,6 +6,7 @@ import './App.scss'
 import HeaderPage from './pages/HeaderPage'
 import MainPage from './pages/main/MainPage'
 import DeviceListPage from './pages/device/DeviceListPage'
+import DeviceDetailPage from './pages/device/DeviceDetailPage'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/*" element={<HeaderPage />}>
         <Route path="" element={<MainPage />} />
         <Route path="device" element={<DeviceListPage />} />
+        <Route path="device/:deviceCode" element={<DeviceDetailPage />} />
       </Route>
     </Routes>
   )
