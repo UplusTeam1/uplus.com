@@ -6,6 +6,8 @@ import com.lguplus.project.device.domain.payload.DeviceOptionsDetail;
 import com.lguplus.project.device.domain.payload.GetDeviceOptionsResponse;
 import com.lguplus.project.device.domain.payload.GetDevicePricesResponse;
 import com.lguplus.project.device.domain.payload.MonthlyCharge;
+import com.lguplus.project.device.exception.DeviceAndPlanNotFoundException;
+import com.lguplus.project.device.exception.DeviceNotFoundException;
 import com.lguplus.project.device.repository.DeviceRepository;
 import com.lguplus.project.discount.domain.Discount;
 import com.lguplus.project.discount.repository.DiscountRepository;
@@ -24,7 +26,10 @@ public class DeviceServiceByDongWan {
     private final DiscountRepository discountRepository;
 
     public GetDeviceOptionsResponse getDeviceOptions(String code) {
-        Device findDevice = deviceRepository.findByCode(code);
+        Device findDevice = deviceRepository.findByCode(code)
+                .orElseThrow(() -> new DeviceNotFoundException(
+                        "code : " + code + "\n" +
+                        "Exception : Device Not Found"));
 
         List<DeviceDetail> deviceDetails = findDevice.getDeviceDetails();
         List<DeviceOptionsDetail> detailPerColor = new ArrayList<>();
@@ -37,7 +42,12 @@ public class DeviceServiceByDongWan {
     }
 
     public GetDevicePricesResponse getDevicePrices(String code, String planName) {
-        Discount discount = discountRepository.findByDeviceCodeAndPlanName(code, planName);
+        Discount discount = discountRepository.findByDeviceCodeAndPlanName(code, planName)
+                .orElseThrow(() -> new DeviceAndPlanNotFoundException(
+                        "code : " + code + "\n" +
+                        "planName : " + planName + "\n" +
+                        "Exception : Device And PlanName Not Found"));
+
         Device device = discount.getDevice();
         int deviceCharge = device.getPrice();
         int planCharge = discount.getPlan().getPrice();

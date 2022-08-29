@@ -1,5 +1,6 @@
 package com.lguplus.project.global.handler;
 
+import com.lguplus.project.device.exception.DeviceAndPlanNotFoundException;
 import com.lguplus.project.device.exception.DeviceNotFoundException;
 import com.lguplus.project.order.exception.OrderNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DeviceNotFoundException.class)
     protected ResponseEntity<?> handleDeviceNotFoundException(DeviceNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(DeviceAndPlanNotFoundException.class)
+    protected ResponseEntity<?> handleDeviceAndPlanNotFoundException(DeviceAndPlanNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
