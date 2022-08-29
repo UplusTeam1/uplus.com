@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -19,12 +19,13 @@ import java.time.LocalDateTime;
 public class Order {
 
     @Id
-    private String orderNumber;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long orderNumber;
 
     @Enumerated(EnumType.STRING)
     private JoinType joinType;
 
-    private LocalDateTime joinDate;
+    private LocalDate joinDate;
     private Integer monthlyFee;
 
     @Enumerated(EnumType.STRING)
