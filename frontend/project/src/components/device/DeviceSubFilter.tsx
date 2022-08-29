@@ -1,7 +1,6 @@
 import { useState } from 'react'
-// styles
 import styled from 'styled-components'
-// components
+// import components
 import {
   ToggleButton,
   ToggleButtonGroup,
@@ -115,11 +114,11 @@ function valueLabelFormat(value: number) {
 const minDistance = 10000
 
 function DeviceSubFilter() {
-  const [alignment, setAlignment] = useState<string>('전체')
+  const [alignment, setAlignment] = useState('전체')
   const makerList: any = [{ name: '전체' }, { name: '삼성' }, { name: '애플' }]
-  const [isCheck, setIsCheck] = useState<boolean>(true)
-  const [sliderValue, setSliderValue] = useState<number[]>([0, 200000])
-  const [sortCategory, setSortCategory] = useState<string>('0')
+  const [isCheck, setIsCheck] = useState(true)
+  const [sliderValue, setSliderValue] = useState([0, 200000])
+  const [sortCategory, setSortCategory] = useState('0')
 
   const handleToggleChange = (
     e: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -187,7 +186,11 @@ function DeviceSubFilter() {
           />
         </SliderFilter>
         <SortSelect>
-          <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <FormControl
+            variant="standard"
+            sx={{ m: 1, minWidth: 120 }}
+            fullWidth
+          >
             <Select
               labelId="sort-select-label"
               id="sort-select"

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import UplusButton from '../../components/UplusButton'
 
+// styled
 const MainContainer = styled.div`
   width: 1440px;
   height: 800px;

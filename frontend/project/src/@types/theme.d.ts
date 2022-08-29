@@ -1,4 +1,4 @@
-import { Theme } from '../theme'
+import { Theme } from '../styles/theme'
 import 'styled-components'
 
 declare module 'styled-components' {

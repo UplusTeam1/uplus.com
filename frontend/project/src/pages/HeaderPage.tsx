@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-// router
 import { Outlet, useLocation } from 'react-router-dom'
-// styles
 import styled, { css } from 'styled-components'
-// components
+// import components
 import SearchBar from '../components/SearchBar'
 import UplusLogo from '../components/UplusLogo'
 
+// styled
 const RootContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -50,7 +49,7 @@ interface ContainerProps {
 }
 
 function HeaderPage() {
-  const [isDarkBackground, setIsDarkBackground] = useState<boolean>(true)
+  const [isDarkBackground, setIsDarkBackground] = useState(true)
   const location = useLocation()
   const dummyDevice: any = [
     { title: 'Galaxy 1' },

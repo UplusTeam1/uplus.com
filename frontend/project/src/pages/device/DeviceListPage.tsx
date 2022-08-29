@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import styled from 'styled-components'
-// components
+// import components
 import DeviceFilter from '../../components/device/DeviceFilter'
 import DeviceSubFilter from '../../components/device/DeviceSubFilter'
 import DeviceItem from '../../components/device/DeviceItem'
+import DeviceCompareTab from '../../components/device/DeviceCompareTab'
+import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
 
 const DeviceListContainer = styled.div`
   display: flex;
@@ -14,6 +17,8 @@ const DeviceListContainer = styled.div`
 `
 
 function DeviceListPage() {
+  const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false)
   const deviceList: any = [
     {
       name: 'iPhone 12 Pro 256G',
@@ -60,15 +65,42 @@ function DeviceListPage() {
     },
   ]
 
+  const clickCompareButton = () => {
+    setIsOpenCompareTab(true)
+  }
+
+  const closeCompareTab = () => {
+    setIsOpenCompareTab(false)
+  }
+
+  const clickOpenDialog = () => {
+    setOpenDialog(true)
+  }
+
+  const closeDialog = () => {
+    setOpenDialog(false)
+  }
+
   return (
     <>
       <DeviceFilter />
       <DeviceSubFilter />
+      {isOpenCompareTab && (
+        <DeviceCompareTab
+          closeCompareTab={closeCompareTab}
+          clickOpenDialog={clickOpenDialog}
+        />
+      )}
       <DeviceListContainer>
         {deviceList.map((device: any) => (
-          <DeviceItem name={device.name} colors={device.detailPerColor} />
+          <DeviceItem
+            name={device.name}
+            colors={device.detailPerColor}
+            clickCompareButton={clickCompareButton}
+          />
         ))}
       </DeviceListContainer>
+      <DeviceCompareDialog open={openDialog} onClose={closeDialog} />
     </>
   )
 }

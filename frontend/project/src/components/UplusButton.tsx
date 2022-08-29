@@ -1,5 +1,5 @@
 import styled, { css, useTheme } from 'styled-components'
-import { darken, lighten } from 'polished'
+import { darken } from 'polished'
 
 const ButtonContainer = styled.div`
   display: flex;
