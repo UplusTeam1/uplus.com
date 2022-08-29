@@ -9,6 +9,7 @@ import com.lguplus.project.device.domain.payload.MonthlyCharge;
 import com.lguplus.project.device.repository.DeviceRepository;
 import com.lguplus.project.discount.domain.Discount;
 import com.lguplus.project.discount.repository.DiscountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DeviceServiceByDongWan {
 
-    @Autowired
-    DeviceRepository deviceRepository;
-
-    @Autowired
-    DiscountRepository discountRepository;
+    private final DeviceRepository deviceRepository;
+    private final DiscountRepository discountRepository;
 
     public GetDeviceOptionsResponse getDeviceOptions(String code) {
         Device findDevice = deviceRepository.findByCode(code);
@@ -55,14 +54,14 @@ public class DeviceServiceByDongWan {
         // 선택 약정 12개월
         calculatedDeviceCharge = deviceCharge;
         calculatedPlanCharge = (int) Math.round(planCharge * 0.75);
-        MonthlyCharge contract12Month = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
-        monthlyChargeList.add(contract12Month);
+        MonthlyCharge contractDiscount = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
+        monthlyChargeList.add(contractDiscount);
 
-        //선택 약정 24개월
-        MonthlyCharge contract24Month = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
-        monthlyChargeList.add(contract24Month);
+        // 선택 약정 24개월
+        // 선택 약정 12개월과 동일한 월별 요금 적용됨
+        monthlyChargeList.add(contractDiscount);
 
-        if (contract24Month.getTotalCharge().get(0) < deviceDiscount.getTotalCharge().get(0))
+        if (contractDiscount.getTotalCharge().get(0) < deviceDiscount.getTotalCharge().get(0))
             recommendedIndex = 2;
 
         //할인 없음
