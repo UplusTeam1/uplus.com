@@ -56,13 +56,7 @@ public class OrderService {
                 .discountType(orderRequest.getDiscountType())
                 .build();
 
-        orderRepository.save(order);
-
-        return orderRepository.findById(order.getOrderNumber())
-                .map(OrderResponse::of)
-                .orElseThrow(() -> new OrderNotFoundException(
-                        "orderNumber:" + order.getOrderNumber() + "\n" + "Exception : Create Order Failed"
-                ));
+        return OrderResponse.of(orderRepository.save(order));
     }
 
     public void deleteOrder(Long orderNumber){
