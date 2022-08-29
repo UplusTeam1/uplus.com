@@ -10,7 +10,7 @@ on:
   push:
     branches: [ "develop"]
     paths: 
-#        - 'backend/project/**'
+       - 'backend/project/Dockerfile'
        - '.github/workflows/be-2.yml'
 #   pull_request:
 #     branches: [ "develop"]
