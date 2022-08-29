@@ -19,7 +19,8 @@ import java.time.LocalDate;
 public class Order {
 
     @Id
-    private String orderNumber;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long orderNumber;
 
     @Enumerated(EnumType.STRING)
     private JoinType joinType;
