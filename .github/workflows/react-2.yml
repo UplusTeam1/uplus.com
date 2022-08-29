@@ -5,6 +5,7 @@ env:
   ECR_REPOSITORY: lg-uplus-pub
   IMAGE_TAG: latest
 
+
 on:
    push:
      branches: [ "develop" ]
