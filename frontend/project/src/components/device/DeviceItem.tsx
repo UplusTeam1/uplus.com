@@ -1,5 +1,6 @@
 import styled, { css, useTheme } from 'styled-components'
 import { darken } from 'polished'
+// import components
 import UplusButton from '../UplusButton'
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined'
 
@@ -117,9 +118,10 @@ interface ContentTextProps {
 interface DeviceItemProps {
   name: string
   colors: any
+  clickCompareButton: () => void
 }
 
-function DeviceItem({ name, colors }: DeviceItemProps) {
+function DeviceItem({ name, colors, clickCompareButton }: DeviceItemProps) {
   const theme = useTheme()
 
   return (
@@ -178,7 +180,7 @@ function DeviceItem({ name, colors }: DeviceItemProps) {
             fontColor={theme.app.grayFont}
             bgColor={theme.app.background}
             border={`1px solid ${theme.app.grayFont}`}
-            onClick={() => null}
+            onClick={() => clickCompareButton()}
           />
           <CartButton>
             <AddShoppingCartOutlinedIcon color="secondary" fontSize="small" />

@@ -156,7 +156,7 @@ interface HideTextProps {
 interface DeviceFilterProps {}
 
 function DeviceFilter({}: DeviceFilterProps) {
-  const [openedFilter, setOpenedFilter] = useState<number>(0)
+  const [openedFilter, setOpenedFilter] = useState(0)
   const theme = useTheme()
   const planTitleList: any = [
     '요금',
