@@ -1,6 +1,5 @@
 package com.lguplus.project.plan.domain;
 
-import com.lguplus.project.benefitofplan.domain.BenefitOfPlan;
 import com.lguplus.project.discount.domain.Discount;
 import lombok.*;
 
@@ -27,7 +26,7 @@ public class Plan implements Serializable {
 
     private String sharing;
 
-    private String voice_call;
+    private String voiceCall;
 
     private String message;
 
@@ -35,7 +34,4 @@ public class Plan implements Serializable {
 
     @OneToMany(mappedBy = "plan")
     private List<Discount> discounts = new ArrayList<>();
-
-    @OneToMany(mappedBy = "plan")
-    private List<BenefitOfPlan> benefitOfPlans = new ArrayList<>();
 }
