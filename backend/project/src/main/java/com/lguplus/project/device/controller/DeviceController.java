@@ -27,9 +27,7 @@ public class DeviceController {
     @Operation(summary = "Get Single Device Options By DeviceCode")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK!"),
-            @ApiResponse(code = 404, message =
-                    "code : " + "code" + "\n" +
-                    "Exception : Device Not Found")
+            @ApiResponse(code = 404, message = "Exception : Device Not Found")
     })
     @GetMapping("/{code}")
     public ResponseEntity<?> getDeviceOptions(@PathVariable String code) {
@@ -39,10 +37,7 @@ public class DeviceController {
     @Operation(summary = "Get Single Device Prices By DeviceCode And Plan Name")
     @ApiResponses({
             @ApiResponse(code = 200, message = "OK!"),
-            @ApiResponse(code = 404, message =                        
-                    "code : " + "code" + "\n" +
-                    "planName : " + "planName" + "\n" +
-                    "Exception : Device And PlanName Not Found")
+            @ApiResponse(code = 404, message = "Exception : Device And PlanName Not Found")
     })
     @GetMapping("price/{code}/{planName}")
     public ResponseEntity<?> getDevicePrices(@PathVariable String code, @PathVariable String planName) {
