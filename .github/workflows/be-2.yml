@@ -3,7 +3,9 @@ name: SpringBoot Deploy to AWS EC2
 env:
   RESOURCE_PATH: ./backend/project/src/main/resources/application.yaml
   working-directory: ./backend/project
-
+  ECR_REPOSITORY: lguplus
+  IMAGE_TAG: latest
+  
 on:
   push:
     branches: [ "develop"]
