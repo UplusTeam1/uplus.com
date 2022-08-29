@@ -60,10 +60,21 @@ public class OrderService {
 
         return orderRepository.findById(order.getOrderNumber())
                 .map(OrderResponse::of)
-                .orElseThrow(OrderNotFoundException::new);
+                .orElseThrow(() -> new OrderNotFoundException(
+                        "orderNumber:" + order.getOrderNumber() + "\n" + "Exception : Create Order Failed"
+                ));
     }
 
     public void deleteOrder(Long orderNumber){
+
+        String str = orderNumber.toString().substring(8);
+        Long realOrderNumber = Long.parseLong(str);
+
+        orderRepository.findById(realOrderNumber)
+                .orElseThrow(() -> new OrderNotFoundException(
+                        "orderNumber:" + realOrderNumber + "\n" + "Exception : Order Not Found"
+                ));
+
         orderRepository.deleteByOrderNumber(orderNumber);
     }
 }
