@@ -70,11 +70,11 @@ public class OrderService {
         String str = orderNumber.toString().substring(8);
         Long realOrderNumber = Long.parseLong(str);
 
-        orderRepository.findById(realOrderNumber)
+        Order order = orderRepository.findById(realOrderNumber)
                 .orElseThrow(() -> new OrderNotFoundException(
                         "orderNumber:" + realOrderNumber + "\n" + "Exception : Order Not Found"
                 ));
 
-        orderRepository.deleteByOrderNumber(orderNumber);
+        orderRepository.delete(order);
     }
 }
