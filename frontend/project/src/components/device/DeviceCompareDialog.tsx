@@ -19,6 +19,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined'
 import SmartphoneIcon from '@mui/icons-material/Smartphone'
 import UplusButton from '../UplusButton'
+import ReactApexChart from 'react-apexcharts'
 
 // styled
 const CustomDialogTitle = styled(DialogTitle)`
@@ -190,7 +191,7 @@ const SpecInfoDiv = styled.div`
   ${flexBetween}
   flex-direction: column;
   width: 300px;
-  height: 300px;
+  height: 100px;
   padding: 30px;
   background-color: ${({ theme }) => theme.app.lightGray};
 `
@@ -340,7 +341,7 @@ function DeviceFee({ device }: DeviceProps) {
   return (
     <InfoDiv>
       <InfoTopTextDiv>
-        <InfoTopText>{device.name === '' ? '-' : '통신'}</InfoTopText>
+        <InfoTopText>{device.name === '' ? '-' : '통신료'}</InfoTopText>
         <PriceText>{device.name === '' ? '' : `${device.price}원`}</PriceText>
       </InfoTopTextDiv>
       <InfoTextDiv>
@@ -360,7 +361,64 @@ function DeviceFee({ device }: DeviceProps) {
 }
 
 function FeeChart({ deviceList }: DeviceListProps) {
-  return <></>
+  const [chartData, setChartData] = useState({
+    series: [
+      {
+        name: '휴대폰 가격',
+        data: [61360, 7880, 0],
+      },
+      {
+        name: '통신료',
+        data: [65000, 55000, 0],
+      },
+    ],
+    options: {
+      chart: {
+        stacked: true,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+        },
+      },
+      xaxis: {
+        categories: ['갤럭시 Z 플립1', '갤럭시 Z 플립2', ''],
+        labels: {
+          show: false,
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: '18px',
+            fontWeight: 'bold',
+          },
+        },
+      },
+      dataLabels: {
+        style: {
+          fontSize: '18px',
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      legend: {
+        fontSize: '18px',
+        fontWeight: 'bold',
+      },
+    },
+  })
+
+  return (
+    <ReactApexChart
+      options={chartData.options}
+      series={chartData.series}
+      type="bar"
+      width={1140}
+      height={280}
+    />
+  )
 }
 
 function Plan({ device }: DeviceProps) {
@@ -443,8 +501,8 @@ function Spec({ device }: DeviceProps) {
         <InfoText>{device.name === '' ? '-' : '화이트'}</InfoText>
       </SpecInfoTextDiv>
       <SpecInfoTextDiv>
-        <InfoTopText>{device.name === '' ? '-' : '색상'}</InfoTopText>
-        <InfoText>{device.name === '' ? '-' : '화이트'}</InfoText>
+        <InfoTopText>{device.name === '' ? '-' : '용량'}</InfoTopText>
+        <InfoText>{device.name === '' ? '-' : '256GB'}</InfoText>
       </SpecInfoTextDiv>
     </SpecInfoDiv>
   )
@@ -459,13 +517,13 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
       name: '갤럭시 Z 플립1',
       picPath:
         'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 82,970',
+      price: '월 126,360',
     },
     {
       name: '갤럭시 Z 플립2',
       picPath:
         'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 82,970',
+      price: '월 62,880',
     },
     {
       name: '',
@@ -504,8 +562,8 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
           isFold={isFoldFee}
           onClick={clickFeeTitle}
         />
-        <FeeChart deviceList={deviceList} />
-        <FeeListDiv height={isFoldFee ? '0' : '530px'}>
+        <FeeListDiv height={isFoldFee ? '0' : '810px'}>
+          <FeeChart deviceList={deviceList} />
           <DeviceFeeListDiv>
             {deviceList.map((device: any) => (
               <PlanFee device={device}></PlanFee>
@@ -532,7 +590,7 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
           isFold={isFoldSpec}
           onClick={clickSpecTitle}
         />
-        <InfoListDiv height={isFoldSpec ? '0' : '360px'}>
+        <InfoListDiv height={isFoldSpec ? '0' : '160px'}>
           {deviceList.map((device: any) => (
             <Spec device={device}></Spec>
           ))}
