@@ -18,7 +18,10 @@ public class DeviceController {
     private final DeviceServiceBySangWoo deviceServiceBySangWoo;
     private final DeviceServiceByDongWan deviceServiceByDongWan;
 
-    @Operation(summary = "Device List Test")
+    @Operation(summary = "Get Device List With Plan Name")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK")
+    })
     @GetMapping
     public ResponseEntity<?> getAllDevices(@RequestParam("plan") String plan) {
         return new ResponseEntity<>(deviceServiceBySangWoo.getDevicesWithPlan(plan), HttpStatus.OK);
