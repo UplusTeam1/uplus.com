@@ -16,6 +16,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 // Styles & Theme
 import './index.scss'
+import './styles/font.scss'
 import { theme } from './styles/theme'
 import {
   StyledEngineProvider,
