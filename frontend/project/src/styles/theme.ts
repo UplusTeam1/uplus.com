@@ -9,6 +9,9 @@ const muiTheme: MuiTheme = createTheme({
       main: '#8A8A8A',
     },
   },
+  typography: {
+    fontFamily: 'Noto Sans KR',
+  },
 })
 
 export const theme = {
