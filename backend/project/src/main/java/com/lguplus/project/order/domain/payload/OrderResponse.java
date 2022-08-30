@@ -22,6 +22,7 @@ public class OrderResponse {
     private LocalDate joinDate;
     private Integer monthlyFee;
     private DiscountType discountType;
+    private String color;
 
 
     public static OrderResponse of(Order order){
@@ -33,6 +34,7 @@ public class OrderResponse {
                 .joinDate(order.getJoinDate())
                 .monthlyFee(order.getMonthlyFee())
                 .discountType(order.getDiscountType())
+                .color(order.getColor())
                 .build();
     }
 }

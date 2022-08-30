@@ -1,7 +1,10 @@
 package com.lguplus.project.order.service;
 
 import com.lguplus.project.device.domain.Device;
+import com.lguplus.project.device.domain.DeviceDetail;
+import com.lguplus.project.device.exception.DeviceHaveNoStockException;
 import com.lguplus.project.device.exception.DeviceNotFoundException;
+import com.lguplus.project.device.repository.DeviceDetailRepository;
 import com.lguplus.project.device.repository.DeviceRepository;
 import com.lguplus.project.order.domain.Order;
 import com.lguplus.project.order.domain.payload.OrderRequest;
@@ -28,6 +31,8 @@ public class OrderService {
     private final DeviceRepository deviceRepository;
     private final PlanRepository planRepository;
 
+    private final DeviceDetailRepository deviceDetailRepository;
+
     public List<OrderResponse> getOrderList(){
         return orderRepository.findAll()
                 .stream()
@@ -41,11 +46,35 @@ public class OrderService {
 
         Device device = deviceRepository.findByCode(orderRequest.getDeviceCode())
                 .orElseThrow(() -> new DeviceNotFoundException(
-                        "code : " + orderRequest.getDeviceCode() + "\n" + "Exception : Device Not Found"));
+                        "code: " + orderRequest.getDeviceCode() + "\n" + "Exception : Device Not Found"));
 
         Plan plan = planRepository.findByName(orderRequest.getPlanName())
                 .orElseThrow(() -> new PlanNotFoundException(
-                        ":" + orderRequest.getPlanName() + "\n" + "Exception : Plan Not Found"));
+                        "plan name: " + orderRequest.getPlanName() + "\n" + "Exception : Plan Not Found"));
+
+        String color = orderRequest.getColor();
+        List<DeviceDetail> deviceDetailList = device.getDeviceDetails();
+        
+        boolean flag = false;
+
+        for(DeviceDetail d : deviceDetailList){
+            if(color.equals(d.getColor())){
+                flag = true;
+                if(d.getStock()<=0){
+                    //exception : 재고 없음
+                    throw new DeviceHaveNoStockException(
+                            "code: "+orderRequest.getDeviceCode() + "\ncolor: " + color +"\nException : No Stock");
+                }else{
+                    //재고--
+                    DeviceDetail deviceDetail = d.toBuilder().stock(d.getStock()-1).build();
+                    deviceDetailRepository.save(deviceDetail);
+                }
+            }
+        }
+        if(!flag){
+            //exception : 색상 없음
+            throw new DeviceNotFoundException("color: "+ color+"\nException : Device does not have this color");
+        }
 
         Order order = Order.builder()
                 .device(device)
@@ -54,6 +83,7 @@ public class OrderService {
                 .joinDate(localDate)
                 .monthlyFee(orderRequest.getMonthlyFee())
                 .discountType(orderRequest.getDiscountType())
+                .color(orderRequest.getColor())
                 .build();
 
         return OrderResponse.of(orderRepository.save(order));
