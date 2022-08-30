@@ -18,4 +18,5 @@ public class OrderRequest implements Serializable {
     private JoinType joinType;
     private Integer monthlyFee;
     private DiscountType discountType;
+    private String color;
 }

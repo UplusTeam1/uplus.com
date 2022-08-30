@@ -33,11 +33,13 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "code",
-            name = "device_code")
+                name = "device_code")
     private Device device;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "name",
-            name = "plan_name")
+                name = "plan_name")
     private Plan plan;
+
+    private String color;
 }

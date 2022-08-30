@@ -1,6 +1,7 @@
 package com.lguplus.project.global.handler;
 
 import com.lguplus.project.device.exception.DeviceAndPlanNotFoundException;
+import com.lguplus.project.device.exception.DeviceHaveNoStockException;
 import com.lguplus.project.device.exception.DeviceNotFoundException;
 import com.lguplus.project.order.exception.OrderNotFoundException;
 import com.lguplus.project.plan.exception.PlanNotFoundException;
@@ -40,5 +41,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PlanNotFoundException.class)
     protected ResponseEntity<?> handlePlanNotFoundException(PlanNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(DeviceHaveNoStockException.class)
+    protected ResponseEntity<?> handleDeviceHaveNoStockException(DeviceHaveNoStockException e) {
+        return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
     }
 }
