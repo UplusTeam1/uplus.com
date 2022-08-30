@@ -196,7 +196,7 @@ function DeviceSubFilter() {
               id="sort-select"
               value={sortCategory}
               onChange={handleSortChange}
-              label="Age"
+              label="Sort"
             >
               <MenuItem value={0}>실 구매가가 낮은 상품 순</MenuItem>
               <MenuItem value={1}>정상가가 낮은 순</MenuItem>
