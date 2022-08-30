@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+// styles
 import styled, { css, useTheme } from 'styled-components'
 import { darken } from 'polished'
 // import components
@@ -123,10 +125,11 @@ interface DeviceItemProps {
 
 function DeviceItem({ name, colors, clickCompareButton }: DeviceItemProps) {
   const theme = useTheme()
+  const navigate = useNavigate()
 
   return (
     <DeviceItemContainer>
-      <LinkedContainer onClick={() => null}>
+      <LinkedContainer onClick={() => navigate(`/device/galaxy`)}>
         <ColorContainer>
           {colors.map((color: any) => (
             <ColorCircle color={color.rgb} />

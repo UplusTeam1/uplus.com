@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 // styles
 import styled, { css, useTheme } from 'styled-components'
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
@@ -262,6 +263,7 @@ interface DeviceCompareDialogProps {
 // components
 function Device({ device }: DeviceProps) {
   const theme = useTheme()
+  const navigate = useNavigate()
 
   return (
     <DeviceDiv border={device.name === '' ? '2px dashed' : '2px solid'}>
@@ -285,7 +287,7 @@ function Device({ device }: DeviceProps) {
               fontColor={theme.app.grayFont}
               bgColor={theme.app.background}
               border={`1px solid ${theme.app.grayFont}`}
-              onClick={() => null}
+              onClick={() => navigate(`/device/galaxy`)}
             />
             <CartButton>
               <AddShoppingCartOutlinedIcon color="secondary" fontSize="small" />

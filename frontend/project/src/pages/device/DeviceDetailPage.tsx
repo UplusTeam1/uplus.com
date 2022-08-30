@@ -1,11 +1,13 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 // styles
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
 import styled, { css, useTheme } from 'styled-components'
 import { darken } from 'polished'
-// components
+// import components
 import { Radio } from '@mui/material'
 import UplusButton from '../../components/UplusButton'
+import PlanListDialog from '../../components/device/PlanListDialog'
 
 // styled
 const MainContainer = styled.div`
@@ -232,6 +234,7 @@ const HalfContentDiv = styled.div`
   width: 289px;
 `
 
+// interface
 interface ColorCircleProps {
   bgColor: string
   borderColor: string
@@ -245,8 +248,17 @@ interface CheckDivProps {
 }
 
 function DeviceDetailPage() {
+  const [openDialog, setOpenDialog] = useState(false)
   const params = useParams()
   const theme = useTheme()
+
+  const clickOpenDialog = () => {
+    setOpenDialog(true)
+  }
+
+  const closeDialog = () => {
+    setOpenDialog(false)
+  }
 
   return (
     <MainContainer>
@@ -304,7 +316,7 @@ function DeviceDetailPage() {
           </ButtonDiv>
         </ButtonListDiv>
         <MainTitleText>요금제</MainTitleText>
-        <SelectedPlanDiv>
+        <SelectedPlanDiv onClick={() => clickOpenDialog()}>
           <PlanTitleDiv>
             <PlanName>5G 라이트+</PlanName>
             <PlanPrice>55,000원</PlanPrice>
@@ -501,6 +513,7 @@ function DeviceDetailPage() {
           />
         </ButtonListDiv>
       </ContentContainer>
+      <PlanListDialog open={openDialog} onClose={closeDialog} />
     </MainContainer>
   )
 }
