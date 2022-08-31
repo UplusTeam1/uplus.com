@@ -34,7 +34,7 @@ jobs:
     - name: Set yaml file
       run: |
         touch ${{ env.RESOURCE_PATH }}
-        echo "{{env.YAML}}" > ${{ env.RESOURCE_PATH }}
+        echo "${{env.YAML}}" > ${{ env.RESOURCE_PATH }}
      
 #     - name: Set yaml file
 #       uses: microsoft/variable-substitution@v1
