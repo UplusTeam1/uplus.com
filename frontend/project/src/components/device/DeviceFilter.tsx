@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import styled, { css, useTheme } from 'styled-components'
+import {
+  PLAN_INFO_LIST,
+  DISCOUNT_TYPE_LIST,
+  DICOUNT_INFO_LIST,
+  INSTALLMENT_LIST,
+  STORAGE_LIST,
+} from '../../data/staticData'
+import usePlanList from '../../hooks/plan/usePlanList'
+// import components
 import { Radio, RadioGroup, FormControlLabel, FormControl } from '@mui/material'
+import Loading from '../Loading'
 
 // styled
 const FilterContainer = styled.div`
@@ -158,87 +168,15 @@ interface DeviceFilterProps {}
 function DeviceFilter({}: DeviceFilterProps) {
   const [openedFilter, setOpenedFilter] = useState(0)
   const theme = useTheme()
-  const planTitleList: any = [
-    '요금',
-    '데이터',
-    '나눠쓰기',
-    '음성통화',
-    '메세지',
-  ]
-  const planList: any = [
-    {
-      name: '5G 프리미어 에센셜',
-      price: '월 37,500원',
-      data: '월 12GB',
-      sharing: '사용가능',
-      voiceCall: '무제한',
-      message: '기본제공',
-    },
-    {
-      name: '5G 슬림+',
-      price: '월 37,500원',
-      data: '월 12GB',
-      sharing: '사용가능',
-      voiceCall: '무제한',
-      message: '기본제공',
-    },
-    {
-      name: '5G 다이렉트 37.5',
-      price: '월 37,500원',
-      data: '월 12GB',
-      sharing: '사용가능',
-      voiceCall: '무제한',
-      message: '기본제공',
-    },
-    {
-      name: '5G 프리미어 에센셜 2',
-      price: '월 37,500원',
-      data: '월 12GB',
-      sharing: '사용가능',
-      voiceCall: '무제한',
-      message: '기본제공',
-    },
-    {
-      name: '5G 슬림+ 2',
-      price: '월 37,500원',
-      data: '월 12GB',
-      sharing: '사용가능',
-      voiceCall: '무제한',
-      message: '기본제공',
-    },
-    {
-      name: '5G 다이렉트 37.5 2',
-      price: '월 37,500원',
-      data: '월 12GB',
-      sharing: '사용가능',
-      voiceCall: '무제한',
-      message: '기본제공',
-    },
-  ]
-  const discountList: any = [
-    { name: '추천' },
-    { name: '공시지원금' },
-    { name: '선택약정 24개월' },
-    { name: '선택약정 12개월' },
-  ]
-  const discountInfoList: any = [
-    '',
-    '휴대폰 가격 1회 할인',
-    '24개월간 통신요금 25% 할인',
-    '12개월간 통신요금 25% 할인',
-  ]
-  const installmentList: any = [
-    { name: '일시불' },
-    { name: '12개월' },
-    { name: '24개월' },
-    { name: '36개월' },
-  ]
-  const storageList: any = [
-    { name: '전체' },
-    { name: '512GB 이상' },
-    { name: '256GB' },
-    { name: '128GB' },
-  ]
+  const { data: planListData, isFetching: planListIsFetching } = usePlanList()
+
+  if (!planListData || planListIsFetching) {
+    return (
+      <FilterContainer>
+        <Loading />
+      </FilterContainer>
+    )
+  }
 
   return (
     <FilterContainer>
@@ -262,7 +200,7 @@ function DeviceFilter({}: DeviceFilterProps) {
           </div>
           <HideTitleContainer width="920px">
             <HideTitle width="920px">
-              {planTitleList.map((planTitle: string) => (
+              {PLAN_INFO_LIST.map((planTitle: string) => (
                 <HideText
                   width="100px"
                   fontSize="16px"
@@ -286,25 +224,25 @@ function DeviceFilter({}: DeviceFilterProps) {
                 defaultValue="5G 프리미어 에센셜"
                 name="plan"
               >
-                {planList.map((plan: any) => (
+                {planListData.map((planData: any) => (
                   <FormControlLabel
-                    value={plan.name}
+                    value={planData.name}
                     control={<Radio />}
-                    label={plan.name}
+                    label={planData.name}
                   />
                 ))}
               </RadioGroup>
             </FormControl>
           </div>
           <HideContent>
-            {planList.map((plan: any) => (
+            {planListData.map((planData: any) => (
               <HideDiv>
                 {[
-                  plan.price,
-                  plan.data,
-                  plan.sharing,
-                  plan.voiceCall,
-                  plan.message,
+                  planData.price,
+                  planData.data,
+                  planData.sharing,
+                  planData.voiceCall,
+                  planData.message,
                 ].map((data: any) => (
                   <HideText
                     width="100px"
@@ -351,18 +289,18 @@ function DeviceFilter({}: DeviceFilterProps) {
                 defaultValue="추천"
                 name="discount"
               >
-                {discountList.map((discount: any) => (
+                {DISCOUNT_TYPE_LIST.map((discountType: string) => (
                   <FormControlLabel
-                    value={discount.name}
+                    value={discountType}
                     control={<Radio />}
-                    label={discount.name}
+                    label={discountType}
                   />
                 ))}
               </RadioGroup>
             </FormControl>
           </div>
           <HideContent>
-            {discountInfoList.map((discountInfo: any) => (
+            {DICOUNT_INFO_LIST.map((discountInfo: string) => (
               <HideDiv>
                 <HideText
                   width="auto"
@@ -388,11 +326,11 @@ function DeviceFilter({}: DeviceFilterProps) {
               defaultValue="24개월"
               name="installment"
             >
-              {installmentList.map((installment: any) => (
+              {INSTALLMENT_LIST.map((installment: string) => (
                 <FormControlLabel
-                  value={installment.name}
+                  value={installment}
                   control={<Radio />}
-                  label={installment.name}
+                  label={installment}
                 />
               ))}
             </RadioGroup>
@@ -410,11 +348,11 @@ function DeviceFilter({}: DeviceFilterProps) {
               defaultValue="전체"
               name="storage"
             >
-              {storageList.map((storage: any) => (
+              {STORAGE_LIST.map((storage: string) => (
                 <FormControlLabel
-                  value={storage.name}
+                  value={storage}
                   control={<Radio />}
-                  label={storage.name}
+                  label={storage}
                 />
               ))}
             </RadioGroup>
