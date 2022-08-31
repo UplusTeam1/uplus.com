@@ -3,7 +3,8 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   datasource:
-    url: jdbc:mysql://my-db-private.cfwoneu3jua9.ap-northeast-2.rds.amazonaws.com:3306/test
+    url: >
+      jdbc:mysql://my-db-private.cfwoneu3jua9.ap-northeast-2.rds.amazonaws.com:3306/test
     username:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
