@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
+import { DeviceData } from '../../api/device'
 // import components
 import DeviceFilter from '../../components/device/DeviceFilter'
 import DeviceSubFilter from '../../components/device/DeviceSubFilter'
 import DeviceItem from '../../components/device/DeviceItem'
 import DeviceCompareTab from '../../components/device/DeviceCompareTab'
 import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
+import useDeviceList from '../../hooks/device/useDeviceList'
 
 const DeviceListContainer = styled.div`
   display: flex;
@@ -19,55 +21,11 @@ const DeviceListContainer = styled.div`
 function DeviceListPage() {
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
-  const deviceList: any = [
-    {
-      name: 'iPhone 12 Pro 256G',
-      detailPerColor: [
-        { color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' },
-        { color: '핑크 골드', rgb: 'rgb(236, 219, 211)' },
-      ],
-    },
-    {
-      name: 'iPhone 12 Pro Max 256G',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: 'iPhone 13 Pro 256G',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: 'iPhone 13 Pro Max 256G',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: '갤럭시 Z 플립 3',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: '갤럭시 Z Filp 4',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: '갤럭시 Z Fold 4',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: '갤럭시 S21',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: '갤럭시 노트20',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-    {
-      name: '갤럭시 S22',
-      detailPerColor: [{ color: '보라 퍼플', rgb: 'rgb(184, 170, 203)' }],
-    },
-  ]
+  const { deviceList, getDeviceList } = useDeviceList()
 
-  const clickCompareButton = () => {
+  const clickCompareButton = useCallback(() => {
     setIsOpenCompareTab(true)
-  }
+  }, [])
 
   const closeCompareTab = () => {
     setIsOpenCompareTab(false)
@@ -92,13 +50,13 @@ function DeviceListPage() {
         />
       )}
       <DeviceListContainer>
-        {deviceList.map((device: any) => (
-          <DeviceItem
-            name={device.name}
-            colors={device.detailPerColor}
-            clickCompareButton={clickCompareButton}
-          />
-        ))}
+        {deviceList.data &&
+          deviceList.data.map((device: DeviceData) => (
+            <DeviceItem
+              device={device}
+              clickCompareButton={clickCompareButton}
+            />
+          ))}
       </DeviceListContainer>
       <DeviceCompareDialog open={openDialog} onClose={closeDialog} />
     </>

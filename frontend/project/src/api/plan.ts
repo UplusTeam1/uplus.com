@@ -2,9 +2,7 @@ import Api from '../lib/customApi'
 
 // api
 export async function getPlanList() {
-  const response = await Api.get(`api/plan`)
-  console.log(response)
-  console.log(response.data)
+  const response = await Api.get(`/api/plan`)
   return response.data
 }
 

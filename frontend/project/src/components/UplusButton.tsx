@@ -1,12 +1,12 @@
 import styled, { css, useTheme } from 'styled-components'
 import { darken } from 'polished'
 
-const ButtonContainer = styled.div`
+const ButtonContainer = styled.div<ButtonContainerProps>`
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  ${(props: ButtonContainerProps) => {
+  ${(props) => {
     return css`
       width: ${props.width};
       height: ${props.height};

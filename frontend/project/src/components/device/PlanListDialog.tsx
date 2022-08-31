@@ -1,5 +1,5 @@
 // styles
-import styled, { css, useTheme } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
 // import components
 import {
@@ -24,9 +24,13 @@ const TitleDiv = styled.div`
   font-size: 20px;
   font-weight: bold;
   padding: 16px;
-  color: ${({ theme }) => theme.app.blackFont};
-  background-color: ${({ theme }) => theme.app.lightGray};
-  border-bottom: 1px solid ${({ theme }) => theme.app.dividerGray};
+  ${({ theme }) => {
+    return css`
+      color: ${theme.app.blackFont};
+      background-color: ${theme.app.lightGray};
+      border-bottom: 1px solid ${theme.app.dividerGray};
+    `
+  }}
 `
 const TitleInfoDiv = styled.div`
   display: flex;
@@ -78,14 +82,14 @@ const CustomDialogContent = styled(DialogContent)`
 const PlanListDiv = styled.div`
   width: 1240px;
 `
-const PlanDiv = styled.div`
+const PlanDiv = styled.div<{ check: boolean }>`
   display: flex;
   align-items: center;
   padding: 20px;
   margin-top: 30px;
   background-color: ${({ theme }) => theme.app.background};
   border-radius: 10px;
-  ${({ check, theme }: { check: boolean; theme: any }) => {
+  ${({ check, theme }) => {
     return css`
       width: ${check ? '1198px' : '1200px'};
       height: ${check ? '178px' : '180px'};

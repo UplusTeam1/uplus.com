@@ -19,30 +19,30 @@ const FilterContainer = styled.div`
   height: 300px;
   padding-top: 20px;
 `
-const MutableContainer = styled.div`
+const MutableContainer = styled.div<MutableContainerProps>`
   position: absolute;
   height: 300px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => props.theme.app.lightGray};
-  ${({ width, zIndex, marginLeft }: MutableContainerProps) => {
+  ${({ width, zIndex, marginLeft, theme }) => {
     return css`
       width: ${width};
       z-index: ${zIndex};
       margin-left: ${marginLeft};
+      background-color: ${theme.app.lightGray};
     `
   }}
   -webkit-transition: width 0.5s;
   transition: width 0.5s;
 `
-const Title = styled.div`
+const Title = styled.div<WidthProps>`
   display: flex;
   align-items: center;
   height: 60px;
   overflow: hidden;
-  border-bottom: 2px solid ${(props) => props.theme.app.dividerGray};
-  ${({ width }: WidthProps) => {
+  ${({ width, theme }) => {
     return css`
       width: ${width};
+      border-bottom: 2px solid ${theme.app.dividerGray};
     `
   }}
   -webkit-transition: width 0.5s;
@@ -67,12 +67,12 @@ const MoreText = styled.p`
   white-space: nowrap;
   cursor: pointer;
 `
-const Content = styled.div`
+const Content = styled.div<WidthProps>`
   display: flex;
   height: 206px;
   padding: 16px 0 16px 24px;
   overflow: hidden auto;
-  ${({ width }: WidthProps) => {
+  ${({ width }) => {
     return css`
       width: ${width};
     `
@@ -99,12 +99,12 @@ const Content = styled.div`
     }
   }
 `
-const HideTitleContainer = styled.div`
+const HideTitleContainer = styled.div<WidthProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 60px;
-  ${({ width }: WidthProps) => {
+  ${({ width }) => {
     return css`
       width: ${width};
     `
@@ -112,12 +112,12 @@ const HideTitleContainer = styled.div`
   -webkit-transition: width 0.5s;
   transition: width 0.5s;
 `
-const HideTitle = styled.div`
+const HideTitle = styled.div<WidthProps>`
   display: flex;
   align-items: center;
   height: 60px;
   padding-left: 10px;
-  ${({ width }: WidthProps) => {
+  ${({ width }) => {
     return css`
       width: ${width};
     `
@@ -134,9 +134,9 @@ const HideDiv = styled.div`
   align-items: center;
   height: 42px;
 `
-const HideText = styled.span`
+const HideText = styled.span<HideTextProps>`
   white-space: nowrap;
-  ${({ width, fontSize, color, marginLeft }: HideTextProps) => {
+  ${({ width, fontSize, color, marginLeft }) => {
     return css`
       width: ${width};
       font-size: ${fontSize};
@@ -168,9 +168,9 @@ interface DeviceFilterProps {}
 function DeviceFilter({}: DeviceFilterProps) {
   const [openedFilter, setOpenedFilter] = useState(0)
   const theme = useTheme()
-  const { data: planListData, isFetching: planListIsFetching } = usePlanList()
+  const { data: planListData, isLoading: planListIsLoading } = usePlanList()
 
-  if (!planListData || planListIsFetching) {
+  if (!planListData || planListIsLoading) {
     return (
       <FilterContainer>
         <Loading />
