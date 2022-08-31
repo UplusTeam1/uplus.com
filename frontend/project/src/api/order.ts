@@ -6,7 +6,7 @@ export async function getOrderList() {
 }
 
 export async function saveOrder(orderRequest: OrderRequest) {
-  const response = await Api.post<OrderData>(`/api/order`)
+  const response = await Api.post<OrderData>(`/api/order`, orderRequest)
   return response.data
 }
 

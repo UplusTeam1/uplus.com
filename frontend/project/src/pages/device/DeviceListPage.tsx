@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { DeviceData } from '../../api/device'
 // import components
@@ -7,7 +7,9 @@ import DeviceSubFilter from '../../components/device/DeviceSubFilter'
 import DeviceItem from '../../components/device/DeviceItem'
 import DeviceCompareTab from '../../components/device/DeviceCompareTab'
 import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
+// custom hooks
 import useDeviceList from '../../hooks/device/useDeviceList'
+import useFilter from '../../hooks/device/useFilter'
 
 const DeviceListContainer = styled.div`
   display: flex;
@@ -21,23 +23,32 @@ const DeviceListContainer = styled.div`
 function DeviceListPage() {
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
+  const {
+    planFilter,
+    deviceFilter,
+    setPlanFilter,
+    setDeviceFilter,
+    resetFilter,
+  } = useFilter()
   const { deviceList, getDeviceList } = useDeviceList()
+
+  useEffect(() => {}, [])
 
   const clickCompareButton = useCallback(() => {
     setIsOpenCompareTab(true)
   }, [])
 
-  const closeCompareTab = () => {
+  const closeCompareTab = useCallback(() => {
     setIsOpenCompareTab(false)
-  }
+  }, [])
 
-  const clickOpenDialog = () => {
+  const clickOpenDialog = useCallback(() => {
     setOpenDialog(true)
-  }
+  }, [])
 
-  const closeDialog = () => {
+  const closeDialog = useCallback(() => {
     setOpenDialog(false)
-  }
+  }, [])
 
   return (
     <>
