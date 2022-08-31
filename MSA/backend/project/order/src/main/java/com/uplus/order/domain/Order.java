@@ -1,7 +1,6 @@
 package com.uplus.order.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,6 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "orders")
 public class Order {
 
@@ -31,6 +29,8 @@ public class Order {
     private String deviceCode;
 
     private String planName;
+
+    private Integer monthlyFee;
 
     private String color;
 }
