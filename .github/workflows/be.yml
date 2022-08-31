@@ -3,6 +3,7 @@ name: SpringBoot Deploy to AWS EC2
 env:
   RESOURCE_PATH: ./backend/project/src/main/resources/application.yaml
   working-directory: ./backend/project
+  yaml: ${{secrets.YAML}}
 
 on:
   push:
@@ -32,13 +33,8 @@ jobs:
         
     - name: Set yaml file
       run: |
-        echo "spring.datasource.url = $spring.datasource.url" >> ${{ env.RESOURCE_PATH }}
-        echo "spring.datasource.username = $spring.datasource.username" >> ${{ env.RESOURCE_PATH }}
-        echo "spring.datasource.password = $spring.datasource.password" >> ${{ env.RESOURCE_PATH }}
-      env:
-        spring.datasource.url: 'jdbc:mysql://${{ secrets.PRIVATE_RDS_URL }}:3306/test'
-        spring.datasource.username: ${{ secrets.RDS_ID }}
-        spring.datasource.password: ${{ secrets.RDS_SECRETS }}      
+        touch ${{ env.RESOURCE_PATH }}
+        echo "{{env.YAML}}" > ${{ env.RESOURCE_PATH }}
      
 #     - name: Set yaml file
 #       uses: microsoft/variable-substitution@v1
