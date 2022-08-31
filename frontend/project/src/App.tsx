@@ -7,6 +7,7 @@ import HeaderPage from './pages/HeaderPage'
 import MainPage from './pages/main/MainPage'
 import DeviceListPage from './pages/device/DeviceListPage'
 import DeviceDetailPage from './pages/device/DeviceDetailPage'
+import OrderListPage from './pages/order/OrderListPage'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="" element={<MainPage />} />
         <Route path="device" element={<DeviceListPage />} />
         <Route path="device/:deviceCode" element={<DeviceDetailPage />} />
+        <Route path="order" element={<OrderListPage />} />
       </Route>
     </Routes>
   )
