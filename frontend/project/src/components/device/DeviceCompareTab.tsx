@@ -13,8 +13,12 @@ const TabContainer = styled.div`
   bottom: 0;
   width: 1300px;
   z-index: 11;
-  border-right: 1px solid ${({ theme }) => theme.app.mainBackground};
-  border-left: 1px solid ${({ theme }) => theme.app.mainBackground};
+  ${({ theme }) => {
+    return css`
+      border-right: 1px solid ${theme.app.mainBackground};
+      border-left: 1px solid ${theme.app.mainBackground};
+    `
+  }}
 `
 const TitleDiv = styled.div`
   display: flex;
@@ -52,14 +56,14 @@ const CustomCloseIcon = styled(CloseIcon)`
   margin-right: 14px;
   cursor: pointer;
 `
-const ContentDiv = styled.div`
+const ContentDiv = styled.div<HeightProps>`
   display: flex;
   justify-content: space-between;
   width: 1300px;
-  background-color: ${({ theme }) => theme.app.background};
-  ${({ height }: HeightProps) => {
+  ${({ height, theme }) => {
     return css`
       height: ${height};
+      background-color: ${theme.app.background};
     `
   }};
   -webkit-transition: height 0.5s;
@@ -70,7 +74,7 @@ const DeviceListDiv = styled.div`
   height: 120px;
   padding: 20px;
 `
-const DeviceDiv = styled.div`
+const DeviceDiv = styled.div<{ border: string }>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -79,12 +83,12 @@ const DeviceDiv = styled.div`
   margin-right: 20px;
   padding: 10px;
   border-radius: 10px;
-  ${({ border }: { border: string }) => {
+  ${({ border, theme }) => {
     return css`
       border: ${border};
+      border-color: ${theme.app.dividerGray};
     `
   }};
-  border-color: ${({ theme }) => theme.app.dividerGray};
 `
 const DeviceInfoDiv = styled.div`
   display: flex;

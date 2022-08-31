@@ -6,13 +6,13 @@ import SearchBar from '../components/SearchBar'
 import UplusLogo from '../components/UplusLogo'
 
 // styled
-const RootContainer = styled.div`
+const RootContainer = styled.div<ContainerProps>`
   display: flex;
   justify-content: center;
   min-width: 1440px;
-  ${({ backgroundColor }: ContainerProps) => {
+  ${(props) => {
     return css`
-      background-color: ${backgroundColor};
+      background-color: ${props.backgroundColor};
     `
   }}
 `
@@ -23,16 +23,16 @@ const InnerContainer = styled.div`
   width: 1440px;
   min-height: 768px;
 `
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.div<ContainerProps>`
   position: fixed;
   display: flex;
   align-items: center;
   width: 1440px;
   height: 160px;
   z-index: 9;
-  ${({ backgroundColor }: ContainerProps) => {
+  ${(props) => {
     return css`
-      background-color: ${backgroundColor};
+      background-color: ${props.backgroundColor};
     `
   }}
 `

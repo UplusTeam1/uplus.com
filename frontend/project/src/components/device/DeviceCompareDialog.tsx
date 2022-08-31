@@ -26,8 +26,12 @@ import ReactApexChart from 'react-apexcharts'
 const CustomDialogTitle = styled(DialogTitle)`
   font-size: 24px;
   font-weight: bold;
-  color: ${({ theme }) => theme.app.blackFont};
-  background-color: ${({ theme }) => theme.app.lightGray};
+  ${({ theme }) => {
+    return css`
+      color: ${theme.app.blackFont};
+      background-color: ${theme.app.lightGray};
+    `
+  }}
 `
 const CustomDialogContent = styled(DialogContent)`
   padding: 0 80px 80px 80px;
@@ -61,19 +65,19 @@ const DeviceListDiv = styled.div`
   margin-top: 60px;
   margin-bottom: 20px;
 `
-const DeviceDiv = styled.div`
+const DeviceDiv = styled.div<{ border: string }>`
   ${flexCenter}
   flex-direction: column;
   position: relative;
   width: 356px;
   height: 356px;
   border-radius: 10px;
-  ${({ border }: { border: string }) => {
+  ${({ border, theme }) => {
     return css`
       border: ${border};
+      border-color: ${theme.app.dividerGray};
     `
   }};
-  border-color: ${({ theme }) => theme.app.dividerGray};
 `
 const DeviceImage = styled.img`
   height: 120px;
@@ -96,15 +100,19 @@ const CartButton = styled.div`
   ${flexCenter}
   width: 30px;
   height: 30px;
-  border: 1px solid ${(props) => props.theme.app.grayFont};
   border-radius: 15px;
   margin-left: 8px;
-  &:hover {
-    background: ${(props) => darken(0.1, props.theme.app.background)};
-  }
-  &:active {
-    background: ${(props) => darken(0.2, props.theme.app.background)};
-  }
+  ${({ theme }) => {
+    return css`
+      border: 1px solid ${theme.app.grayFont};
+      &:hover {
+        background: ${darken(0.1, theme.app.background)};
+      }
+      &:active {
+        background: ${darken(0.2, theme.app.background)};
+      }
+    `
+  }}
   cursor: pointer;
 `
 const CustomPhoneIcon = styled(SmartphoneIcon)`
@@ -112,20 +120,20 @@ const CustomPhoneIcon = styled(SmartphoneIcon)`
   margin-bottom: 20px;
   color: ${({ theme }) => theme.app.dividerGray};
 `
-const InfoTitleDiv = styled.div`
+const InfoTitleDiv = styled.div<{ border: string }>`
   ${flexBetween}
   width: 1140px;
   font-size: 22px;
   font-weight: bold;
-  color: ${({ theme }) => theme.app.grayFont};
   padding: 20px 0;
   cursor: pointer;
-  ${({ border }: { border: string }) => {
+  ${({ border, theme }) => {
     return css`
       border-bottom: ${border};
+      color: ${theme.app.grayFont};
+      border-color: ${theme.app.dividerGray};
     `
   }};
-  border-color: ${({ theme }) => theme.app.dividerGray};
 `
 const CustomLessIcon = styled(ExpandLessIcon)`
   color: ${({ theme }) => theme.app.grayFont};
@@ -227,15 +235,15 @@ const CustomDialogActions = styled(DialogActions)`
   justify-content: center;
   padding: 30px;
 `
-const CustomCloseIcon = styled(CloseIcon)`
+const CustomCloseIcon = styled(CloseIcon)<{ size: string }>`
   position: absolute;
   right: 16px;
   top: 16px;
-  color: ${({ theme }) => theme.app.grayFont};
   cursor: pointer;
-  ${({ size }: { size: string }) => {
+  ${({ size, theme }) => {
     return css`
       font-size: ${size};
+      color: ${theme.app.grayFont};
     `
   }};
 `

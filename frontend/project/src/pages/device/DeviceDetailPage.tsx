@@ -67,18 +67,18 @@ const ColorCircleDiv = styled.div`
   display: flex;
   height: 32px;
 `
-const ColorCircle = styled.div`
+const ColorCircle = styled.div<ColorCircleProps>`
   border: 2px solid;
   border-radius: 16px;
   width: 28px;
   height: 28px;
   margin-right: 4px;
   outline-offset: -4px;
-  ${({ bgColor, borderColor, outline }: ColorCircleProps) => {
+  ${(props) => {
     return css`
-      background-color: ${bgColor};
-      border-color: ${borderColor};
-      outline: ${outline};
+      background-color: ${props.bgColor};
+      border-color: ${props.borderColor};
+      outline: ${props.outline};
     `
   }};
   cursor: pointer;
@@ -91,12 +91,12 @@ const ButtonListDiv = styled.div`
     `
   }};
 `
-const ButtonDiv = styled.div`
+const ButtonDiv = styled.div<CheckDivProps>`
   ${flexCenter}
   border-radius: 6px;
   font-size: 18px;
   background-color: ${({ theme }) => theme.app.background};
-  ${({ width, check, theme }: CheckDivProps) => {
+  ${({ width, check, theme }) => {
     return css`
       width: ${width};
       height: ${check ? '46px' : '48px'};
@@ -113,15 +113,19 @@ const SelectedPlanDiv = styled.div`
   width: 536px;
   height: 76px;
   padding: 20px 20px;
-  border: 2px solid ${({ theme }) => theme.app.blackFont};
   border-radius: 6px;
   cursor: pointer;
-  &:hover {
-    background: ${({ theme }) => darken(0.1, theme.app.background)};
-  }
-  &:active {
-    background: ${({ theme }) => darken(0.2, theme.app.background)};
-  }
+  ${({ theme }) => {
+    return css`
+      border: 2px solid ${theme.app.blackFont};
+      &:hover {
+        background: ${darken(0.1, theme.app.background)};
+      }
+      &:active {
+        background: ${darken(0.2, theme.app.background)};
+      }
+    `
+  }}
 `
 const PlanTitleDiv = styled.div`
   display: flex;
@@ -152,14 +156,13 @@ const DiscountTitleDiv = styled.div`
   display: flex;
   flex-direction: column;
 `
-const DiscountDiv = styled.div`
+const DiscountDiv = styled.div<CheckDivProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px 20px;
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.app.background};
-  ${({ width, check, theme }: CheckDivProps) => {
+  ${({ width, check, theme }) => {
     return css`
       width: ${width};
       height: ${check ? '116px' : '118px'};
@@ -167,6 +170,7 @@ const DiscountDiv = styled.div`
       border: ${check ? '2px solid' : '1px solid'};
       font-weight: ${check ? 'bold' : ''};
       border-color: ${check ? theme.app.blackFont : theme.app.grayFont};
+      background-color: ${theme.app.background};
     `
   }};
   cursor: pointer;
@@ -244,7 +248,6 @@ interface ColorCircleProps {
 interface CheckDivProps {
   width: string
   check: boolean
-  theme: any
 }
 
 function DeviceDetailPage() {

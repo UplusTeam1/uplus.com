@@ -5,6 +5,8 @@ import { darken } from 'polished'
 // import components
 import UplusButton from '../UplusButton'
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined'
+// import interface
+import { DetailPerColor, DeviceData } from '../../api/device'
 
 // styled
 const DeviceItemContainer = styled.div`
@@ -12,12 +14,12 @@ const DeviceItemContainer = styled.div`
   height: 450px;
   margin: 0 20px 20px 0;
   border-radius: 10px;
-  border: 1px solid ${(props) => props.theme.app.dividerGray};
+  border: 1px solid ${({ theme }) => theme.app.dividerGray};
 `
 const LinkedContainer = styled.div`
   width: 290px;
   height: 390px;
-  border-bottom: 1px solid ${(props) => props.theme.app.dividerGray};
+  border-bottom: 1px solid ${({ theme }) => theme.app.dividerGray};
   cursor: pointer;
 `
 const BottomContainer = styled.div`
@@ -38,15 +40,15 @@ const ColorContainer = styled.div`
   margin-top: 36px;
   margin-left: 26px;
 `
-const ColorCircle = styled.div`
+const ColorCircle = styled.div<ColorCircleProps>`
   width: 12px;
   height: 12px;
-  border: 1px solid ${(props) => props.theme.app.dividerGray};
   border-radius: 6px;
   margin-bottom: 6px;
-  ${({ color }: ColorCircleProps) => {
+  ${({ color, theme }) => {
     return css`
       background-color: ${color};
+      border: 1px solid ${theme.app.dividerGray};
     `
   }};
 `
@@ -66,17 +68,17 @@ const DeviceName = styled.p`
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 4px;
-  color: ${(props) => props.theme.app.blackFont};
+  color: ${({ theme }) => theme.app.blackFont};
 `
 const DiscountText = styled.p`
   font-size: 14px;
   margin-top: 0px;
   margin-bottom: 16px;
-  color: ${(props) => props.theme.app.grayFont};
+  color: ${({ theme }) => theme.app.grayFont};
 `
-const ContentText = styled.span`
+const ContentText = styled.span<ContentTextProps>`
   font-size: 14px;
-  ${({ color, marginLeft }: ContentTextProps) => {
+  ${({ color, marginLeft }) => {
     return css`
       color: ${color};
       margin-left: ${marginLeft};
@@ -86,7 +88,7 @@ const ContentText = styled.span`
 const MonthlyChargeText = styled.p`
   font-size: 26px;
   font-weight: bold;
-  color: ${(props) => props.theme.app.blackFont};
+  color: ${({ theme }) => theme.app.blackFont};
   margin-top: 10px;
 `
 const CartButton = styled.div`
@@ -95,15 +97,19 @@ const CartButton = styled.div`
   align-items: center;
   width: 30px;
   height: 30px;
-  border: 1px solid ${(props) => props.theme.app.grayFont};
   border-radius: 15px;
   margin-left: 8px;
-  &:hover {
-    background: ${(props) => darken(0.1, props.theme.app.background)};
-  }
-  &:active {
-    background: ${(props) => darken(0.2, props.theme.app.background)};
-  }
+  ${({ theme }) => {
+    return css`
+      border: 1px solid ${theme.app.grayFont};
+      &:hover {
+        background: ${darken(0.1, theme.app.background)};
+      }
+      &:active {
+        background: ${darken(0.2, theme.app.background)};
+      }
+    `
+  }}
   cursor: pointer;
 `
 
@@ -118,12 +124,11 @@ interface ContentTextProps {
 }
 
 interface DeviceItemProps {
-  name: string
-  colors: any
+  device: DeviceData
   clickCompareButton: () => void
 }
 
-function DeviceItem({ name, colors, clickCompareButton }: DeviceItemProps) {
+function DeviceItem({ device, clickCompareButton }: DeviceItemProps) {
   const theme = useTheme()
   const navigate = useNavigate()
 
@@ -131,8 +136,8 @@ function DeviceItem({ name, colors, clickCompareButton }: DeviceItemProps) {
     <DeviceItemContainer>
       <LinkedContainer onClick={() => navigate(`/device/galaxy`)}>
         <ColorContainer>
-          {colors.map((color: any) => (
-            <ColorCircle color={color.rgb} />
+          {device.detailPerColor.map((detail: DetailPerColor) => (
+            <ColorCircle color={detail.rgb} />
           ))}
         </ColorContainer>
         <ImageContainer>
@@ -143,7 +148,7 @@ function DeviceItem({ name, colors, clickCompareButton }: DeviceItemProps) {
           />
         </ImageContainer>
         <ContentContainer>
-          <DeviceName>{name}</DeviceName>
+          <DeviceName>{device.name}</DeviceName>
           <DiscountText>공시지원금</DiscountText>
           <div>
             <ContentText color={theme.app.grayFont} marginLeft="0">
