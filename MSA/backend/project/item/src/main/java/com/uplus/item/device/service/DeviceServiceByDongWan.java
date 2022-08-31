@@ -13,11 +13,13 @@ import com.uplus.item.discount.domain.Discount;
 import com.uplus.item.discount.repository.DiscountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DeviceServiceByDongWan {
 

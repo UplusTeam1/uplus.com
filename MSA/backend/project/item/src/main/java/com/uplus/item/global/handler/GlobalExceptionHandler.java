@@ -1,5 +1,6 @@
 package com.uplus.item.global.handler;
 
+import com.uplus.item.device.exception.ColorNotFoundException;
 import com.uplus.item.device.exception.DeviceAndPlanNotFoundException;
 import com.uplus.item.device.exception.DeviceNotFoundException;
 import com.uplus.item.plan.exception.PlanNotFoundException;
@@ -33,6 +34,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PlanNotFoundException.class)
     protected ResponseEntity<?> handlePlanNotFoundException(PlanNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ColorNotFoundException.class)
+    protected ResponseEntity<?> handleColorNotFoundException(ColorNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 }
