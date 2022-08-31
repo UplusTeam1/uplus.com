@@ -5,11 +5,11 @@ env:
   working-directory: ./backend/project
 
 on:
-#   push:
-#     branches: [ "develop"]
+  push:
+    branches: [ "develop"]
 #     paths: 
 #        - 'backend/project/**'
-#        - '.github/workflows/be.yml'
+       - '.github/workflows/be.yml'
   pull_request:
     branches: [ "develop"]
     paths: 
