@@ -29,7 +29,7 @@ const Line = styled.hr`
 
 function OrderListPage() {
   // hook으로 api 호출
-  //   const { orderList } = useOrder()
+  const { orderDelete } = useOrder()
   const orderList = {
     data: [
       {
@@ -70,10 +70,7 @@ function OrderListPage() {
       <Line></Line>
       {orderList.data &&
         orderList.data.map((order: OrderData) => (
-          <OrderItem
-            order={order}
-            clickDeleteButton={() => console.log('delete')}
-          />
+          <OrderItem order={order} clickDeleteButton={orderDelete} />
         ))}
     </OrderListContainer>
   )
