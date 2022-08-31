@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,14 +34,14 @@ public class OrderService {
 
     private final DeviceDetailRepository deviceDetailRepository;
 
-    public List<OrderResponse> getOrderList(){
+    public List<OrderResponse> getOrderList() {
         return orderRepository.findAll()
                 .stream()
                 .map(OrderResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public OrderResponse createOrder(OrderRequest orderRequest){
+    public OrderResponse createOrder(OrderRequest orderRequest) {
 
         LocalDate localDate = LocalDate.now();
 
@@ -54,26 +55,26 @@ public class OrderService {
 
         String color = orderRequest.getColor();
         List<DeviceDetail> deviceDetailList = device.getDeviceDetails();
-        
+
         boolean flag = false;
 
-        for(DeviceDetail d : deviceDetailList){
-            if(color.equals(d.getColor())){
+        for (DeviceDetail d : deviceDetailList) {
+            if (color.equals(d.getColor())) {
                 flag = true;
-                if(d.getStock()<=0){
+                if (d.getStock() <= 0) {
                     //exception : 재고 없음
                     throw new DeviceHaveNoStockException(
-                            "code: "+orderRequest.getDeviceCode() + "\ncolor: " + color +"\nException : No Stock");
-                }else{
+                            "code: " + orderRequest.getDeviceCode() + "\ncolor: " + color + "\nException : No Stock");
+                } else {
                     //재고--
-                    DeviceDetail deviceDetail = d.toBuilder().stock(d.getStock()-1).build();
+                    DeviceDetail deviceDetail = d.toBuilder().stock(d.getStock() - 1).build();
                     deviceDetailRepository.save(deviceDetail);
                 }
             }
         }
-        if(!flag){
+        if (!flag) {
             //exception : 색상 없음
-            throw new DeviceNotFoundException("color: "+ color+"\nException : Device does not have this color");
+            throw new DeviceNotFoundException("color: " + color + "\nException : Device does not have this color");
         }
 
         Order order = Order.builder()
@@ -89,7 +90,7 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    public void deleteOrder(Long orderNumber){
+    public void deleteOrder(Long orderNumber) {
 
         String str = orderNumber.toString().substring(8);
         Long realOrderNumber = Long.parseLong(str);
@@ -98,6 +99,15 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException(
                         "orderNumber:" + realOrderNumber + "\n" + "Exception : Order Not Found"
                 ));
+
+        Optional<DeviceDetail> d = deviceDetailRepository.findByDeviceAndColor(order.getDevice(), order.getColor());
+
+        d.ifPresent(deviceDetail ->
+                deviceDetailRepository.save(
+                        deviceDetail.toBuilder()
+                                .stock(deviceDetail.getStock() + 1).build()
+                )
+        );
 
         orderRepository.delete(order);
     }
