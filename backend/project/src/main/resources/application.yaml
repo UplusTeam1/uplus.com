@@ -3,14 +3,14 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   datasource:
-    url: jdbc:mysql://default-rds.cfwoneu3jua9.ap-northeast-2.rds.amazonaws.com:3306/test
+    url: jdbc:mysql://default-rds:3306/test
     username: admin
     password: dusrnth111
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
