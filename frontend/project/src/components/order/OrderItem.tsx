@@ -1,3 +1,4 @@
+import { UseMutateFunction } from 'react-query'
 import styled, { useTheme } from 'styled-components'
 import { OrderData } from '../../api/order'
 import UplusButton from '../UplusButton'
@@ -41,7 +42,7 @@ const ButtonContainer = styled.div`
 `
 interface OrderItemProps {
   order: OrderData
-  clickDeleteButton: () => void
+  clickDeleteButton: UseMutateFunction<any, unknown, string, unknown>
 }
 
 function OrderItem({ order, clickDeleteButton }: OrderItemProps) {
@@ -71,7 +72,7 @@ function OrderItem({ order, clickDeleteButton }: OrderItemProps) {
           fontColor={theme.app.blackFont}
           bgColor={theme.app.lightGray}
           border={`1px solid ${theme.app.grayFont}`}
-          onClick={() => clickDeleteButton()}
+          onClick={() => clickDeleteButton(order.orderNumber)}
         />
       </ButtonContainer>
     </OrderItemContainer>
