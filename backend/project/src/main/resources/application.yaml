@@ -4,8 +4,8 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
   datasource:
     url: 'jdbc:mysql://default-rds.cfwoneu3jua9.ap-northeast-2.rds.amazonaws.com:3306/test'
-    username:
-    password:
+    username: admin
+    password: dusrnth111
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: true
