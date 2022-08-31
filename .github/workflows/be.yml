@@ -8,7 +8,7 @@ on:
   push:
     branches: [ "develop"]
     paths: 
-#        - 'backend/project/**'
+       - 'backend/project/**'
        - '.github/workflows/be.yml'
   pull_request:
     branches: [ "develop"]
@@ -35,62 +35,53 @@ jobs:
       with:
         files: ${{ env.RESOURCE_PATH }}
       env:
-        spring.datasource.url: ${{ secrets.PRIVATE_RDS_URL }}
+        spring.datasource.url: jdbc:mysql://${{ secrets.PRIVATE_RDS_URL }}:3306/test
         spring.datasource.username: ${{ secrets.RDS_ID }}
         spring.datasource.password: ${{ secrets.RDS_SECRETS }}
-      
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: ${{ secrets.PORT }}
-        script: whoami      
         
-#     - name: Grant execute permission for gradlew
-#       working-directory: ${{env.working-directory}}
-#       run: chmod +x ./gradlew
+    - name: Grant execute permission for gradlew
+      working-directory: ${{env.working-directory}}
+      run: chmod +x ./gradlew
     
-#     - name: Build with Gradle
-#       working-directory: ${{env.working-directory}}
-#       run: ./gradlew build -x test
+    - name: Build with Gradle
+      working-directory: ${{env.working-directory}}
+      run: ./gradlew build -x test
       
-#     - name: Make Directory
-#       run: mkdir -p deploy
-#       working-directory: ${{env.working-directory}}
+    - name: Make Directory
+      run: mkdir -p deploy
+      working-directory: ${{env.working-directory}}
     
-#     - name: Copy Jar
-#       run: cp ./build/libs/*.jar ./deploy
-#       working-directory: ${{env.working-directory}}
+    - name: Copy Jar
+      run: cp ./build/libs/*.jar ./deploy
+      working-directory: ${{env.working-directory}}
       
-#     - name: Copy appspec
-#       run: cp appspec.yml ./deploy
-#       working-directory: ${{env.working-directory}}
+    - name: Copy appspec
+      run: cp appspec.yml ./deploy
+      working-directory: ${{env.working-directory}}
     
-#     - name: Copy script
-#       run: cp ./scripts/*.sh ./deploy
-#       working-directory: ${{env.working-directory}}
+    - name: Copy script
+      run: cp ./scripts/*.sh ./deploy
+      working-directory: ${{env.working-directory}}
     
-#     - name: Make zip file
-#       run: zip -r -qq -j ./my-lguplus-back.zip ./deploy
-#       working-directory: ${{env.working-directory}}      
+    - name: Make zip file
+      run: zip -r -qq -j ./my-lguplus-back.zip ./deploy
+      working-directory: ${{env.working-directory}}      
       
-#     - name: Configure AWS credentials
-#       uses: aws-actions/configure-aws-credentials@v1
-#       with:
-#         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#         aws-region: ap-northeast-2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
 
-#     - name: Upload to AWS S3
-#       run: aws s3 cp --region ap-northeast-2 ./my-lguplus-back.zip s3://uplus-be/
-#       working-directory: ${{env.working-directory}}
+    - name: Upload to AWS S3
+      run: aws s3 cp --region ap-northeast-2 ./my-lguplus-back.zip s3://uplus-be/
+      working-directory: ${{env.working-directory}}
     
-#     - name: Deploy to AWS CodeDeploy
-#       run: aws deploy create-deployment 
-#         --application-name my-lguplus-web-deploy
-#         --deployment-group-name my-lguplus-web-back-deploy
-#         --file-exists-behavior OVERWRITE 
-#         --s3-location bucket=uplus-be,bundleType=zip,key=my-lguplus-back.zip
-#         --region ap-northeast-2
+    - name: Deploy to AWS CodeDeploy
+      run: aws deploy create-deployment 
+        --application-name my-lguplus-web-deploy
+        --deployment-group-name my-lguplus-web-back-deploy
+        --file-exists-behavior OVERWRITE 
+        --s3-location bucket=uplus-be,bundleType=zip,key=my-lguplus-back.zip
+        --region ap-northeast-2

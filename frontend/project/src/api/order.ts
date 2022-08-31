@@ -10,7 +10,7 @@ export async function saveOrder(orderRequest: OrderRequest) {
   return response.data
 }
 
-export async function deleteOrder(orderNumber: number) {
+export async function deleteOrder(orderNumber: string) {
   const response = await Api.delete(`/api/order/${orderNumber}`)
   return response.data
 }
