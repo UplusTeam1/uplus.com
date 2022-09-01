@@ -7,9 +7,9 @@ name: FE Dockerize and Deploy
 
 on:
    push:
-#      branches: [ "develop" ]
-#      paths: 
-#         - '.github/workflows/react-2.yml'
+     branches: [ "develop" ]
+     paths: 
+        - '.github/workflows/react-2.yml'
 #         - 'frontend/project/**'
         
 jobs:
