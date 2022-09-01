@@ -33,7 +33,9 @@ public class DeviceResponse {
 
     private Integer weeklySale;
 
-    public static DeviceResponse of(Device device, List monthlyChargeList) {
+    private String brand;
+
+    public static DeviceResponse of(Device device, List<Map<String, Object>> monthlyChargeList) {
         return DeviceResponse.builder()
                 .code(device.getCode())
                 .detailPerColor(device.getDeviceDetails()
@@ -46,6 +48,7 @@ public class DeviceResponse {
                 .recommendedDiscountIndex(0)
                 .storage(device.getStorage())
                 .weeklySale(device.getWeeklySale())
+                .brand(device.getBrand())
                 .build();
     }
 
