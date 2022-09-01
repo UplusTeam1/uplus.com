@@ -39,6 +39,8 @@ jobs:
     - name: Build
       run: yarn build
       working-directory: ${{env.working-directory}}
+    - name: Run ls
+      run: ls
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
