@@ -29,14 +29,10 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-
-    private static final String createOrderTopic = "createOrder";
-    private static final String deleteOrderTopic = "deleteOrder";
-
     private final KafkaProducer kafkaProducer;
 
     public List<OrderResponse> getOrderList() {
-        return orderRepository.findAll()
+        return orderRepository.findByDeviceNameNotNull()
                 .stream()
                 .map(OrderResponse::of)
                 .collect(Collectors.toList());
