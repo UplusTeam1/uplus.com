@@ -1,5 +1,7 @@
 package com.uplus.order.global.handler;
 
+import com.uplus.order.exception.CreateOrderFailedException;
+import com.uplus.order.exception.DeleteOrderFailedException;
 import com.uplus.order.exception.OrderNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,4 +26,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    @ExceptionHandler(DeleteOrderFailedException.class)
+    protected ResponseEntity<?> handleDeleteOrderFailedException(DeleteOrderFailedException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(CreateOrderFailedException.class)
+    protected ResponseEntity<?> handleCreatedOrderFailedException(CreateOrderFailedException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }

@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -27,6 +28,7 @@ public class OrderResponse {
     private String deviceName;
     private List<String> picPaths;
 
+
     public static OrderResponse of(Order order){
         return OrderResponse.builder()
                 .orderNumber(order.getJoinDate().format(DateTimeFormatter.ofPattern("yyyyMMdd"))+order.getOrderNumber())
@@ -37,7 +39,12 @@ public class OrderResponse {
                 .monthlyFee(order.getMonthlyFee())
                 .discountType(order.getDiscountType())
                 .color(order.getColor())
-//                .deviceName(orde)
+                .deviceName(order.getDeviceName())
+                .picPaths(picPathsConvertList(order.getPicPaths()))
                 .build();
+    }
+
+    private static List<String> picPathsConvertList(String picPaths){
+        return Arrays.asList(picPaths.split(","));
     }
 }
