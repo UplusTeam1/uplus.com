@@ -41,11 +41,8 @@ jobs:
       working-directory: ${{env.working-directory}}
       
     - name: Run ls
-      run: | 
-        cd front
-        cd project
-        ls
-
+      run: ls
+      
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
