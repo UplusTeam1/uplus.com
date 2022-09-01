@@ -9,6 +9,6 @@ RUN chmod +x ./gradlew
 RUN ./gradlew build -x test
 
 FROM openjdk:8-jdk-alpine
-COPY --from=builder /home/ec2-user/app/build/libs/*.jar app.jar
+COPY --from=builder /home/ec2-user/app/build/libs/project-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]     
