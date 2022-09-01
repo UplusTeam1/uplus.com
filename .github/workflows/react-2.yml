@@ -1,16 +1,16 @@
 name: FE Dockerize and Deploy
 
-env:
-  working-directory: ./frontend/project
-  ECR_REPOSITORY: lguplus
-  IMAGE_TAG: latest
+# env:
+#   working-directory: ./frontend/project
+#   ECR_REPOSITORY: lguplus
+#   IMAGE_TAG: latest
 
 on:
    push:
-     branches: [ "develop" ]
-     paths: 
-        - '.github/workflows/react-2.yml'
-        - 'frontend/project/**'
+#      branches: [ "develop" ]
+#      paths: 
+#         - '.github/workflows/react-2.yml'
+#         - 'frontend/project/**'
         
 jobs:
   build:
