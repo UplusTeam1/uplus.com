@@ -15,7 +15,7 @@ on:
   push:
     branches: [ "develop"]
     paths: 
-       - 'MSA/backend/project/item'
+       - 'MSA/backend/project/item/*'
        - '.github/workflows/be-item.yml'
 #   pull_request:
 #     branches: [ "develop"]
