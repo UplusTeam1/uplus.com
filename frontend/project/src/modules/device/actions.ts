@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { createAction, createAsyncAction } from 'typesafe-actions'
 import { DeviceListData } from '../../api/device'
-import { DeviceFilter } from './types'
+import { DeviceFilterType } from './types'
 
 // action type
 export const GET_DEVICE_LIST = 'device/GET_DEVICE_LIST'
@@ -20,7 +20,8 @@ export const getDeviceListAsync = createAsyncAction(
 )<string, DeviceListData, AxiosError>()
 
 export const setPlanFilter = createAction(SET_PLAN_FILTER)<string>()
-export const setDeviceFilter = createAction(SET_DEVICE_FILTER)<DeviceFilter>()
+export const setDeviceFilter =
+  createAction(SET_DEVICE_FILTER)<DeviceFilterType>()
 export const resetFilter = createAction(RESET_FILTER)<null>()
 
 // export actionTypes

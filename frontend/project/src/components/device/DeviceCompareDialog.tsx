@@ -563,8 +563,8 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
       </CustomDialogTitle>
       <CustomDialogContent dividers={true}>
         <DeviceListDiv>
-          {deviceList.map((device: any) => (
-            <Device device={device}></Device>
+          {deviceList.map((device: any, index: number) => (
+            <Device key={index} device={device}></Device>
           ))}
         </DeviceListDiv>
         <InfoTitle
@@ -575,13 +575,13 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
         <FeeListDiv height={isFoldFee ? '0' : '810px'}>
           <FeeChart deviceList={deviceList} />
           <DeviceFeeListDiv>
-            {deviceList.map((device: any) => (
-              <PlanFee device={device}></PlanFee>
+            {deviceList.map((device: any, index: number) => (
+              <PlanFee key={index} device={device}></PlanFee>
             ))}
           </DeviceFeeListDiv>
           <PlanFeeListDiv>
-            {deviceList.map((device: any) => (
-              <DeviceFee device={device}></DeviceFee>
+            {deviceList.map((device: any, index: number) => (
+              <DeviceFee key={index} device={device}></DeviceFee>
             ))}
           </PlanFeeListDiv>
         </FeeListDiv>
@@ -591,8 +591,8 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
           onClick={clickPlanTitle}
         />
         <InfoListDiv height={isFoldPlan ? '0' : '300px'}>
-          {deviceList.map((device: any) => (
-            <Plan device={device}></Plan>
+          {deviceList.map((device: any, index: number) => (
+            <Plan key={index} device={device}></Plan>
           ))}
         </InfoListDiv>
         <InfoTitle
@@ -601,8 +601,8 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
           onClick={clickSpecTitle}
         />
         <InfoListDiv height={isFoldSpec ? '0' : '160px'}>
-          {deviceList.map((device: any) => (
-            <Spec device={device}></Spec>
+          {deviceList.map((device: any, index: number) => (
+            <Spec key={index} device={device}></Spec>
           ))}
         </InfoListDiv>
       </CustomDialogContent>

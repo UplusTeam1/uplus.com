@@ -15,9 +15,9 @@ export const asyncState = {
     data: initialData || null,
     error: null,
   }),
-  load: <T, E = any>(data?: T): AsyncState<T, E> => ({
+  load: <T, E = any>(state?: any): AsyncState<T, E> => ({
     loading: true,
-    data: data || null,
+    data: state ? state.data : null,
     error: null,
   }),
   success: <T, E = any>(data: T): AsyncState<T, E> => ({
@@ -49,7 +49,7 @@ export function createAsyncReducer<
       case request:
         return {
           ...state,
-          [key]: asyncState.load(),
+          [key]: asyncState.load(state[key] ? state[key] : null),
         }
       case success:
         return {

@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import styled from 'styled-components'
+// import interface
+import { DeviceFilterType } from '../../modules/device'
+import { MakerType, MAKER_LIST } from '../../data/staticData'
 // import components
 import {
   ToggleButton,
@@ -92,7 +95,16 @@ const AirbnbSlider = styled(Slider)(({ theme }) => ({
   },
 }))
 
+// interface
 interface AirbnbThumbComponentProps extends React.HTMLAttributes<unknown> {}
+
+interface DeviceSubFilterProps {
+  deviceFilter: DeviceFilterType
+  handleDeviceFilter: (
+    value: number | string | Array<number> | boolean,
+    key: string
+  ) => void
+}
 
 // components
 function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
@@ -113,21 +125,7 @@ function valueLabelFormat(value: number) {
 
 const minDistance = 10000
 
-function DeviceSubFilter() {
-  const [alignment, setAlignment] = useState('전체')
-  const makerList: any = [{ name: '전체' }, { name: '삼성' }, { name: '애플' }]
-  const [isCheck, setIsCheck] = useState(true)
-  const [sliderValue, setSliderValue] = useState([0, 200000])
-  const [sortCategory, setSortCategory] = useState('0')
-
-  const handleToggleChange = (
-    e: React.MouseEvent<HTMLElement, MouseEvent>,
-    newAlignment: string
-  ) => {
-    if (newAlignment !== null) {
-      setAlignment(newAlignment)
-    }
-  }
+function DeviceSubFilter(props: DeviceSubFilterProps) {
   const handleSliderChange = (
     event: Event,
     newValue: number | number[],
@@ -138,37 +136,52 @@ function DeviceSubFilter() {
     }
 
     if (activeThumb === 0) {
-      setSliderValue([
-        Math.min(newValue[0], sliderValue[1] - minDistance),
-        sliderValue[1],
-      ])
+      props.handleDeviceFilter(
+        [
+          Math.min(newValue[0], props.deviceFilter.price[1] - minDistance),
+          props.deviceFilter.price[1],
+        ],
+        'price'
+      )
     } else {
-      setSliderValue([
-        sliderValue[0],
-        Math.max(newValue[1], sliderValue[0] + minDistance),
-      ])
+      props.handleDeviceFilter(
+        [
+          props.deviceFilter.price[0],
+          Math.max(newValue[1], props.deviceFilter.price[0] + minDistance),
+        ],
+        'price'
+      )
     }
-  }
-  const handleSortChange = (e: SelectChangeEvent) => {
-    setSortCategory(e.target.value)
   }
 
   return (
     <FilterContainer>
       <ToggleButtonGroup
         color="primary"
-        value={alignment}
+        value={props.deviceFilter.maker}
         exclusive
-        onChange={handleToggleChange}
+        onChange={(e, newAlignment: string) => {
+          if (newAlignment !== null) {
+            props.handleDeviceFilter(newAlignment, 'maker')
+          }
+        }}
         aria-label="Maker"
       >
-        {makerList.map((maker: any) => (
-          <ToggleButton value={maker.name}>{maker.name}</ToggleButton>
+        {MAKER_LIST.map(({ label, value }: MakerType, index: number) => (
+          <ToggleButton key={index} value={value}>
+            {label}
+          </ToggleButton>
         ))}
       </ToggleButtonGroup>
       <RightFilter>
-        <SoldOutButton onClick={() => setIsCheck(!isCheck)}>
-          <CheckCircleOutlineIcon color={isCheck ? 'primary' : 'secondary'} />
+        <SoldOutButton
+          onClick={() =>
+            props.handleDeviceFilter(!props.deviceFilter.stock, 'stock')
+          }
+        >
+          <CheckCircleOutlineIcon
+            color={props.deviceFilter.stock ? 'primary' : 'secondary'}
+          />
           <SoldOutText>품절상품 제외</SoldOutText>
         </SoldOutButton>
         <SliderFilter>
@@ -177,9 +190,9 @@ function DeviceSubFilter() {
             getAriaLabel={(index) =>
               index === 0 ? 'Minimum price' : 'Maximum price'
             }
-            value={sliderValue}
+            value={props.deviceFilter.price}
             onChange={handleSliderChange}
-            max={200000}
+            max={300000}
             step={10000}
             valueLabelDisplay="on"
             valueLabelFormat={valueLabelFormat}
@@ -194,14 +207,15 @@ function DeviceSubFilter() {
             <Select
               labelId="sort-select-label"
               id="sort-select"
-              value={sortCategory}
-              onChange={handleSortChange}
+              value={String(props.deviceFilter.sortIndex)}
+              onChange={(e) =>
+                props.handleDeviceFilter(Number(e.target.value), 'sortIndex')
+              }
               label="Sort"
             >
               <MenuItem value={0}>실 구매가가 낮은 상품 순</MenuItem>
               <MenuItem value={1}>정상가가 낮은 순</MenuItem>
               <MenuItem value={2}>정상가가 높은 순</MenuItem>
-              <MenuItem value={3}>누적 판매량이 많은 순</MenuItem>
             </Select>
           </FormControl>
         </SortSelect>

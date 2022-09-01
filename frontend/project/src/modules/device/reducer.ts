@@ -10,12 +10,12 @@ import { DeviceAction, DeviceState } from './types'
 const initialState: DeviceState = {
   planFilter: '',
   deviceFilter: {
-    discountIndex: 0,
-    installmentIndex: 2,
-    storage: 512,
-    maker: '전체',
-    price: [0, 200000],
+    discountIndex: -1,
+    installmentIndex: 1,
+    storage: 0,
+    maker: '',
     stock: true,
+    price: [0, 300000],
     sortIndex: 0,
   },
   deviceList: asyncState.initial(),
@@ -33,6 +33,13 @@ const device = createReducer<DeviceState, DeviceAction>(initialState, {
   ) => ({
     ...state,
     planFilter: action.payload,
+  }),
+  [deviceActionTypes.SET_DEVICE_FILTER]: (
+    state: DeviceState,
+    action: DeviceAction
+  ) => ({
+    ...state,
+    deviceFilter: action.payload,
   }),
 }).handleAction(
   transformToArray(deviceActions.getDeviceListAsync),

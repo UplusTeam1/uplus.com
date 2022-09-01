@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { DISCOUNT_TYPE_LIST } from '../../data/staticData'
 // styles
 import styled, { css, useTheme } from 'styled-components'
 import { darken } from 'polished'
@@ -11,14 +12,14 @@ import { DetailPerColor, DeviceData } from '../../api/device'
 // styled
 const DeviceItemContainer = styled.div`
   width: 290px;
-  height: 450px;
+  height: 460px;
   margin: 0 20px 20px 0;
   border-radius: 10px;
   border: 1px solid ${({ theme }) => theme.app.dividerGray};
 `
 const LinkedContainer = styled.div`
   width: 290px;
-  height: 390px;
+  height: 400px;
   border-bottom: 1px solid ${({ theme }) => theme.app.dividerGray};
   cursor: pointer;
 `
@@ -125,10 +126,25 @@ interface ContentTextProps {
 
 interface DeviceItemProps {
   device: DeviceData
+  recommendCheck: boolean
+  installmentCheck: boolean
+  discountIndex: number
+  installmentIndex: number
   clickCompareButton: () => void
 }
 
-function DeviceItem({ device, clickCompareButton }: DeviceItemProps) {
+function priceFormat(value: number) {
+  return `${value.toLocaleString('ko-KR')}`
+}
+
+function DeviceItem({
+  device,
+  recommendCheck,
+  installmentCheck,
+  discountIndex,
+  installmentIndex,
+  clickCompareButton,
+}: DeviceItemProps) {
   const theme = useTheme()
   const navigate = useNavigate()
 
@@ -136,48 +152,107 @@ function DeviceItem({ device, clickCompareButton }: DeviceItemProps) {
     <DeviceItemContainer>
       <LinkedContainer onClick={() => navigate(`/device/galaxy`)}>
         <ColorContainer>
-          {device.detailPerColor.map((detail: DetailPerColor) => (
-            <ColorCircle color={detail.rgb} />
-          ))}
+          {device.detailPerColor.map(
+            (detail: DetailPerColor, index: number) => (
+              <ColorCircle key={index} color={detail.rgb} />
+            )
+          )}
         </ColorContainer>
         <ImageContainer>
           <DeviceImage
             alt="Device Image"
-            src="https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg"
+            src={device.detailPerColor[0].picPaths[0]}
             onClick={() => null}
           />
         </ImageContainer>
         <ContentContainer>
           <DeviceName>{device.name}</DeviceName>
-          <DiscountText>공시지원금</DiscountText>
+          <DiscountText>
+            {
+              DISCOUNT_TYPE_LIST[
+                recommendCheck
+                  ? device.recommendedDiscountIndex + 1
+                  : discountIndex + 1
+              ].label
+            }
+          </DiscountText>
           <div>
             <ContentText color={theme.app.grayFont} marginLeft="0">
               휴대폰
             </ContentText>
-            <ContentText color={theme.app.grayFont} marginLeft="8px">
-              월 47,720원
-            </ContentText>
+            {installmentCheck ? (
+              <ContentText color={theme.app.grayFont} marginLeft="8px">
+                월{' '}
+                {priceFormat(
+                  device.monthlyChargeList[discountIndex].deviceCharge[
+                    installmentIndex
+                  ]
+                )}
+                원
+              </ContentText>
+            ) : (
+              <ContentText color={theme.app.grayFont} marginLeft="8px">
+                {priceFormat(
+                  discountIndex === 0
+                    ? device.price - device.deviceDiscount
+                    : device.price
+                )}
+                원
+              </ContentText>
+            )}
+            {discountIndex === 0 && (
+              <ContentText color={theme.app.blackFont} marginLeft="4px">
+                <del>
+                  {priceFormat(
+                    installmentCheck
+                      ? device.monthlyChargeList[1].deviceCharge[
+                          installmentIndex
+                        ]
+                      : device.price
+                  )}
+                  원
+                </del>
+              </ContentText>
+            )}
           </div>
           <div>
             <ContentText color={theme.app.grayFont} marginLeft="0">
               통신료
             </ContentText>
             <ContentText color={theme.app.grayFont} marginLeft="8px">
-              월 35,250원
+              월{' '}
+              {priceFormat(device.monthlyChargeList[discountIndex].planCharge)}
+              원
             </ContentText>
-            <ContentText color={theme.app.blackFont} marginLeft="4px">
-              <del>47,000원</del>
-            </ContentText>
-            <ContentText color={theme.app.uplusPink} marginLeft="4px">
-              (25% ↓)
-            </ContentText>
+            {!(discountIndex === 0) && (
+              <>
+                <ContentText color={theme.app.blackFont} marginLeft="4px">
+                  <del>
+                    {priceFormat(device.monthlyChargeList[0].planCharge)}원
+                  </del>
+                </ContentText>
+                <ContentText color={theme.app.uplusPink} marginLeft="4px">
+                  (25% ↓)
+                </ContentText>
+              </>
+            )}
           </div>
-          <MonthlyChargeText>월 82,970원</MonthlyChargeText>
+          <MonthlyChargeText>
+            월{' '}
+            {installmentCheck
+              ? priceFormat(
+                  device.monthlyChargeList[discountIndex].totalCharge[
+                    installmentIndex
+                  ]
+                )
+              : priceFormat(device.monthlyChargeList[discountIndex].planCharge)}
+            원
+          </MonthlyChargeText>
         </ContentContainer>
       </LinkedContainer>
       <BottomContainer>
         <ContentText color={theme.app.grayFont} marginLeft="26px">
-          구매 11명
+          구매 {priceFormat(device.weeklySale)}명
         </ContentText>
         <ButtonContainer>
           <UplusButton

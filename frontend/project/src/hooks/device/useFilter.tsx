@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../modules'
-import { deviceActions, DeviceFilter } from '../../modules/device'
+import { deviceActions, DeviceFilterType } from '../../modules/device'
 
 function useFilter() {
   const planFilter = useSelector<RootState, string>(
     (state) => state.device.planFilter
   )
-  const deviceFilter = useSelector<RootState, DeviceFilter>(
+  const deviceFilter = useSelector<RootState, DeviceFilterType>(
     (state) => state.device.deviceFilter
   )
   const dispatch = useDispatch()
@@ -20,7 +20,7 @@ function useFilter() {
   )
 
   const setDeviceFilter = useCallback(
-    (deviceFilter: DeviceFilter) => {
+    (deviceFilter: DeviceFilterType) => {
       dispatch(deviceActions.setDeviceFilter(deviceFilter))
     },
     [dispatch]

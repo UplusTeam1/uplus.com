@@ -42,9 +42,12 @@ export interface DeviceData {
   name: string
   price: number
   monthlyChargeList: MonthlyChargeList
-  recommendedDiscount: number
+  recommendedDiscountIndex: number
   storage: number
   weeklySale: number
+  brand: string
+  totalStock: number
+  deviceDiscount: number
 }
 
 export interface DeviceListData extends Array<DeviceData> {}
