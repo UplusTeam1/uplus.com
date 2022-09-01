@@ -1,5 +1,6 @@
 package com.lguplus.project.search.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import java.net.URI;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class SearchRepository {
 
     @Value("${es-info.host}")
@@ -18,12 +20,12 @@ public class SearchRepository {
     @Value("${es-info.port}")
     private Integer PORT;
 
-    public ResponseEntity<?> getSearchResult(String keyword) {
-        RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
+    public ResponseEntity<?> getAllSearchResults(String keyword) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity entity = new HttpEntity(headers);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
 
         URI uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
@@ -35,6 +37,9 @@ public class SearchRepository {
                 .toUri();
 
         return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
+    }
 
+    public ResponseEntity<?> getAllAutoCompletions(String input) {
+        return null;
     }
 }
