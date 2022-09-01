@@ -1,5 +1,6 @@
 package com.lguplus.project.search.domain.payload.result;
 
+import com.lguplus.project.search.domain.payload.Source;
 import lombok.*;
 
 @Getter

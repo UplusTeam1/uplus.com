@@ -1,5 +1,6 @@
 package com.lguplus.project.search.domain.payload.result;
 
+import com.lguplus.project.search.domain.payload.Hit;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

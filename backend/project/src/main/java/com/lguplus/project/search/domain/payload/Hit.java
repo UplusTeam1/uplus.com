@@ -1,4 +1,4 @@
-package com.lguplus.project.search.domain.payload.result;
+package com.lguplus.project.search.domain.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -6,14 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class HitInfo {
+public class Hit {
 
-    @JsonProperty("_score")
-    private Double score;
-    @JsonProperty("_source")
-    private Source source;
+    @JsonProperty("max_score")
+    private Double maxScore;
+    private List<HitInfo> hits;
+
 }

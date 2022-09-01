@@ -1,4 +1,4 @@
-package com.lguplus.project.search.domain.payload.result;
+package com.lguplus.project.search.domain.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
