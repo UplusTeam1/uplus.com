@@ -13,10 +13,14 @@ import re
 
 print(os.getcwd())
 
+
 def set_chrome_driver():
     chrome_options = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(service=Service(
+        ChromeDriverManager().install()), options=chrome_options)
     return driver
+
+
 class Device:
 
     def __init__(self, name, code, price, brand, storage, detail, weekly_sale):
@@ -28,6 +32,7 @@ class Device:
         self.detail = detail
         self.weekly_sale = weekly_sale
 
+
 class DeviceDetail:
 
     def __init__(self, code, color_name, rgb, stock, pic_paths):
@@ -36,7 +41,6 @@ class DeviceDetail:
         self.rgb = rgb
         self.stock = stock
         self.pic_paths = pic_paths
-
 
 
 driver = set_chrome_driver()
@@ -58,7 +62,7 @@ print(len(device_list))
 device_obj_list = []
 # go to detail page and do something... get back when process is done
 count = 0
-for device in device_list : 
+for device in device_list:
     try:
         # get default info from a tag
 
@@ -69,13 +73,14 @@ for device in device_list :
 
         info = a.get_attribute("data-ec-product")
         info = json.loads(info)
-    
+
         # go to detail page and scrape info
         driver.execute_script("arguments[0].click();", a)
 
         # storage = driver.find_element(By.CSS_SELECTOR, ".font-m.info-tit").get_attribute("innerHTML")
         storage = WebDriverWait(driver, 9999).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR,".font-m.info-tit"))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, ".font-m.info-tit"))
         )
         storage = storage.get_attribute("innerHTML")
 
@@ -92,11 +97,12 @@ for device in device_list :
             rgb = span.get_attribute("style")
             em = span.find_element(By.TAG_NAME, "em")
             color_name = em.get_attribute("innerHTML")
-            print(color_name)
+            print(color_name, rgb[12:-1])
             sleep(2)
             pic_paths = []
             pic_list = WebDriverWait(driver, 9999).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR,".util-navigation-type"))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, ".util-navigation-type"))
             )
             pic_list = pic_list.find_elements(By.CSS_SELECTOR, ".lazyLoad")
             for pic in pic_list:
@@ -109,7 +115,6 @@ for device in device_list :
                 pic_paths
             )
             tmp_device_detail_list.append(tmp_device_detail)
-
 
         driver.back()
         sleep(10)
@@ -130,7 +135,7 @@ for device in device_list :
         print(e)
         driver.get("https://www.lguplus.com/mobile/5g-phone?URC_TRM_MANF_CD=all")
 
-sql_device =  "INSERT INTO device(code, name, storage, price, weekly_sale) VALUES\n"
+sql_device = "INSERT INTO device(code, name, storage, price, weekly_sale, brand) VALUES\n"
 sql_device_detail = "INSERT INTO device_detail(device_code, color, rgb, stock, pic_paths) VALUES\n"
 for device in device_obj_list:
     device_value = "('{}','{}',{},{},{}),\n".format(
@@ -138,16 +143,17 @@ for device in device_obj_list:
         device.name,
         re.sub(r'[^0-9]', '', device.storage),
         device.price,
-        device.weekly_sale
+        device.weekly_sale,
+        device.brand
     )
     sql_device += device_value
     for detail in device.detail:
         device_detail_value = "('{}', '{}', '{}', {}, '{}'),\n".format(
-        device.code,
-        detail.color_name,
-        detail.rgb,
-        detail.stock,
-        ",".join(detail.pic_paths)
+            device.code,
+            detail.color_name,
+            detail.rgb,
+            detail.stock,
+            ",".join(detail.pic_paths)
         )
         sql_device_detail += device_detail_value
 
