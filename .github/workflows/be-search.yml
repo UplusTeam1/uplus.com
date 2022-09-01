@@ -15,7 +15,7 @@ on:
   push:
     branches: [ "develop"]
     paths: 
-#        - 'MSA/backend/project/search/*'
+       - 'MSA/backend/project/search/*'
        - '.github/workflows/be-search.yml'
 #   pull_request:
 #     branches: [ "develop"]
