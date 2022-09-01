@@ -5,6 +5,11 @@ env:
   working-directory: ./backend/project
   ECR_REPOSITORY: lguplus
   IMAGE_TAG: latest
+  ECS_SERVICE: uplus-fe-service
+  ECS_CLUSTER: uplus-fe-cluster
+  ECS_TASK_DEFINITION: .aws/task-definition.json
+  CONTAINER_NAME: uplus-fe-container
+  yaml: ${{secrets.YAML}}
   
 on:
   push:
@@ -29,13 +34,9 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Set yaml file
-      uses: microsoft/variable-substitution@v1
-      with:
-        files: ${{ env.RESOURCE_PATH }}
-      env:
-        spring.datasource.url: my-db-private.cfwoneu3jua9.ap-northeast-2.rds.amazonaws.com
-        spring.datasource.username: ${{ secrets.RDS_ID }}
-        spring.datasource.password: ${{ secrets.RDS_SECRETS }}
+      run: |
+        touch ${{ env.RESOURCE_PATH }}
+        echo "${{env.yaml}}" > ${{ env.RESOURCE_PATH }}
 
     # ECR 푸시하기
     - name: Configure AWS credentials
@@ -58,7 +59,31 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"   
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" 
+        
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+  
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
+  
+#     - name: Fill in the new image ID in the Amazon ECS task definition
+#       id: task-def
+#       uses: aws-actions/amazon-ecs-render-task-definition@v1
+#       with:
+#         task-definition: ${{ env.ECS_TASK_DEFINITION }}
+#         container-name: ${{ env.CONTAINER_NAME }}
+#         image: ${{ steps.build-image.outputs.image }}
 #     - name: Set up JDK 1.8
 #       uses: actions/setup-java@v1
 #       with:

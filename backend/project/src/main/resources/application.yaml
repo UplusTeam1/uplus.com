@@ -3,9 +3,12 @@ spring:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   datasource:
+<<<<<<< HEAD
     username:
     password:
     url:
+=======
+>>>>>>> 7647a911f1bbf890a5bcf772fd7b36572136a884
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     generate-ddl: true
