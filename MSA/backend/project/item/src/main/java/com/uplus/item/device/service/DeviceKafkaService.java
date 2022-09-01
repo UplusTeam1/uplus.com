@@ -27,8 +27,9 @@ public class DeviceKafkaService {
     private final KafkaProducer kafkaProducer;
 
     public void createOrder(KafkaCreateOrderRequest kafkaCreateOrderRequest) {
+        Long orderNumber = null;
         try {
-            Long orderNumber = kafkaCreateOrderRequest.getOrderNumber();
+            orderNumber = kafkaCreateOrderRequest.getOrderNumber();
             String deviceCode = kafkaCreateOrderRequest.getDeviceCode();
             String planName = kafkaCreateOrderRequest.getPlanName();
             String color = kafkaCreateOrderRequest.getColor();
@@ -37,18 +38,18 @@ public class DeviceKafkaService {
                     .orElseThrow(() -> new DeviceNotFoundException("Exception : Device Not Found"));
             Plan plan = planRepository.findByName(planName)
                     .orElseThrow(() -> new PlanNotFoundException("Exception : Plan Not Found"));
-            DeviceDetail deviceDetail = deviceDetailRepository.findByColor(color)
+            DeviceDetail deviceDetail = deviceDetailRepository.findByColorAndDeviceCode(color, deviceCode)
                     .orElseThrow(() -> new ColorNotFoundException("Exception : Color Not Found"));
 
-            deviceDetail.increaseStock();
+            deviceDetail.decreaseStock();
             String picPaths = deviceDetail.getPicPaths();
             KafkaCreateOrderSuccessResponse kafkaCreateOrderSuccessResponse =
-                    new KafkaCreateOrderSuccessResponse(orderNumber, deviceCode, picPaths);
+                    new KafkaCreateOrderSuccessResponse(orderNumber, device.getName(), picPaths);
 
             kafkaProducer.sendCreateOrderSuccessObject(kafkaCreateOrderSuccessResponse);
-        }
-        catch (Exception exception) {
-            kafkaProducer.sendCreateOrderFailMessage();
+        } catch (Exception exception) {
+            System.out.println(exception);
+            kafkaProducer.sendCreateOrderFailMessage(orderNumber);
         }
 
     }
@@ -61,10 +62,10 @@ public class DeviceKafkaService {
 
             Device device = deviceRepository.findByCode(deviceCode)
                     .orElseThrow(() -> new DeviceNotFoundException("Exception : Device Not Found"));
-            DeviceDetail deviceDetail = deviceDetailRepository.findByColor(color)
+            DeviceDetail deviceDetail = deviceDetailRepository.findByColorAndDeviceCode(color, deviceCode)
                     .orElseThrow(() -> new ColorNotFoundException("Exception : Color Not Found"));
 
-            deviceDetail.decreaseStock();
+            deviceDetail.increaseStock();
             kafkaProducer.sendDeleteOrderSuccessMessage();
         }
         catch (Exception exception) {
