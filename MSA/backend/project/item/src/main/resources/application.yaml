@@ -1,6 +1,6 @@
 server:
   address: localhost
-  port: 8080
+  port:
 
 spring:
   mvc:
@@ -8,9 +8,9 @@ spring:
       matching-strategy: ANT_PATH_MATCHER
 
   datasource:
-    url: 
-    username: 
-    password: 
+    url:
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
