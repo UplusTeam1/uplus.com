@@ -1,8 +1,8 @@
 name: Item To ECS
 
 env:
-  RESOURCE_PATH: ./MSA/backend/project/src/main/resources/application.yaml
-  working-directory: ./MSA/backend/project
+  RESOURCE_PATH: ./MSA/backend/project/item/src/main/resources/application.yaml
+  working-directory: ./MSA/backend/project/item
   ECR_REPOSITORY: lguplus
   # IMAGE_TAG: latest
   # ECS_SERVICE: uplus-fe-service
@@ -15,7 +15,7 @@ on:
   push:
     branches: [ "develop"]
     paths: 
-       - 'MSA/backend/project'
+       - 'MSA/backend/project/item'
        - '.github/workflows/be-item.yml'
 #   pull_request:
 #     branches: [ "develop"]
