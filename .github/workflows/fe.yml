@@ -1,5 +1,8 @@
 name: frontend msa deployment
 
+env:
+  working-directory: ./frontend/project
+
 on:
  push:
    branches: [ "develop" ]
