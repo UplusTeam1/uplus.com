@@ -35,15 +35,6 @@ jobs:
       run: |
         touch ${{ env.RESOURCE_PATH }}
         echo "${{env.yaml}}" > ${{ env.RESOURCE_PATH }}
-     
-#     - name: Set yaml file
-#       uses: microsoft/variable-substitution@v1
-#       with:
-#         files: ${{ env.RESOURCE_PATH }}
-#       env:
-#         spring.datasource.url: 'jdbc:mysql://${{ secrets.PRIVATE_RDS_URL }}:3306/test'
-#         spring.datasource.username: ${{ secrets.RDS_ID }}
-#         spring.datasource.password: ${{ secrets.RDS_SECRETS }}
         
     - name: Grant execute permission for gradlew
       working-directory: ${{env.working-directory}}
