@@ -1,7 +1,7 @@
 package com.uplus.search.repository;
 
-import com.lguplus.project.search.domain.payload.result.SearchResult;
 import com.uplus.search.domain.payload.autocompletion.AutoCompletionResult;
+import com.uplus.search.domain.payload.result.SearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -54,5 +54,6 @@ public class SearchRepository {
                 .build()
                 .toUri();
 
-        return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, AutoCompletionResult.class);    }
+        return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, AutoCompletionResult.class);
+    }
 }

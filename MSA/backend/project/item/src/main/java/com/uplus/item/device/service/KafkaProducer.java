@@ -26,12 +26,15 @@ public class KafkaProducer {
     private static final String testKafka = "testKafka";
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    public void sendCreateOrderSuccessObject(KafkaCreateOrderSuccessResponse kafkaCreateOrderSuccessResponse) {
-        this.kafkaTemplate.send(createOrderSuccess, kafkaCreateOrderSuccessResponse);
+    public void sendCreateOrderSuccessObject(KafkaCreateOrderSuccessResponse kafkaCreateOrderSuccessResponse) throws IOException{
+        String value = MAPPER.writeValueAsString(kafkaCreateOrderSuccessResponse);
+        System.out.println("value = " + value);
+        this.kafkaTemplate.send(createOrderSuccess, value);
     }
 
-    public void sendCreateOrderFailMessage() {
-        this.kafkaTemplate.send(createOrderFail, createOrderFail);
+    public void sendCreateOrderFailMessage(Long orderNumber) {
+        String value = orderNumber.toString();
+        this.kafkaTemplate.send(createOrderFail, value);
     }
 
     public void sendDeleteOrderSuccessMessage() {

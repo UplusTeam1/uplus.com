@@ -18,13 +18,15 @@ public class KafkaConsumer {
     private final DeviceKafkaService deviceKafkaService;
 
     @KafkaListener(topics = "createOrder", groupId = "createOrder")
-    public void consumeCreateOrder(KafkaCreateOrderRequest kafkaCreateOrderRequest) throws IOException {
+    public void consumeCreateOrder(String value) throws IOException {
+        KafkaCreateOrderRequest kafkaCreateOrderRequest = MAPPER.readValue(value, KafkaCreateOrderRequest.class);
         deviceKafkaService.createOrder(kafkaCreateOrderRequest);
 
     }
 
     @KafkaListener(topics = "deleteOrder", groupId = "deleteOrder")
-    public void consumeDeleteOrder(KafkaDeleteOrderRequest kafkaDeleteOrderRequest) throws IOException {
+    public void consumeDeleteOrder(String value) throws IOException {
+        KafkaDeleteOrderRequest kafkaDeleteOrderRequest = MAPPER.readValue(value, KafkaDeleteOrderRequest.class);
         deviceKafkaService.deleteOrder(kafkaDeleteOrderRequest);
     }
 
@@ -33,7 +35,6 @@ public class KafkaConsumer {
         System.out.println("KafkaConsumer.consumeTestKafka");
         System.out.println("value = " + value);
         KafkaCreateOrderRequest kafkaCreateOrderRequest = MAPPER.readValue(value, KafkaCreateOrderRequest.class);
-        System.out.println("kafkaOrderDetail.toString() = " + kafkaCreateOrderRequest.toString());
         deviceKafkaService.testKafka(kafkaCreateOrderRequest);
     }
 }

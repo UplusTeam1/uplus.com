@@ -15,6 +15,6 @@ public class ChargeInfo {
     }
 
     private Integer getCheapestIndex(List<MonthInfo> monthlyCharges) {
-        return monthlyCharges.get(0).getTotalCharges().get(0) < monthlyCharges.get(2).getTotalCharges().get(0) ? 0 : 2;
+        return monthlyCharges.get(0).getTotalCharge().get(0) < monthlyCharges.get(2).getTotalCharge().get(0) ? 0 : 2;
     }
 }

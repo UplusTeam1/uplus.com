@@ -8,15 +8,15 @@ import java.io.Serializable;
 public class KafkaCreateOrderSuccessResponse implements Serializable {
 
     private Long orderNumber;
-    private String deviceCode;
+    private String deviceName;
     private String picPaths;
 
     public KafkaCreateOrderSuccessResponse() {
     }
 
-    public KafkaCreateOrderSuccessResponse(Long orderNumber, String deviceCode, String picPaths) {
+    public KafkaCreateOrderSuccessResponse(Long orderNumber, String deviceName, String picPaths) {
         this.orderNumber = orderNumber;
-        this.deviceCode = deviceCode;
+        this.deviceName = deviceName;
         this.picPaths = picPaths;
     }
 }

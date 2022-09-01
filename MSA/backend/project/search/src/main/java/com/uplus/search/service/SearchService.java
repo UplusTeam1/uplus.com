@@ -1,7 +1,7 @@
 package com.uplus.search.service;
 
-import com.lguplus.project.search.domain.payload.result.SearchResponse;
 import com.uplus.search.domain.payload.autocompletion.AutoCompletionResponse;
+import com.uplus.search.domain.payload.result.SearchResponse;
 import com.uplus.search.exception.ResultBodyNotFoundException;
 import com.uplus.search.repository.SearchRepository;
 import lombok.RequiredArgsConstructor;

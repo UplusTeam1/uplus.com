@@ -1,6 +1,7 @@
 package com.lguplus.project.device.domain.payload;
 
 import com.lguplus.project.device.domain.Device;
+import com.lguplus.project.device.domain.DeviceDetail;
 import com.lguplus.project.discount.domain.Discount;
 import lombok.*;
 
@@ -35,6 +36,8 @@ public class DeviceResponse {
 
     private String brand;
 
+    private Integer totalStock;
+
     public static DeviceResponse of(Device device, ChargeInfo chargeInfo) {
         return DeviceResponse.builder()
                 .code(device.getCode())
@@ -49,6 +52,10 @@ public class DeviceResponse {
                 .storage(device.getStorage())
                 .weeklySale(device.getWeeklySale())
                 .brand(device.getBrand())
+                .totalStock(device.getDeviceDetails()
+                        .stream()
+                        .mapToInt(DeviceDetail::getStock)
+                        .sum())
                 .build();
     }
 
