@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonthInfo {
-    private List<Integer> deviceCharges;
+    private List<Integer> deviceCharge;
     private Integer planCharge;
-    private List<Integer> totalCharges;
+    private List<Integer> totalCharge;
 }
