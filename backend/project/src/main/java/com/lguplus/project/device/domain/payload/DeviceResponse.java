@@ -38,7 +38,9 @@ public class DeviceResponse {
 
     private Integer totalStock;
 
-    public static DeviceResponse of(Device device, ChargeInfo chargeInfo) {
+    private Integer deviceDiscount;
+
+    public static DeviceResponse of(Discount discount, Device device, ChargeInfo chargeInfo) {
         return DeviceResponse.builder()
                 .code(device.getCode())
                 .detailPerColor(device.getDeviceDetails()
@@ -56,6 +58,7 @@ public class DeviceResponse {
                         .stream()
                         .mapToInt(DeviceDetail::getStock)
                         .sum())
+                .deviceDiscount(discount.getDeviceDiscount())
                 .build();
     }
 

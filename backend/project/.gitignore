@@ -38,3 +38,6 @@ out/
 
 ### application-profile ###
 /src/main/resources/application-local.yaml
+
+
+.DS_Store

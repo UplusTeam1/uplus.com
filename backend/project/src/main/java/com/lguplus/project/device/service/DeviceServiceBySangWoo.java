@@ -22,6 +22,7 @@ public class DeviceServiceBySangWoo {
         return discountRepository.findByPlan_Name(plan)
                 .stream()
                 .map(discount -> DeviceResponse.of(
+                        discount,
                         discount.getDevice(),
                         new ChargeInfo(calculate(discount.getDevice().getPrice(), discount))))
                 .collect(Collectors.toList());
