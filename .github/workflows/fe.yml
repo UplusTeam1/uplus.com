@@ -1,10 +1,11 @@
 name: frontend msa deployment
 
 on:
-  pull_request:
-    branches:
-      - develop
-    types: [closed]
+ push:
+   branches: [ "develop" ]
+   paths: 
+      - '.github/workflows/fe.yml'
+      - 'frontend/project/**'
 
 jobs:
   deploy:
