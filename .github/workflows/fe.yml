@@ -7,7 +7,7 @@ on:
   push:
     branches: [ "develop" ]
     paths: 
-#        - 'frontend/project/**'
+       - 'frontend/project/**'
        - '.github/workflows/fe.yml'
   pull_request:
     branches: [ "develop" ]
