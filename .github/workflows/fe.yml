@@ -48,7 +48,7 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Deploy to S3
-      run: aws s3 sync ./front/project/build s3://${{ secrets.FE_BUCKET }} --delete
+      run: aws s3 sync ./build s3://${{ secrets.FE_BUCKET }} --delete
       working-directory: ${{env.working-directory}}
 
     - name: Invalidate CloudFront Cache
