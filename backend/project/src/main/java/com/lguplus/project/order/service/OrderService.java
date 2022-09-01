@@ -57,7 +57,7 @@ public class OrderService {
         List<DeviceDetail> deviceDetailList = device.getDeviceDetails();
 
         boolean flag = false;
-
+        DeviceDetail deviceDetail = null;
         for (DeviceDetail d : deviceDetailList) {
             if (color.equals(d.getColor())) {
                 flag = true;
@@ -67,8 +67,8 @@ public class OrderService {
                             "code: " + orderRequest.getDeviceCode() + "\ncolor: " + color + "\nException : No Stock");
                 } else {
                     //재고--
-                    DeviceDetail deviceDetail = d.toBuilder().stock(d.getStock() - 1).build();
-                    deviceDetailRepository.save(deviceDetail);
+                    deviceDetail = d.toBuilder().stock(d.getStock() - 1).build();
+                    deviceDetail = deviceDetailRepository.save(deviceDetail);
                 }
             }
         }
@@ -85,6 +85,7 @@ public class OrderService {
                 .monthlyFee(orderRequest.getMonthlyFee())
                 .discountType(orderRequest.getDiscountType())
                 .color(orderRequest.getColor())
+                .picPaths(deviceDetail.getPicPaths())
                 .build();
 
         return OrderResponse.of(orderRepository.save(order));

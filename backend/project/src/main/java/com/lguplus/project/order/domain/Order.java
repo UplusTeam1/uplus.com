@@ -34,6 +34,8 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "code",
                 name = "device_code")
+    @JoinColumn(referencedColumnName = "name",
+            name = "device_name")
     private Device device;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,4 +44,7 @@ public class Order {
     private Plan plan;
 
     private String color;
+
+    @Column(length = 1000)
+    private String picPaths;
 }

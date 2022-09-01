@@ -31,4 +31,12 @@ public class DeviceDetail {
     @JoinColumn(referencedColumnName = "code",
             name = "device_code")
     private Device device;
+
+    public void increaseStock() {
+        this.stock += 1;
+    }
+
+    public void decreaseStock() {
+        this.stock -= 1;
+    }
 }
