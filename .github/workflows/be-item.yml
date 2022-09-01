@@ -4,7 +4,7 @@ env:
   RESOURCE_PATH: ./MSA/backend/project/item/src/main/resources/application.yaml
   working-directory: ./MSA/backend/project/item
   ECR_REPOSITORY: lguplus
-  # IMAGE_TAG: latest
+  IMAGE_TAG: latest
   # ECS_SERVICE: uplus-fe-service
   # ECS_CLUSTER: uplus-fe-cluster
   # ECS_TASK_DEFINITION: .aws/task-definition.json
@@ -57,8 +57,6 @@ jobs:
         IMAGE_TAG: be-item
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" 
         
     # - name: Fill in the new image ID in the Amazon ECS task definition
     #   id: task-def
