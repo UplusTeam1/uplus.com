@@ -1,5 +1,7 @@
 package com.lguplus.project.search.repository;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.lguplus.project.search.domain.payload.autocompletion.AutoCompletionResult;
 import com.lguplus.project.search.domain.payload.result.SearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +41,19 @@ public class SearchRepository {
         return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, SearchResult.class);
     }
 
-    public ResponseEntity<?> getAllAutoCompletions(String input) {
-        return null;
-    }
+    public ResponseEntity<AutoCompletionResult> getAllAutoCompletions(String input) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        URI uri = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host(HOST)
+                .port(PORT)
+                .path("/device/_search")
+                .queryParam("q", input)
+                .build()
+                .toUri();
+
+        return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, AutoCompletionResult.class);    }
 }
