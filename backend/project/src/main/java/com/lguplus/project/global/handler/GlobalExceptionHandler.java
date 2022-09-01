@@ -5,6 +5,7 @@ import com.lguplus.project.device.exception.DeviceHaveNoStockException;
 import com.lguplus.project.device.exception.DeviceNotFoundException;
 import com.lguplus.project.order.exception.OrderNotFoundException;
 import com.lguplus.project.plan.exception.PlanNotFoundException;
+import com.lguplus.project.search.exception.ResultBodyNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,4 +48,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> handleDeviceHaveNoStockException(DeviceHaveNoStockException e) {
         return ResponseEntity.status(HttpStatus.OK).body(e.getMessage());
     }
+
+    @ExceptionHandler(ResultBodyNotFoundException.class)
+    protected ResponseEntity<?> handleResultBodyNotFoundException(ResultBodyNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
 }
