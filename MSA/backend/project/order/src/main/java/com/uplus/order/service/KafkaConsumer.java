@@ -29,8 +29,9 @@ public class KafkaConsumer {
     }
 
     @KafkaListener(topics = createOrderFail, groupId = "createOrder")
-    public void consumeCreateOrderFail(Long orderNumber) throws IOException {
-        kafkaOrderService.deleteOrder(orderNumber);
+    public void consumeCreateOrderFail(String orderNumber) throws IOException {
+        Long number = Long.parseLong(orderNumber);
+        kafkaOrderService.deleteOrder(number);
     }
 
     @KafkaListener(topics = deleteOrderSuccess, groupId = "deleteOrder")
