@@ -40,9 +40,6 @@ jobs:
       run: yarn build
       working-directory: ${{env.working-directory}}
       
-    - name: Run ls
-      run: ls
-      
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -52,6 +49,8 @@ jobs:
 
     - name: Deploy to S3
       run: aws s3 sync ./front/project/build s3://${{ secrets.FE_BUCKET }} --delete
+      working-directory: ${{env.working-directory}}
 
     - name: Invalidate CloudFront Cache
       run: aws cloudfront create-invalidation --distribution-id ${{secrets.CLOUD_FRONT}} --paths "/*"
+      working-directory: ${{env.working-directory}}
