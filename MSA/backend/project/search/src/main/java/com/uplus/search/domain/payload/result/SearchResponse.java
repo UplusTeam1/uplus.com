@@ -1,4 +1,4 @@
-package com.lguplus.project.search.domain.payload.result;
+package com.uplus.search.domain.payload.result;
 
 import com.uplus.search.domain.payload.Source;
 import lombok.*;
