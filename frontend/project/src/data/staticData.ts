@@ -18,6 +18,20 @@ export interface MakerType {
   value: string
 }
 
+export interface StorageInfoType {
+  [key: number]: string
+  512: string
+  256: string
+  128: string
+}
+
+export interface JoinType {
+  label: string
+  indexValue: number
+  info: string
+  value: string
+}
+
 export interface CartDiscountTypeList {
   DEVICE_DISCOUNT: string
   PLAN_DISCOUNT_24: string
@@ -71,6 +85,40 @@ export const MAKER_LIST: Array<MakerType> = [
   { label: '전체', value: '' },
   { label: '삼성', value: 'samsung' },
   { label: '애플', value: 'apple' },
+]
+
+export const STORAGE_INFO: StorageInfoType = {
+  512: '사진은 102,400장, 영화는 약 640편을 저장할 수 있어요.',
+  256: '사진은 약 51,200장, 영화는 약 320편을 저장할 수 있어요.',
+  128: '사진은 약 25,600장, 영화는 약 160편을 저장할 수 있어요.',
+}
+
+export const JOIN_TYPE_LIST: Array<JoinType> = [
+  {
+    label: '기기변경',
+    indexValue: 0,
+    info: '이용 중인 U⁺ 번호 그대로 휴대폰만 바꾸고 싶어요.',
+    value: 'DEVICE_CHANGE',
+  },
+  {
+    label: '번호이동',
+    indexValue: 1,
+    info: '쓰던 번호 그대로, 통신사만 U⁺로 바꾸고 싶어요.',
+    value: 'NUMBER_TRANSFER',
+  },
+  {
+    label: '신규가입',
+    indexValue: 2,
+    info: '새로운 번호로 U⁺에 가입하고 싶어요.',
+    value: 'NEW_SUBSCRIPTION',
+  },
+]
+
+export const DISCOUNT_VALUE_LIST: Array<string> = [
+  'DEVICE_DISCOUNT',
+  'PLAN_DISCOUNT_24',
+  'PLAN_DISCOUNT_12',
+  'NO_DISCOUNT',
 ]
 
 export const CART_DISCOUNT_TYPE_LIST: CartDiscountTypeList = {

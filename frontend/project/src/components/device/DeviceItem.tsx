@@ -126,6 +126,7 @@ interface ContentTextProps {
 
 interface DeviceItemProps {
   device: DeviceData
+  planFilter: string
   recommendCheck: boolean
   installmentCheck: boolean
   discountIndex: number
@@ -139,6 +140,7 @@ function priceFormat(value: number) {
 
 function DeviceItem({
   device,
+  planFilter,
   recommendCheck,
   installmentCheck,
   discountIndex,
@@ -150,7 +152,17 @@ function DeviceItem({
 
   return (
     <DeviceItemContainer>
-      <LinkedContainer onClick={() => navigate(`/device/galaxy`)}>
+      <LinkedContainer
+        onClick={() =>
+          navigate(`/device/${device.code}`, {
+            state: {
+              planName: planFilter,
+              discountIndex: discountIndex,
+              installmentIndex: installmentIndex,
+            },
+          })
+        }
+      >
         <ColorContainer>
           {device.detailPerColor.map(
             (detail: DetailPerColor, index: number) => (

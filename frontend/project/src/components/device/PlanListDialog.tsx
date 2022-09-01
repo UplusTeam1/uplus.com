@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { PlanData, PlanListData } from '../../api/plan'
 // styles
 import styled, { css } from 'styled-components'
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
@@ -117,7 +119,7 @@ const PlanFee = styled.span`
 `
 const PlanInfoDiv = styled.div`
   width: 140px;
-  font-size: 28px;
+  font-size: 25px;
   font-weight: bold;
   text-align: center;
   color: ${({ theme }) => theme.app.blackFont};
@@ -144,39 +146,73 @@ const CustomCloseIcon = styled(CloseIcon)`
 // interface
 interface PlanProps {
   selected: boolean
+  planData: PlanData
+  handleCheckPlan: (value: string) => void
 }
 
 interface PlanListDialogProps {
   open: boolean
   onClose: () => void
+  selectedPlan: string
+  planListData: PlanListData | undefined
+  handleChangePlan: (value: string) => void
 }
 
-function Plan({ selected }: PlanProps) {
+// components
+function priceFormat(value: number) {
+  return `${value.toLocaleString('ko-KR')}`
+}
+
+function Plan({ selected, planData, handleCheckPlan }: PlanProps) {
   return (
     <PlanDiv check={selected}>
       <PlanRadioDiv>
         <PlanName>
           <Radio
             checked={selected}
-            onChange={() => null}
-            value="5G 라이트+"
+            onChange={() => handleCheckPlan(planData.name)}
+            value={planData.name}
             name="radio"
           />
-          5G 라이트+
+          {planData.name}
         </PlanName>
-        <PlanFee>월 55,000원</PlanFee>
+        <PlanFee>월 {priceFormat(planData.price)}원</PlanFee>
       </PlanRadioDiv>
-      <PlanInfoDiv>31GB</PlanInfoDiv>
-      <PlanInfoDiv>사용가능</PlanInfoDiv>
+      <PlanInfoDiv>{planData.data}</PlanInfoDiv>
+      <PlanInfoDiv>{planData.sharing}</PlanInfoDiv>
       <PlanInfoDiv>
-        <CallTopInfo>집/이동전화</CallTopInfo>무제한
+        {planData.voiceCall === '집/이동전화 무제한' ? (
+          <>
+            <CallTopInfo>집/이동전화</CallTopInfo>무제한
+          </>
+        ) : (
+          planData.voiceCall
+        )}
       </PlanInfoDiv>
-      <PlanInfoDiv>기본제공</PlanInfoDiv>
+      <PlanInfoDiv>{planData.message}</PlanInfoDiv>
     </PlanDiv>
   )
 }
 
-function PlanListDialog({ open, onClose }: PlanListDialogProps) {
+function PlanListDialog({
+  open,
+  onClose,
+  selectedPlan,
+  planListData,
+  handleChangePlan,
+}: PlanListDialogProps) {
+  const [checkedPlan, setCheckedPlan] = useState(selectedPlan)
+
+  useEffect(() => {
+    if (open) {
+      setCheckedPlan(selectedPlan)
+    }
+  }, [open, selectedPlan])
+
+  const handleCheckPlan = (value: string) => {
+    setCheckedPlan(value)
+  }
+
   return (
     <Dialog maxWidth="xl" onClose={() => onClose()} open={open}>
       <CustomDialogTitle>
@@ -198,11 +234,15 @@ function PlanListDialog({ open, onClose }: PlanListDialogProps) {
       </CustomDialogTitle>
       <CustomDialogContent dividers={true}>
         <PlanListDiv>
-          <Plan selected={true} />
-          <Plan selected={false} />
-          <Plan selected={false} />
-          <Plan selected={false} />
-          <Plan selected={false} />
+          {planListData &&
+            planListData.map((planData: PlanData, index: number) => (
+              <Plan
+                key={index}
+                selected={planData.name === checkedPlan}
+                planData={planData}
+                handleCheckPlan={handleCheckPlan}
+              />
+            ))}
         </PlanListDiv>
       </CustomDialogContent>
       <CustomDialogActions>
@@ -211,7 +251,7 @@ function PlanListDialog({ open, onClose }: PlanListDialogProps) {
           height="40px"
           radius="20px"
           text="적용"
-          onClick={() => onClose()}
+          onClick={() => handleChangePlan(checkedPlan)}
         />
       </CustomDialogActions>
     </Dialog>

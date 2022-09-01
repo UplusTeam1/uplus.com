@@ -218,6 +218,7 @@ function DeviceListPage() {
             <DeviceItem
               key={index}
               device={device}
+              planFilter={planFilter}
               recommendCheck={deviceFilter.discountIndex === -1}
               installmentCheck={!(deviceFilter.installmentIndex === -1)}
               discountIndex={
