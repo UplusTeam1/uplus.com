@@ -2,8 +2,9 @@ package com.uplus.item.device.service;
 
 import com.uplus.item.device.domain.Device;
 import com.uplus.item.device.domain.DeviceDetail;
-import com.uplus.item.device.domain.payload.KafkaCreateOrderSuccess;
-import com.uplus.item.device.domain.payload.KafkaOrderDetail;
+import com.uplus.item.device.domain.payload.KafkaCreateOrderRequest;
+import com.uplus.item.device.domain.payload.KafkaCreateOrderSuccessResponse;
+import com.uplus.item.device.domain.payload.KafkaDeleteOrderRequest;
 import com.uplus.item.device.exception.ColorNotFoundException;
 import com.uplus.item.device.exception.DeviceNotFoundException;
 import com.uplus.item.device.repository.DeviceDetailRepository;
@@ -25,11 +26,12 @@ public class DeviceKafkaService {
     private final PlanRepository planRepository;
     private final KafkaProducer kafkaProducer;
 
-    public void createOrder(KafkaOrderDetail kafkaOrderDetail) {
+    public void createOrder(KafkaCreateOrderRequest kafkaCreateOrderRequest) {
         try {
-            String deviceCode = kafkaOrderDetail.getDeviceCode();
-            String planName = kafkaOrderDetail.getPlanName();
-            String color = kafkaOrderDetail.getColor();
+            Long orderNumber = kafkaCreateOrderRequest.getOrderNumber();
+            String deviceCode = kafkaCreateOrderRequest.getDeviceCode();
+            String planName = kafkaCreateOrderRequest.getPlanName();
+            String color = kafkaCreateOrderRequest.getColor();
 
             Device device = deviceRepository.findByCode(deviceCode)
                     .orElseThrow(() -> new DeviceNotFoundException("Exception : Device Not Found"));
@@ -39,11 +41,11 @@ public class DeviceKafkaService {
                     .orElseThrow(() -> new ColorNotFoundException("Exception : Color Not Found"));
 
             deviceDetail.increaseStock();
-            KafkaCreateOrderSuccess kafkaCreateOrderSuccess = new KafkaCreateOrderSuccess(
-                    device.getName(),
-                    deviceDetail.getPicPaths());
+            String picPaths = deviceDetail.getPicPaths();
+            KafkaCreateOrderSuccessResponse kafkaCreateOrderSuccessResponse =
+                    new KafkaCreateOrderSuccessResponse(orderNumber, deviceCode, picPaths);
 
-            kafkaProducer.sendCreateOrderSuccessObject(kafkaCreateOrderSuccess);
+            kafkaProducer.sendCreateOrderSuccessObject(kafkaCreateOrderSuccessResponse);
         }
         catch (Exception exception) {
             kafkaProducer.sendCreateOrderFailMessage();
@@ -51,16 +53,14 @@ public class DeviceKafkaService {
 
     }
 
-    public void deleteOrder(KafkaOrderDetail kafkaOrderDetail) {
+    public void deleteOrder(KafkaDeleteOrderRequest kafkaDeleteOrderRequest) {
         try {
-            String deviceCode = kafkaOrderDetail.getDeviceCode();
-            String planName = kafkaOrderDetail.getPlanName();
-            String color = kafkaOrderDetail.getColor();
+            Long orderNumber = kafkaDeleteOrderRequest.getOrderNumber();
+            String deviceCode = kafkaDeleteOrderRequest.getDeviceCode();
+            String color = kafkaDeleteOrderRequest.getColor();
 
             Device device = deviceRepository.findByCode(deviceCode)
                     .orElseThrow(() -> new DeviceNotFoundException("Exception : Device Not Found"));
-            Plan plan = planRepository.findByName(planName)
-                    .orElseThrow(() -> new PlanNotFoundException("Exception : Plan Not Found"));
             DeviceDetail deviceDetail = deviceDetailRepository.findByColor(color)
                     .orElseThrow(() -> new ColorNotFoundException("Exception : Color Not Found"));
 
@@ -70,6 +70,18 @@ public class DeviceKafkaService {
         catch (Exception exception) {
             kafkaProducer.sendDeleteOrderFailMessage();
         }
+    }
+
+    public void testKafka(KafkaCreateOrderRequest kafkaCreateOrderRequest) {
+        System.out.println("DeviceKafkaService.testKafka");
+        Long orderNumber = kafkaCreateOrderRequest.getOrderNumber();
+        String deviceCode = kafkaCreateOrderRequest.getDeviceCode();
+        String planName = kafkaCreateOrderRequest.getPlanName();
+        String color = kafkaCreateOrderRequest.getColor();
+
+        KafkaCreateOrderRequest result = new KafkaCreateOrderRequest(orderNumber, deviceCode, planName, color);
+
+        System.out.println("Consume = " + result.toString());
     }
 }
 

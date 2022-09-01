@@ -1,7 +1,9 @@
 package com.uplus.item.device.controller;
 
+import com.uplus.item.device.domain.payload.KafkaCreateOrderRequest;
 import com.uplus.item.device.service.DeviceServiceByDongWan;
 import com.uplus.item.device.service.DeviceServiceBySangWoo;
+import com.uplus.item.device.service.KafkaProducer;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,6 +22,8 @@ public class DeviceController {
 
     private final DeviceServiceBySangWoo deviceServiceBySangWoo;
     private final DeviceServiceByDongWan deviceServiceByDongWan;
+
+    private final KafkaProducer kafkaProducer;
 
     @Operation(summary = "Get Device List With Plan Name")
     @ApiResponses({
@@ -46,5 +52,20 @@ public class DeviceController {
     @GetMapping("price/{code}/{planName}")
     public ResponseEntity<?> getDevicePrices(@PathVariable String code, @PathVariable String planName) {
         return new ResponseEntity<>(deviceServiceByDongWan.getDevicePrices(code, planName), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Test Kafka")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK!"),
+    })
+    @GetMapping("/testkafka/{orderNumber}/{deviceCode}/{color}/{planName}")
+    public ResponseEntity<?> testKafka(
+            @PathVariable Long orderNumber, @PathVariable String deviceCode,
+            @PathVariable String color, @PathVariable String planName) throws IOException {
+        KafkaCreateOrderRequest kafkaCreateOrderRequest = new KafkaCreateOrderRequest(orderNumber, deviceCode, color, planName);
+        System.out.println("DeviceController.testKafka");
+        System.out.println("kafkaOrderDetail = " + kafkaCreateOrderRequest);
+        kafkaProducer.sendTestKafka(kafkaCreateOrderRequest);
+        return new ResponseEntity<>("send Success!", HttpStatus.OK);
     }
 }
