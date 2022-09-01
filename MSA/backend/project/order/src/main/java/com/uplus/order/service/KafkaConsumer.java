@@ -22,24 +22,24 @@ public class KafkaConsumer {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @KafkaListener(topics = createOrderSuccess, groupId = "createOrder")
+    @KafkaListener(topics = createOrderSuccess, groupId = createOrderSuccess)
     public void consumeCreateOrderSuccess(String value) throws IOException {
         KafkaCreateOrderResponse kafkaCreateOrderResponse = objectMapper.readValue(value, KafkaCreateOrderResponse.class);
         kafkaOrderService.updateOrder(kafkaCreateOrderResponse);
     }
 
-    @KafkaListener(topics = createOrderFail, groupId = "createOrder")
+    @KafkaListener(topics = createOrderFail, groupId = createOrderFail)
     public void consumeCreateOrderFail(String orderNumber) throws IOException {
         Long number = Long.parseLong(orderNumber);
         kafkaOrderService.deleteOrder(number);
     }
 
-    @KafkaListener(topics = deleteOrderSuccess, groupId = "deleteOrder")
+    @KafkaListener(topics = deleteOrderSuccess, groupId = deleteOrderSuccess)
     public void consumeDeleteOrderSuccess(String message) throws IOException {
         System.out.println(message);
     }
 
-    @KafkaListener(topics = deleteOrderFail, groupId = "deleteOrder")
+    @KafkaListener(topics = deleteOrderFail, groupId = deleteOrderFail)
     public void consumeDeleteOrderFail(String message) throws IOException {
         System.out.println(message);
     }

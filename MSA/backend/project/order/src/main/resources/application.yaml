@@ -1,12 +1,18 @@
+server:
+  address: localhost
+  port:
+
 spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+
   datasource:
     url:
     username:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     generate-ddl: true
     hibernate:
@@ -15,3 +21,17 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+
+    kafka:
+      bootstrap-servers: localhost:9092
+      consumer:
+        enable-auto-commit: true
+        auto-offset-reset: latest
+        key-deserializer: org.apache.kafka.common.serialization.StringSerializer
+        value-deserializer: org.apache.kafka.common.serialization.StringSerializer
+        max-poll-records: 1000
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      template:
+        default-topic: None
