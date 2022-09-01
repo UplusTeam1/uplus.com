@@ -33,10 +33,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-#     - name: Set yaml file
-#       run: |
-#         touch ${{ env.RESOURCE_PATH }}
-#         echo "${{env.yaml}}" > ${{ env.RESOURCE_PATH }}
+    - name: Set yaml file
+      run: |
+        touch ${{ env.RESOURCE_PATH }}
+        echo "${{env.yaml}}" > ${{ env.RESOURCE_PATH }}
         
     # ECR 푸시하기
     - name: Configure AWS credentials
