@@ -8,7 +8,7 @@ on:
     branches: [ "develop" ]
     paths: 
 #        - 'frontend/project/**'
-       - '.github/workflows/react.yml'
+       - '.github/workflows/fe.yml'
   pull_request:
     branches: [ "develop" ]
     paths:
