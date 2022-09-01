@@ -17,7 +17,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.lguplus.item"))
+                .apis(RequestHandlerSelectors.basePackage("com.uplus.item"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());
@@ -26,7 +26,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("LG Uplus Intern 01")
-                .description("Monolithic Server Swagger")
+                .description("MSA Item Server Swagger")
                 .build();
     }
 }
