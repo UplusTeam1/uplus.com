@@ -49,7 +49,7 @@ public class SearchRepository {
                 .scheme("http")
                 .host(HOST)
                 .port(PORT)
-                .path("/auto-completion/_search")
+                .path("/device/_search")
                 .queryParam("q", input)
                 .build()
                 .toUri();
