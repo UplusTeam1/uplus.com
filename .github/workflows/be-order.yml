@@ -1,4 +1,4 @@
-name: Item To ECS
+name: Order To ECS
 
 env:
   RESOURCE_PATH: ./MSA/backend/project/order/src/main/resources/application.yaml
