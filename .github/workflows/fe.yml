@@ -1,39 +1,51 @@
-name: frontend msa deployment
+name: Front-end MSA Deployment
 
 env:
   working-directory: ./frontend/project
 
 on:
- push:
-   branches: [ "develop" ]
-   paths: 
-      - '.github/workflows/fe.yml'
-      - 'frontend/project/**'
+  push:
+    branches: [ "develop" ]
+    paths: 
+#        - 'frontend/project/**'
+       - '.github/workflows/react.yml'
+  pull_request:
+    branches: [ "develop" ]
+    paths:
+       - 'frontend/project/**'
+       - '.github/workflows/react.yml'
 
 jobs:
-  deploy:
-    if: github.event.pull_request.merged == true
+  build:
     runs-on: ubuntu-latest
+    
+    env:
+      CI: false
     strategy:
       matrix:
-        node-versions: [14.x]
-
+        node-version: [14.x]
+        
     steps:
-      - name: Checkout source code.
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v3      
 
-      - name: Install Dependencies
-        run: yarn
+    - name: Install Yarn
+      run: npm install -g yarn
+      working-directory: ${{env.working-directory}}
+      
+    - name: Install dependencies
+      run: yarn install
+      working-directory: ${{env.working-directory}}
+      
+    - name: Build
+      run: yarn build
+      working-directory: ${{env.working-directory}}
 
-      - name: Build
-        run: yarn build:dev
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.FE_ACCESS_ID }}
-          aws-region: ${{ secrets.FE_SECRET_KEY }}
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.FE_ACCESS_ID }}
+        aws-region: ${{ secrets.FE_SECRET_KEY }}
 
 #       - name: Deploy to S3
 #         run: aws s3 sync ./dist s3://${{ secrets.DEV_AWS_S3_BUCKET }} --delete
