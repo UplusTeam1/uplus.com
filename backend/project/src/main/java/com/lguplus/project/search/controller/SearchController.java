@@ -17,11 +17,9 @@ public class SearchController {
 
     private final SearchService searchService;
 
-    private final SearchRepository searchRepository;
-
     @GetMapping
     ResponseEntity<?> getSearchResults(@RequestParam("keyword") String keyword) {
-        return new ResponseEntity<>(searchRepository.getSearchResult(keyword), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.getAllSearchResults(keyword), HttpStatus.OK);
     }
 
 }

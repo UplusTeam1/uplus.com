@@ -1,5 +1,6 @@
 package com.lguplus.project.search.repository;
 
+import com.lguplus.project.search.domain.payload.result.SearchResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -8,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class SearchRepository {
 
     private final RestTemplate restTemplate;
 
-    public ResponseEntity<?> getAllSearchResults(String keyword) {
+    public ResponseEntity<SearchResult> getAllSearchResults(String keyword) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -36,7 +36,7 @@ public class SearchRepository {
                 .build()
                 .toUri();
 
-        return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, Map.class);
+        return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, SearchResult.class);
     }
 
     public ResponseEntity<?> getAllAutoCompletions(String input) {
