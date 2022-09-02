@@ -90,6 +90,7 @@ for device in device_list:
 
         tmp_device_detail = -1
         tmp_device_detail_list = []
+        color_infos = []
         for color_button in color_buttons:
             # color_button.click()
             driver.execute_script("arguments[0].click();", color_button)
@@ -98,24 +99,46 @@ for device in device_list:
             em = span.find_element(By.TAG_NAME, "em")
             color_name = em.get_attribute("innerHTML")
             print(color_name, rgb[12:-1])
+            color_infos.append((color_name, rgb[12:-1]))
             sleep(2)
-            pic_paths = []
-            pic_list = WebDriverWait(driver, 9999).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, ".util-navigation-type"))
-            )
-            pic_list = pic_list.find_elements(By.CSS_SELECTOR, ".lazyLoad")
-            for pic in pic_list:
-                pic_paths.append(pic.get_attribute("src"))
-            tmp_device_detail = DeviceDetail(
+            # pic_paths = []
+            
+            # for pic in pic_list:
+            #     pic = pic.find_elements(By.CSS_SELECTOR, ".lazyLoad")
+            #     for p in pic:
+            #         pic_paths.append(p.get_attributes("src"))
+            # pic_list = pic_list.find_elements(By.CSS_SELECTOR, ".lazyLoad")
+            # for pic in pic_list:
+            #     pic_paths.append(pic.get_attribute("src"))
+            # tmp_device_detail = DeviceDetail(
+            #     info["ecom_prd_id"],
+            #     color_name,
+            #     rgb,
+            #     100,
+            #     pic_paths
+            # )
+            # tmp_device_detail_list.append(tmp_device_detail)
+        pic_list = WebDriverWait(driver, 9999).until(
+            EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".util-navigation-type"))
+        )
+        pic_paths = []
+        for pic_info in pic_list:
+            tmp = []
+            pic_info = pic_info.find_elements(By.CSS_SELECTOR, ".lazyLoad")
+            for pic in pic_info:
+                tmp.append(pic.get_attribute("src"))
+            pic_paths.append(tmp)
+        for i in range(0, len(color_infos)) :
+            tmp_device_detail =DeviceDetail(
                 info["ecom_prd_id"],
-                color_name,
-                rgb,
+                color_infos[i][0],
+                color_infos[i][1],
                 100,
-                pic_paths
+                pic_paths[i]
             )
+            print(color_infos[i][0], color_infos[i][1])
+            print(pic_paths[i])
             tmp_device_detail_list.append(tmp_device_detail)
-
         driver.back()
         sleep(10)
 
@@ -138,7 +161,7 @@ for device in device_list:
 sql_device = "INSERT INTO device(code, name, storage, price, weekly_sale, brand) VALUES\n"
 sql_device_detail = "INSERT INTO device_detail(device_code, color, rgb, stock, pic_paths) VALUES\n"
 for device in device_obj_list:
-    device_value = "('{}','{}',{},{},{}),\n".format(
+    device_value = "('{}','{}',{},{},{},'{}'),\n".format(
         device.code,
         device.name,
         re.sub(r'[^0-9]', '', device.storage),
