@@ -65,6 +65,7 @@ export interface DevicePrice {
   code: string
   name: string
   price: number
+  deviceDiscount: number
   monthlyChargeList: MonthlyChargeList
   recommendedDiscount: number
 }

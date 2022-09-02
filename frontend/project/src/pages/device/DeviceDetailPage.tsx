@@ -453,7 +453,14 @@ function DeviceDetailPage() {
               </DiscountInfoText>
             </DiscountTitleDiv>
             <DiscountPriceDiv>
-              총<PlanPrice>-575,000</PlanPrice>원
+              총
+              <PlanPrice>
+                -
+                {devicePrice.data
+                  ? priceFormat(devicePrice.data.deviceDiscount)
+                  : 0}
+              </PlanPrice>
+              원
             </DiscountPriceDiv>
           </DiscountDiv>
           <DiscountDiv
@@ -568,9 +575,30 @@ function DeviceDetailPage() {
                     ? '기기 완납 결제 가격'
                     : '월 휴대폰 할부금'}
                 </DiscountInfoTopText>
-                <DiscountInfoTopText size="20px" mb="4px">
-                  778,000원
-                </DiscountInfoTopText>
+                {!(selectedInstallment === -1) ? (
+                  <DiscountInfoTopText size="20px" mb="4px">
+                    월{' '}
+                    {devicePrice.data
+                      ? priceFormat(
+                          devicePrice.data.monthlyChargeList[selectedDiscount]
+                            .deviceCharge[selectedInstallment]
+                        )
+                      : 0}
+                    원
+                  </DiscountInfoTopText>
+                ) : (
+                  <DiscountInfoTopText size="20px" mb="4px">
+                    {devicePrice.data
+                      ? priceFormat(
+                          selectedDiscount === 0
+                            ? devicePrice.data.price -
+                                devicePrice.data.deviceDiscount
+                            : devicePrice.data.price
+                        )
+                      : 0}
+                    원
+                  </DiscountInfoTopText>
+                )}
               </HalfContentDiv>
               <HalfContentDiv>
                 <DiscountInfoText size="16px" mb="2px">
@@ -586,7 +614,11 @@ function DeviceDetailPage() {
                     공시지원금
                   </DiscountInfoText>
                   <DiscountInfoText size="16px" mb="2px">
-                    -575,000원
+                    -
+                    {devicePrice.data
+                      ? priceFormat(devicePrice.data.deviceDiscount)
+                      : 0}
+                    원
                   </DiscountInfoText>
                 </HalfContentDiv>
               )}
@@ -595,7 +627,15 @@ function DeviceDetailPage() {
                   실구매가
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  778,000원
+                  {devicePrice.data
+                    ? priceFormat(
+                        selectedDiscount === 0
+                          ? devicePrice.data.price -
+                              devicePrice.data.deviceDiscount
+                          : devicePrice.data.price
+                      )
+                    : 0}
+                  원
                 </DiscountInfoText>
               </HalfContentDiv>
               <HalfContentDiv>
@@ -612,7 +652,7 @@ function DeviceDetailPage() {
                     할부수수료 (연 5.9%)
                   </DiscountInfoText>
                   <DiscountInfoText size="16px" mb="0">
-                    48,700원
+                    0원
                   </DiscountInfoText>
                 </HalfContentDiv>
               )}

@@ -165,7 +165,7 @@ function priceFormat(value: number) {
 
 function Plan({ selected, planData, handleCheckPlan }: PlanProps) {
   return (
-    <PlanDiv check={selected}>
+    <PlanDiv check={selected} onClick={() => handleCheckPlan(planData.name)}>
       <PlanRadioDiv>
         <PlanName>
           <Radio
