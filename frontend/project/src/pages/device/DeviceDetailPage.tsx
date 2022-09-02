@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
 // styles
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
 import styled, { css, useTheme } from 'styled-components'
@@ -8,6 +8,23 @@ import { darken } from 'polished'
 import { Radio } from '@mui/material'
 import UplusButton from '../../components/UplusButton'
 import PlanListDialog from '../../components/device/PlanListDialog'
+// custom hooks
+import useDeviceOption from '../../hooks/device/useDeviceOption'
+import useDevicePrice from '../../hooks/device/useDevicePrice'
+import usePlanList from '../../hooks/plan/usePlanList'
+import useOrder from '../../hooks/order/useOrder'
+// import interface
+import { DetailPerColor } from '../../api/device'
+import { PlanListData } from '../../api/plan'
+import {
+  DISCOUNT_TYPE_LIST,
+  InstallmentType,
+  INSTALLMENT_LIST,
+  JoinType,
+  JOIN_TYPE_LIST,
+  STORAGE_INFO,
+  DISCOUNT_VALUE_LIST,
+} from '../../data/staticData'
 
 // styled
 const MainContainer = styled.div`
@@ -162,12 +179,12 @@ const DiscountDiv = styled.div<CheckDivProps>`
   justify-content: space-between;
   padding: 10px 20px;
   border-radius: 6px;
+  height: 118px;
+  border: 1px solid;
   ${({ width, check, theme }) => {
     return css`
       width: ${width};
-      height: ${check ? '116px' : '118px'};
       color: ${check ? theme.app.blackFont : theme.app.grayFont};
-      border: ${check ? '2px solid' : '1px solid'};
       font-weight: ${check ? 'bold' : ''};
       border-color: ${check ? theme.app.blackFont : theme.app.grayFont};
       background-color: ${theme.app.background};
@@ -237,6 +254,11 @@ const HalfContentDiv = styled.div`
   ${flexBetween}
   width: 289px;
 `
+const SmallInfoText = styled.p`
+  font-size: 16px;
+  color: ${({ theme }) => theme.app.grayFont};
+  margin-top: 4px;
+`
 
 // interface
 interface ColorCircleProps {
@@ -250,10 +272,65 @@ interface CheckDivProps {
   check: boolean
 }
 
+interface LocationState {
+  planName: string
+  discountIndex: number
+  installmentIndex: number
+}
+
+export type DeviceDetailParams = {
+  deviceCode: string
+}
+
+function priceFormat(value: number) {
+  return `${value.toLocaleString('ko-KR')}`
+}
+
+function findPlanData(planListData: PlanListData, selectedPlan: string) {
+  return planListData.find((planData) => planData.name === selectedPlan)
+}
+
 function DeviceDetailPage() {
-  const [openDialog, setOpenDialog] = useState(false)
-  const params = useParams()
+  const params = useParams<keyof DeviceDetailParams>() as DeviceDetailParams
+  const location = useLocation()
+  const locationState = location.state as LocationState
   const theme = useTheme()
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedColor, setSelectedColor] = useState(0)
+  const [selectedJoin, setSelectedJoin] = useState(0)
+  const [selectedPlan, setSelectedPlan] = useState(
+    locationState ? locationState.planName : '5G 시그니처'
+  )
+  const [selectedDiscount, setSelectedDiscount] = useState(
+    locationState ? locationState.discountIndex : 0
+  )
+  const [selectedInstallment, setSelectedInstallment] = useState(
+    locationState ? locationState.installmentIndex : 0
+  )
+  const deviceOption = useDeviceOption(params.deviceCode)
+  const devicePrice = useDevicePrice(params.deviceCode, selectedPlan)
+  const { data: planListData } = usePlanList()
+  const { orderSave } = useOrder()
+  const selectedPlanData = useMemo(
+    () => (planListData ? findPlanData(planListData, selectedPlan) : null),
+    [planListData, selectedPlan]
+  )
+  const monthlyFee = useMemo(
+    () =>
+      !(selectedInstallment === -1)
+        ? Number(
+            devicePrice.data
+              ? devicePrice.data.monthlyChargeList[selectedDiscount]
+                  .totalCharge[selectedInstallment]
+              : 0
+          )
+        : Number(
+            devicePrice.data
+              ? devicePrice.data.monthlyChargeList[selectedDiscount].planCharge
+              : 0
+          ),
+    [devicePrice.data, selectedDiscount, selectedInstallment]
+  )
 
   const clickOpenDialog = () => {
     setOpenDialog(true)
@@ -263,75 +340,110 @@ function DeviceDetailPage() {
     setOpenDialog(false)
   }
 
+  const handleChangePlan = (value: string) => {
+    setSelectedPlan(value)
+    closeDialog()
+  }
+
+  const clickOrder = () => {
+    if (params.deviceCode && deviceOption.data) {
+      orderSave({
+        deviceCode: params.deviceCode,
+        planName: selectedPlan,
+        joinType: JOIN_TYPE_LIST[selectedJoin].value,
+        monthlyFee: monthlyFee,
+        discountType: DISCOUNT_VALUE_LIST[selectedDiscount],
+        color: deviceOption.data.detailPerColor[selectedColor].color,
+      })
+    }
+  }
+
   return (
     <MainContainer>
       <ImageContainer>
         <DeviceImage
           alt="Device Image"
-          src="https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg"
+          src={deviceOption.data?.detailPerColor[selectedColor].picPaths[0]}
         />
       </ImageContainer>
       <ContentContainer>
         <DeviceNameDiv>
-          <DeviceName>갤럭시 Z Flip 4</DeviceName>
+          <DeviceName>{deviceOption.data?.name}</DeviceName>
           <MainText>({params.deviceCode})</MainText>
         </DeviceNameDiv>
         <ColorTextDiv>
           <MainText>색상</MainText>
-          <SubText>보라 퍼플</SubText>
+          <SubText>
+            {deviceOption.data?.detailPerColor[selectedColor].color}
+          </SubText>
         </ColorTextDiv>
         <ColorCircleDiv>
-          <ColorCircle
-            bgColor={'purple'}
-            borderColor={theme.app.blackFont}
-            outline={`3px solid ${theme.app.background}`}
-          ></ColorCircle>
-          <ColorCircle
-            bgColor={'yellow'}
-            borderColor={theme.app.dividerGray}
-            outline=""
-          ></ColorCircle>
-          <ColorCircle
-            bgColor={'blue'}
-            borderColor={theme.app.dividerGray}
-            outline=""
-          ></ColorCircle>
-          <ColorCircle
-            bgColor={'black'}
-            borderColor={theme.app.dividerGray}
-            outline=""
-          ></ColorCircle>
+          {deviceOption.data?.detailPerColor.map(
+            (detail: DetailPerColor, index: number) => (
+              <ColorCircle
+                key={index}
+                bgColor={detail.rgb}
+                borderColor={
+                  index === selectedColor
+                    ? theme.app.blackFont
+                    : theme.app.dividerGray
+                }
+                outline={
+                  index === selectedColor
+                    ? `3px solid ${theme.app.background}`
+                    : ''
+                }
+                onClick={() => setSelectedColor(index)}
+              ></ColorCircle>
+            )
+          )}
         </ColorCircleDiv>
         <MainTitleText>저장공간</MainTitleText>
         <ButtonDiv width={true ? '176px' : '178px'} check={true}>
-          256GB
+          {deviceOption.data?.storage}GB
         </ButtonDiv>
+        <SmallInfoText>
+          {STORAGE_INFO[deviceOption.data ? deviceOption.data.storage : 128]}
+        </SmallInfoText>
         <MainTitleText>가입유형</MainTitleText>
         <ButtonListDiv width="580px">
-          <ButtonDiv width={true ? '176px' : '178px'} check={true}>
-            기기변경
-          </ButtonDiv>
-          <ButtonDiv width={false ? '176px' : '178px'} check={false}>
-            번호이동
-          </ButtonDiv>
-          <ButtonDiv width={false ? '176px' : '178px'} check={false}>
-            신규가입
-          </ButtonDiv>
+          {JOIN_TYPE_LIST.map((joinType: JoinType, index: number) => (
+            <ButtonDiv
+              key={index}
+              width={selectedJoin === index ? '176px' : '178px'}
+              check={selectedJoin === index}
+              onClick={() => setSelectedJoin(joinType.indexValue)}
+            >
+              {joinType.label}
+            </ButtonDiv>
+          ))}
         </ButtonListDiv>
+        <SmallInfoText>{JOIN_TYPE_LIST[selectedJoin].info}</SmallInfoText>
         <MainTitleText>요금제</MainTitleText>
         <SelectedPlanDiv onClick={() => clickOpenDialog()}>
           <PlanTitleDiv>
-            <PlanName>5G 라이트+</PlanName>
-            <PlanPrice>55,000원</PlanPrice>
+            <PlanName>{selectedPlan}</PlanName>
+            <PlanPrice>
+              {selectedPlanData ? priceFormat(selectedPlanData.price) : 0}원
+            </PlanPrice>
           </PlanTitleDiv>
           <PlanInfoDiv>
-            <PlanText>데이터 12GB</PlanText>
-            <PlanText>음성 집/이동전화 무제한, 나눠쓰기 사용가능</PlanText>
+            <PlanText>
+              데이터 {selectedPlanData ? selectedPlanData.data : '0GB'}
+            </PlanText>
+            <PlanText>
+              {selectedPlanData ? selectedPlanData.voiceCall : ''}, 나눠쓰기{' '}
+              {selectedPlanData ? selectedPlanData.sharing : ''}
+            </PlanText>
           </PlanInfoDiv>
         </SelectedPlanDiv>
         <MainTitleText>할인유형</MainTitleText>
         <DiscountContainer>
-          <DiscountDiv width={true ? '196px' : '198px'} check={true}>
+          <DiscountDiv
+            width="198px"
+            check={selectedDiscount === 0}
+            onClick={() => setSelectedDiscount(0)}
+          >
             <DiscountTitleDiv>
               <DiscountInfoText size="14px" mb="6px">
                 공시지원금
@@ -341,10 +453,21 @@ function DeviceDetailPage() {
               </DiscountInfoText>
             </DiscountTitleDiv>
             <DiscountPriceDiv>
-              총<PlanPrice>-575,000</PlanPrice>원
+              총
+              <PlanPrice>
+                -
+                {devicePrice.data
+                  ? priceFormat(devicePrice.data.deviceDiscount)
+                  : 0}
+              </PlanPrice>
+              원
             </DiscountPriceDiv>
           </DiscountDiv>
-          <DiscountDiv width={false ? '376px' : '378px'} check={false}>
+          <DiscountDiv
+            width="378px"
+            check={selectedDiscount === 1 || selectedDiscount === 2}
+            onClick={() => setSelectedDiscount(1)}
+          >
             <DiscountTitleDiv>
               <DiscountInfoText size="14px" mb="6px">
                 선택약정할인
@@ -355,35 +478,57 @@ function DeviceDetailPage() {
             </DiscountTitleDiv>
             <RadioGroupDiv>
               <RadioDiv
-                color={false ? theme.app.blackFont : theme.app.grayFont}
+                color={
+                  selectedDiscount === 1
+                    ? theme.app.blackFont
+                    : theme.app.grayFont
+                }
               >
                 <span>
                   <Radio
-                    checked={false}
-                    onChange={() => null}
+                    checked={selectedDiscount === 1}
+                    onChange={() => setSelectedDiscount(1)}
                     value="24개월 할인"
                     name="radio-1"
                   />
                   24개월 할인
                 </span>
                 <span>
-                  총<PlanPrice>-510,000</PlanPrice>원
+                  총
+                  <PlanPrice>
+                    -
+                    {selectedPlanData
+                      ? priceFormat(selectedPlanData.price * 0.25 * 24)
+                      : 0}
+                  </PlanPrice>
+                  원
                 </span>
               </RadioDiv>
               <RadioDiv
-                color={false ? theme.app.blackFont : theme.app.grayFont}
+                color={
+                  selectedDiscount === 2
+                    ? theme.app.blackFont
+                    : theme.app.grayFont
+                }
               >
                 <span>
                   <Radio
-                    checked={false}
-                    onChange={() => null}
+                    checked={selectedDiscount === 2}
+                    onChange={() => setSelectedDiscount(2)}
                     value="12개월 할인"
                     name="radio-2"
                   />
                   12개월 할인
                 </span>
                 <span>
-                  총<PlanPrice>-255,000</PlanPrice>원
+                  총
+                  <PlanPrice>
+                    -
+                    {selectedPlanData
+                      ? priceFormat(selectedPlanData.price * 0.25 * 12)
+                      : 0}
+                  </PlanPrice>
+                  원
                 </span>
               </RadioDiv>
             </RadioGroupDiv>
@@ -391,25 +536,32 @@ function DeviceDetailPage() {
         </DiscountContainer>
         <MainTitleText>할부기간</MainTitleText>
         <ButtonListDiv width="680px">
-          <ButtonDiv width={true ? '156px' : '158px'} check={true}>
-            일시불
-          </ButtonDiv>
-          <ButtonDiv width={false ? '156px' : '158px'} check={false}>
-            12개월
-          </ButtonDiv>
-          <ButtonDiv width={false ? '156px' : '158px'} check={false}>
-            24개월
-          </ButtonDiv>
-          <ButtonDiv width={false ? '156px' : '158px'} check={false}>
-            36개월
-          </ButtonDiv>
+          {INSTALLMENT_LIST.map(
+            (installmentData: InstallmentType, index: number) => (
+              <ButtonDiv
+                key={index}
+                width={
+                  installmentData.indexValue === selectedInstallment
+                    ? '156px'
+                    : '158px'
+                }
+                check={installmentData.indexValue === selectedInstallment}
+                onClick={() =>
+                  setSelectedInstallment(installmentData.indexValue)
+                }
+              >
+                {installmentData.label}
+              </ButtonDiv>
+            )
+          )}
         </ButtonListDiv>
         <MainTitleText>결제 정보</MainTitleText>
         <MonthlyFeeContainer>
           <MonthlyFeeTitle>
-            <PlanPrice>월 85,000원</PlanPrice>
+            <PlanPrice>월 {priceFormat(monthlyFee)}원</PlanPrice>
             <DiscountInfoText size="18px" mb="0">
-              5G 라이트+, 공시지원금 기준
+              {selectedPlan}, {DISCOUNT_TYPE_LIST[selectedDiscount + 1].label}{' '}
+              기준
             </DiscountInfoText>
           </MonthlyFeeTitle>
           <MonthlyFeeInfoDiv>
@@ -419,34 +571,71 @@ function DeviceDetailPage() {
             >
               <HalfContentDiv>
                 <DiscountInfoTopText size="18px" mb="4px">
-                  기기 완납 결제 가격
+                  {selectedInstallment === -1
+                    ? '기기 완납 결제 가격'
+                    : '월 휴대폰 할부금'}
                 </DiscountInfoTopText>
-                <DiscountInfoTopText size="20px" mb="4px">
-                  778,000원
-                </DiscountInfoTopText>
+                {!(selectedInstallment === -1) ? (
+                  <DiscountInfoTopText size="20px" mb="4px">
+                    월{' '}
+                    {devicePrice.data
+                      ? priceFormat(
+                          devicePrice.data.monthlyChargeList[selectedDiscount]
+                            .deviceCharge[selectedInstallment]
+                        )
+                      : 0}
+                    원
+                  </DiscountInfoTopText>
+                ) : (
+                  <DiscountInfoTopText size="20px" mb="4px">
+                    {devicePrice.data
+                      ? priceFormat(
+                          selectedDiscount === 0
+                            ? devicePrice.data.price -
+                                devicePrice.data.deviceDiscount
+                            : devicePrice.data.price
+                        )
+                      : 0}
+                    원
+                  </DiscountInfoTopText>
+                )}
               </HalfContentDiv>
               <HalfContentDiv>
                 <DiscountInfoText size="16px" mb="2px">
                   정상가
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  1,353,000원
+                  {devicePrice.data ? priceFormat(devicePrice.data.price) : 0}원
                 </DiscountInfoText>
               </HalfContentDiv>
-              <HalfContentDiv>
-                <DiscountInfoText size="16px" mb="2px">
-                  공시지원금
-                </DiscountInfoText>
-                <DiscountInfoText size="16px" mb="2px">
-                  -575,000원
-                </DiscountInfoText>
-              </HalfContentDiv>
+              {selectedDiscount === 0 && (
+                <HalfContentDiv>
+                  <DiscountInfoText size="16px" mb="2px">
+                    공시지원금
+                  </DiscountInfoText>
+                  <DiscountInfoText size="16px" mb="2px">
+                    -
+                    {devicePrice.data
+                      ? priceFormat(devicePrice.data.deviceDiscount)
+                      : 0}
+                    원
+                  </DiscountInfoText>
+                </HalfContentDiv>
+              )}
               <HalfContentDiv>
                 <DiscountInfoText size="16px" mb="2px">
                   실구매가
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  778,000원
+                  {devicePrice.data
+                    ? priceFormat(
+                        selectedDiscount === 0
+                          ? devicePrice.data.price -
+                              devicePrice.data.deviceDiscount
+                          : devicePrice.data.price
+                      )
+                    : 0}
+                  원
                 </DiscountInfoText>
               </HalfContentDiv>
               <HalfContentDiv>
@@ -454,17 +643,19 @@ function DeviceDetailPage() {
                   할부 개월 수
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  24개월
+                  {INSTALLMENT_LIST[selectedInstallment + 1].label}
                 </DiscountInfoText>
               </HalfContentDiv>
-              <HalfContentDiv>
-                <DiscountInfoText size="16px" mb="0">
-                  할부수수료 (연 5.9%)
-                </DiscountInfoText>
-                <DiscountInfoText size="16px" mb="0">
-                  48,700원
-                </DiscountInfoText>
-              </HalfContentDiv>
+              {!(selectedInstallment === -1) && (
+                <HalfContentDiv>
+                  <DiscountInfoText size="16px" mb="0">
+                    할부수수료 (연 5.9%)
+                  </DiscountInfoText>
+                  <DiscountInfoText size="16px" mb="0">
+                    0원
+                  </DiscountInfoText>
+                </HalfContentDiv>
+              )}
             </MonthlyHalfDiv>
             <MonthlyHalfDiv borderRight="" padding="20px 0 20px 20px">
               <HalfContentDiv>
@@ -472,25 +663,42 @@ function DeviceDetailPage() {
                   월 통신료
                 </DiscountInfoTopText>
                 <DiscountInfoTopText size="20px" mb="4px">
-                  63,750원
+                  {devicePrice.data
+                    ? priceFormat(
+                        devicePrice.data.monthlyChargeList[selectedDiscount]
+                          .planCharge
+                      )
+                    : 0}
+                  원
                 </DiscountInfoTopText>
               </HalfContentDiv>
               <HalfContentDiv>
                 <DiscountInfoText size="16px" mb="2px">
-                  5G 라이트+
+                  {selectedPlan}
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  85,000원
+                  {devicePrice.data
+                    ? priceFormat(
+                        devicePrice.data.monthlyChargeList[0].planCharge
+                      )
+                    : 0}
+                  원
                 </DiscountInfoText>
               </HalfContentDiv>
-              <HalfContentDiv>
-                <DiscountInfoText size="16px" mb="0">
-                  선택 약정 할인
-                </DiscountInfoText>
-                <DiscountInfoText size="16px" mb="0">
-                  -21,250원
-                </DiscountInfoText>
-              </HalfContentDiv>
+              {(selectedDiscount === 1 || selectedDiscount === 2) && (
+                <HalfContentDiv>
+                  <DiscountInfoText size="16px" mb="0">
+                    선택 약정 할인
+                  </DiscountInfoText>
+                  <DiscountInfoText size="16px" mb="0">
+                    -
+                    {selectedPlanData
+                      ? priceFormat(selectedPlanData.price * 0.25)
+                      : 0}
+                    원
+                  </DiscountInfoText>
+                </HalfContentDiv>
+              )}
             </MonthlyHalfDiv>
           </MonthlyFeeInfoDiv>
         </MonthlyFeeContainer>
@@ -512,11 +720,17 @@ function DeviceDetailPage() {
             radius="25px"
             size="18px"
             text="온라인 주문"
-            onClick={() => null}
+            onClick={() => clickOrder()}
           />
         </ButtonListDiv>
       </ContentContainer>
-      <PlanListDialog open={openDialog} onClose={closeDialog} />
+      <PlanListDialog
+        open={openDialog}
+        onClose={closeDialog}
+        selectedPlan={selectedPlan}
+        planListData={planListData}
+        handleChangePlan={handleChangePlan}
+      />
     </MainContainer>
   )
 }

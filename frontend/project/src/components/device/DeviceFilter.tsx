@@ -1,16 +1,28 @@
 import { useState } from 'react'
-import styled, { css, useTheme } from 'styled-components'
 import {
   PLAN_INFO_LIST,
   DISCOUNT_TYPE_LIST,
   DICOUNT_INFO_LIST,
   INSTALLMENT_LIST,
   STORAGE_LIST,
+  DiscountType,
+  InstallmentType,
+  StorageType,
 } from '../../data/staticData'
-import usePlanList from '../../hooks/plan/usePlanList'
+// styles
+import styled, { css, useTheme } from 'styled-components'
+import { lighten } from 'polished'
 // import components
-import { Radio, RadioGroup, FormControlLabel, FormControl } from '@mui/material'
-import Loading from '../Loading'
+import {
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  Skeleton,
+} from '@mui/material'
+// import interface
+import { DeviceFilterType } from '../../modules/device'
+import { PlanData, PlanListData } from '../../api/plan'
 
 // styled
 const FilterContainer = styled.div`
@@ -163,202 +175,331 @@ interface HideTextProps {
   marginLeft: string
 }
 
-interface DeviceFilterProps {}
+interface PlanFilterProps {
+  openedFilter: number
+  setOpenedFilter: React.Dispatch<React.SetStateAction<number>>
+  planListData: PlanListData
+  planFilter: string
+  handlePlanFilter: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
 
-function DeviceFilter({}: DeviceFilterProps) {
+interface BasicDeviceFilterProps {
+  deviceFilter: DeviceFilterType
+  handleDeviceFilter: (
+    value: number | string | Array<number> | boolean,
+    key: string
+  ) => void
+}
+
+interface DiscountFilterProps extends BasicDeviceFilterProps {
+  openedFilter: number
+  setOpenedFilter: React.Dispatch<React.SetStateAction<number>>
+}
+
+interface DeviceFilterProps {
+  planListData: PlanListData | undefined
+  planListIsLoading: boolean
+  planFilter: string
+  deviceFilter: DeviceFilterType
+  handlePlanFilter: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleDeviceFilter: (
+    value: number | string | Array<number> | boolean,
+    key: string
+  ) => void
+}
+
+// components
+function priceFormat(value: number) {
+  return `${value.toLocaleString('ko-KR')}`
+}
+
+function PlanFilter({
+  openedFilter,
+  setOpenedFilter,
+  planListData,
+  planFilter,
+  handlePlanFilter,
+}: PlanFilterProps) {
+  const theme = useTheme()
+
+  return (
+    <MutableContainer
+      width={openedFilter === 1 ? '1230px' : '300px'}
+      zIndex={8}
+      marginLeft="0px"
+    >
+      <Title width={openedFilter === 1 ? '1230px' : '300px'}>
+        <div>
+          <VisibleTitleContainer>
+            <TitleText>요금제</TitleText>
+            {!(openedFilter === 1) && (
+              <MoreText
+                onClick={() => {
+                  setOpenedFilter(1)
+                }}
+              >{`상세보기 >`}</MoreText>
+            )}
+          </VisibleTitleContainer>
+        </div>
+        <HideTitleContainer width="920px">
+          <HideTitle width="920px">
+            {PLAN_INFO_LIST.map((planTitle: string, index: number) => (
+              <HideText
+                key={index}
+                width="100px"
+                fontSize="16px"
+                color={theme.app.grayFont}
+                marginLeft="40px"
+              >
+                {planTitle}
+              </HideText>
+            ))}
+          </HideTitle>
+          {openedFilter === 1 && (
+            <MoreText onClick={() => setOpenedFilter(0)}>{`< 접기`}</MoreText>
+          )}
+        </HideTitleContainer>
+      </Title>
+      <Content width={openedFilter === 1 ? '1206px' : '276px'}>
+        <div>
+          <FormControl sx={{ width: '276px' }}>
+            <RadioGroup
+              aria-labelledby="plan-label"
+              name="plan"
+              value={planFilter}
+              onChange={handlePlanFilter}
+            >
+              {planListData.map((planData: PlanData, index: number) => (
+                <FormControlLabel
+                  key={index}
+                  value={planData.name}
+                  control={<Radio />}
+                  label={planData.name}
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <HideContent>
+          {planListData.map((planData: PlanData, index: number) => (
+            <HideDiv key={index}>
+              <HideText
+                key={index}
+                width="100px"
+                fontSize="18px"
+                color={theme.app.blackFont}
+                marginLeft="40px"
+              >
+                {priceFormat(planData.price)}원
+              </HideText>
+              {[
+                planData.data,
+                planData.sharing,
+                planData.voiceCall,
+                planData.message,
+              ].map((data: number | string, index: number) => (
+                <HideText
+                  key={index}
+                  width="100px"
+                  fontSize="18px"
+                  color={theme.app.blackFont}
+                  marginLeft="40px"
+                >
+                  {data === '집/이동전화 무제한' ? '무제한' : data}
+                </HideText>
+              ))}
+            </HideDiv>
+          ))}
+        </HideContent>
+      </Content>
+    </MutableContainer>
+  )
+}
+
+function DiscountFilter(props: DiscountFilterProps) {
+  const theme = useTheme()
+
+  return (
+    <MutableContainer
+      width={props.openedFilter === 2 ? '920px' : '300px'}
+      zIndex={7}
+      marginLeft="310px"
+    >
+      <Title width={props.openedFilter === 2 ? '920px' : '300px'}>
+        <div>
+          <VisibleTitleContainer>
+            <TitleText>할인 유형</TitleText>
+            {!(props.openedFilter === 2) && (
+              <MoreText
+                onClick={() => props.setOpenedFilter(2)}
+              >{`상세보기 >`}</MoreText>
+            )}
+          </VisibleTitleContainer>
+        </div>
+        <HideTitleContainer width="610px">
+          <HideTitle width="610px"></HideTitle>
+          {props.openedFilter === 2 && (
+            <MoreText
+              onClick={() => props.setOpenedFilter(0)}
+            >{`< 접기`}</MoreText>
+          )}
+        </HideTitleContainer>
+      </Title>
+      <Content width={props.openedFilter === 2 ? '896px' : '276px'}>
+        <div>
+          <FormControl sx={{ width: '276px' }}>
+            <RadioGroup
+              aria-labelledby="discount-label"
+              name="discount"
+              value={props.deviceFilter.discountIndex}
+              onChange={(e) =>
+                props.handleDeviceFilter(
+                  Number(e.target.value),
+                  'discountIndex'
+                )
+              }
+            >
+              {DISCOUNT_TYPE_LIST.map(
+                ({ label, indexValue }: DiscountType, index: number) => (
+                  <FormControlLabel
+                    key={index}
+                    value={indexValue}
+                    control={<Radio />}
+                    label={label}
+                  />
+                )
+              )}
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <HideContent>
+          {DICOUNT_INFO_LIST.map((discountInfo: string, index: number) => (
+            <HideDiv key={index}>
+              <HideText
+                width="auto"
+                fontSize="16px"
+                color={theme.app.grayFont}
+                marginLeft="0"
+              >
+                {discountInfo}
+              </HideText>
+            </HideDiv>
+          ))}
+        </HideContent>
+      </Content>
+    </MutableContainer>
+  )
+}
+
+function InstallmentFilter(props: BasicDeviceFilterProps) {
+  return (
+    <MutableContainer width="300px" zIndex={6} marginLeft="620px">
+      <Title width="300px">
+        <TitleText>할부 기간</TitleText>
+      </Title>
+      <Content width="276px">
+        <FormControl>
+          <RadioGroup
+            aria-labelledby="installment-label"
+            name="installment"
+            value={props.deviceFilter.installmentIndex}
+            onChange={(e) =>
+              props.handleDeviceFilter(
+                Number(e.target.value),
+                'installmentIndex'
+              )
+            }
+          >
+            {INSTALLMENT_LIST.map(
+              ({ label, indexValue }: InstallmentType, index: number) => (
+                <FormControlLabel
+                  key={index}
+                  value={indexValue}
+                  control={<Radio />}
+                  label={label}
+                />
+              )
+            )}
+          </RadioGroup>
+        </FormControl>
+      </Content>
+    </MutableContainer>
+  )
+}
+
+function StorageFilter(props: BasicDeviceFilterProps) {
+  return (
+    <MutableContainer width="300px" zIndex={6} marginLeft="930px">
+      <Title width="300px">
+        <TitleText>저장 용량</TitleText>
+      </Title>
+      <Content width="276px">
+        <FormControl>
+          <RadioGroup
+            aria-labelledby="storage-label"
+            name="storage"
+            value={props.deviceFilter.storage}
+            onChange={(e) =>
+              props.handleDeviceFilter(Number(e.target.value), 'storage')
+            }
+          >
+            {STORAGE_LIST.map(
+              ({ label, value }: StorageType, index: number) => (
+                <FormControlLabel
+                  key={index}
+                  value={value}
+                  control={<Radio />}
+                  label={label}
+                />
+              )
+            )}
+          </RadioGroup>
+        </FormControl>
+      </Content>
+    </MutableContainer>
+  )
+}
+
+function DeviceFilter(props: DeviceFilterProps) {
   const [openedFilter, setOpenedFilter] = useState(0)
   const theme = useTheme()
-  const { data: planListData, isLoading: planListIsLoading } = usePlanList()
 
-  if (!planListData || planListIsLoading) {
+  if (!props.planListData || props.planListIsLoading) {
     return (
       <FilterContainer>
-        <Loading />
+        <Skeleton
+          sx={{ bgcolor: lighten(0.5, theme.app.uplusPink) }}
+          variant="rounded"
+          width={1230}
+          height={300}
+        />
       </FilterContainer>
     )
   }
 
   return (
     <FilterContainer>
-      <MutableContainer
-        width={openedFilter === 1 ? '1230px' : '300px'}
-        zIndex={8}
-        marginLeft="0px"
-      >
-        <Title width={openedFilter === 1 ? '1230px' : '300px'}>
-          <div>
-            <VisibleTitleContainer>
-              <TitleText>요금제</TitleText>
-              {!(openedFilter === 1) && (
-                <MoreText
-                  onClick={() => {
-                    setOpenedFilter(1)
-                  }}
-                >{`상세보기 >`}</MoreText>
-              )}
-            </VisibleTitleContainer>
-          </div>
-          <HideTitleContainer width="920px">
-            <HideTitle width="920px">
-              {PLAN_INFO_LIST.map((planTitle: string) => (
-                <HideText
-                  width="100px"
-                  fontSize="16px"
-                  color={theme.app.grayFont}
-                  marginLeft="40px"
-                >
-                  {planTitle}
-                </HideText>
-              ))}
-            </HideTitle>
-            {openedFilter === 1 && (
-              <MoreText onClick={() => setOpenedFilter(0)}>{`< 접기`}</MoreText>
-            )}
-          </HideTitleContainer>
-        </Title>
-        <Content width={openedFilter === 1 ? '1206px' : '276px'}>
-          <div>
-            <FormControl sx={{ width: '276px' }}>
-              <RadioGroup
-                aria-labelledby="plan-label"
-                defaultValue="5G 프리미어 에센셜"
-                name="plan"
-              >
-                {planListData.map((planData: any) => (
-                  <FormControlLabel
-                    value={planData.name}
-                    control={<Radio />}
-                    label={planData.name}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-          </div>
-          <HideContent>
-            {planListData.map((planData: any) => (
-              <HideDiv>
-                {[
-                  planData.price,
-                  planData.data,
-                  planData.sharing,
-                  planData.voiceCall,
-                  planData.message,
-                ].map((data: any) => (
-                  <HideText
-                    width="100px"
-                    fontSize="18px"
-                    color={theme.app.blackFont}
-                    marginLeft="40px"
-                  >
-                    {data}
-                  </HideText>
-                ))}
-              </HideDiv>
-            ))}
-          </HideContent>
-        </Content>
-      </MutableContainer>
-      <MutableContainer
-        width={openedFilter === 2 ? '920px' : '300px'}
-        zIndex={7}
-        marginLeft="310px"
-      >
-        <Title width={openedFilter === 2 ? '920px' : '300px'}>
-          <div>
-            <VisibleTitleContainer>
-              <TitleText>할인 유형</TitleText>
-              {!(openedFilter === 2) && (
-                <MoreText
-                  onClick={() => setOpenedFilter(2)}
-                >{`상세보기 >`}</MoreText>
-              )}
-            </VisibleTitleContainer>
-          </div>
-          <HideTitleContainer width="610px">
-            <HideTitle width="610px"></HideTitle>
-            {openedFilter === 2 && (
-              <MoreText onClick={() => setOpenedFilter(0)}>{`< 접기`}</MoreText>
-            )}
-          </HideTitleContainer>
-        </Title>
-        <Content width={openedFilter === 2 ? '896px' : '276px'}>
-          <div>
-            <FormControl sx={{ width: '276px' }}>
-              <RadioGroup
-                aria-labelledby="discount-label"
-                defaultValue="추천"
-                name="discount"
-              >
-                {DISCOUNT_TYPE_LIST.map((discountType: string) => (
-                  <FormControlLabel
-                    value={discountType}
-                    control={<Radio />}
-                    label={discountType}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-          </div>
-          <HideContent>
-            {DICOUNT_INFO_LIST.map((discountInfo: string) => (
-              <HideDiv>
-                <HideText
-                  width="auto"
-                  fontSize="16px"
-                  color={theme.app.grayFont}
-                  marginLeft="0"
-                >
-                  {discountInfo}
-                </HideText>
-              </HideDiv>
-            ))}
-          </HideContent>
-        </Content>
-      </MutableContainer>
-      <MutableContainer width="300px" zIndex={6} marginLeft="620px">
-        <Title width="300px">
-          <TitleText>할부 기간</TitleText>
-        </Title>
-        <Content width="276px">
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="installment-label"
-              defaultValue="24개월"
-              name="installment"
-            >
-              {INSTALLMENT_LIST.map((installment: string) => (
-                <FormControlLabel
-                  value={installment}
-                  control={<Radio />}
-                  label={installment}
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </Content>
-      </MutableContainer>
-      <MutableContainer width="300px" zIndex={6} marginLeft="930px">
-        <Title width="300px">
-          <TitleText>저장 용량</TitleText>
-        </Title>
-        <Content width="276px">
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="storage-label"
-              defaultValue="전체"
-              name="storage"
-            >
-              {STORAGE_LIST.map((storage: string) => (
-                <FormControlLabel
-                  value={storage}
-                  control={<Radio />}
-                  label={storage}
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </Content>
-      </MutableContainer>
+      <PlanFilter
+        openedFilter={openedFilter}
+        setOpenedFilter={setOpenedFilter}
+        planListData={props.planListData}
+        planFilter={props.planFilter}
+        handlePlanFilter={props.handlePlanFilter}
+      />
+      <DiscountFilter
+        openedFilter={openedFilter}
+        setOpenedFilter={setOpenedFilter}
+        deviceFilter={props.deviceFilter}
+        handleDeviceFilter={props.handleDeviceFilter}
+      />
+      <InstallmentFilter
+        deviceFilter={props.deviceFilter}
+        handleDeviceFilter={props.handleDeviceFilter}
+      />
+      <StorageFilter
+        deviceFilter={props.deviceFilter}
+        handleDeviceFilter={props.handleDeviceFilter}
+      />
     </FilterContainer>
   )
 }
