@@ -9,6 +9,7 @@ import DeviceListPage from './pages/device/DeviceListPage'
 import DeviceDetailPage from './pages/device/DeviceDetailPage'
 import OrderListPage from './pages/order/OrderListPage'
 import CartPage from './pages/cart/CartPage'
+import SearchPage from './pages/search/SearchPage'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="device/:deviceCode" element={<DeviceDetailPage />} />
         <Route path="order" element={<OrderListPage />} />
         <Route path="cart" element={<CartPage />} />
+        <Route path="search" element={<SearchPage />} />
       </Route>
     </Routes>
   )
