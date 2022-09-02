@@ -19,6 +19,38 @@ const initialState: DeviceState = {
     sortIndex: 0,
   },
   deviceList: asyncState.initial(),
+  compareDeviceList: [
+    {
+      deviceCode: '',
+      deviceName: '',
+      joinTypeIndex: 0,
+      installmentIndex: 0,
+      discountIndex: 3,
+      planName: '',
+      picPath: '',
+      price: 0,
+    },
+    {
+      deviceCode: '',
+      deviceName: '',
+      joinTypeIndex: 0,
+      installmentIndex: 0,
+      discountIndex: 3,
+      planName: '',
+      picPath: '',
+      price: 0,
+    },
+    {
+      deviceCode: '',
+      deviceName: '',
+      joinTypeIndex: 0,
+      installmentIndex: 0,
+      discountIndex: 3,
+      planName: '',
+      picPath: '',
+      price: 0,
+    },
+  ],
 }
 
 const device = createReducer<DeviceState, DeviceAction>(initialState, {
@@ -40,6 +72,20 @@ const device = createReducer<DeviceState, DeviceAction>(initialState, {
   ) => ({
     ...state,
     deviceFilter: action.payload,
+  }),
+  [deviceActionTypes.SET_COMPARE_DEVICE_LIST]: (
+    state: DeviceState,
+    action: DeviceAction
+  ) => ({
+    ...state,
+    compareDeviceList: action.payload,
+  }),
+  [deviceActionTypes.RESET_COMPARE_DEVICE_LIST]: (
+    state: DeviceState,
+    action: DeviceAction
+  ) => ({
+    ...state,
+    compareDeviceList: initialState.compareDeviceList,
   }),
 }).handleAction(
   transformToArray(deviceActions.getDeviceListAsync),

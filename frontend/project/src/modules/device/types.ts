@@ -14,10 +14,22 @@ export interface DeviceFilterType {
   sortIndex: number
 }
 
+export interface CompareDevice {
+  deviceCode: string
+  deviceName: string
+  joinTypeIndex: number
+  installmentIndex: number
+  discountIndex: number
+  planName: string
+  picPath: string
+  price: number
+}
+
 export type DeviceAction = ActionType<typeof deviceActions>
 
 export type DeviceState = {
   planFilter: string
   deviceFilter: DeviceFilterType
   deviceList: AsyncState<DeviceListData, Error>
+  compareDeviceList: Array<CompareDevice>
 }

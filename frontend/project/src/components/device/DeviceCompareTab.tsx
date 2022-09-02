@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styled, { css, useTheme } from 'styled-components'
+import { CompareDevice } from '../../modules/device'
 // import components
 import UplusButton from '../UplusButton'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -141,19 +142,27 @@ interface HeightProps {
 }
 
 interface DeviceProps {
-  device: any
+  device: CompareDevice
+  deleteCompareDevice: (deviceCode: string) => void
 }
 
 interface DeviceCompareTabProps {
   closeCompareTab: () => void
   clickOpenDialog: () => void
+  compareDeviceList: Array<CompareDevice>
+  deleteCompareDevice: (deviceCode: string) => void
+  resetCompareDeviceList: () => void
 }
 
 // components
-function Device({ device }: DeviceProps) {
+function priceFormat(value: number) {
+  return `${value.toLocaleString('ko-KR')}`
+}
+
+function Device({ device, deleteCompareDevice }: DeviceProps) {
   return (
-    <DeviceDiv border={device.name === '' ? '2px dashed' : '2px solid'}>
-      {device.name === '' ? (
+    <DeviceDiv border={device.deviceCode === '' ? '2px dashed' : '2px solid'}>
+      {device.deviceCode === '' ? (
         <>
           <CustomPhoneIcon />
           <ContentText>기기 미선택</ContentText>
@@ -164,14 +173,16 @@ function Device({ device }: DeviceProps) {
             <DeviceImage alt="Device Image" src={device.picPath} />
             <div>
               <div>
-                <ContentText>{device.name}</ContentText>
+                <ContentText>{device.deviceName}</ContentText>
               </div>
-              <PriceText>{device.price}</PriceText>
+              <PriceText>{priceFormat(device.price)}</PriceText>
               <ContentText>원</ContentText>
             </div>
           </DeviceInfoDiv>
           <DeleteDiv>
-            <CustomDeleteIcon onClick={() => null} />
+            <CustomDeleteIcon
+              onClick={() => deleteCompareDevice(device.deviceCode)}
+            />
           </DeleteDiv>
         </>
       )}
@@ -182,29 +193,12 @@ function Device({ device }: DeviceProps) {
 function DeviceCompareTab({
   closeCompareTab,
   clickOpenDialog,
+  compareDeviceList,
+  deleteCompareDevice,
+  resetCompareDeviceList,
 }: DeviceCompareTabProps) {
   const [isFoldTab, setIsFoldTab] = useState(false)
   const theme = useTheme()
-  const deviceList: any = [
-    {
-      name: '갤럭시 Z 플립1',
-      picPath:
-        'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 82,970',
-    },
-    {
-      name: '갤럭시 Z 플립2',
-      picPath:
-        'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 82,970',
-    },
-    {
-      name: '',
-      picPath:
-        'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 82,970',
-    },
-  ]
 
   return (
     <TabContainer>
@@ -221,8 +215,12 @@ function DeviceCompareTab({
       </TitleDiv>
       <ContentDiv height={isFoldTab ? '0' : '150px'}>
         <DeviceListDiv>
-          {deviceList.map((device: any) => (
-            <Device device={device}></Device>
+          {compareDeviceList.map((device: CompareDevice, index: number) => (
+            <Device
+              key={index}
+              device={device}
+              deleteCompareDevice={deleteCompareDevice}
+            ></Device>
           ))}
         </DeviceListDiv>
         <ButtonDiv>
@@ -241,7 +239,7 @@ function DeviceCompareTab({
             fontColor={theme.app.grayFont}
             bgColor={theme.app.background}
             border={`1px solid ${theme.app.dividerGray}`}
-            onClick={() => null}
+            onClick={() => resetCompareDeviceList()}
           />
         </ButtonDiv>
       </ContentDiv>
