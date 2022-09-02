@@ -37,4 +37,6 @@ public class Device implements Serializable {
     @OneToMany(mappedBy = "device")
     private List<Discount> discounts = new ArrayList<>();
 
+    private String brand;
+
 }

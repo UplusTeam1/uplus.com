@@ -1,6 +1,8 @@
 package com.uplus.item.device.service;
 
+import com.uplus.item.device.domain.payload.ChargeInfo;
 import com.uplus.item.device.domain.payload.DeviceResponse;
+import com.uplus.item.device.domain.payload.MonthInfo;
 import com.uplus.item.discount.domain.Discount;
 import com.uplus.item.discount.repository.DiscountRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,56 +24,49 @@ public class DeviceServiceBySangWoo {
         return discountRepository.findByPlan_Name(plan)
                 .stream()
                 .map(discount -> DeviceResponse.of(
+                        discount,
                         discount.getDevice(),
-                        calculate(discount.getDevice().getPrice(), discount)))
+                        new ChargeInfo(calculate(discount.getDevice().getPrice(), discount))))
                 .collect(Collectors.toList());
     }
 
-    private List<Map<String, Object>> calculate(Integer devicePrice, Discount discount) {
-        List list = new ArrayList();
+    private List<MonthInfo> calculate(Integer devicePrice, Discount discount) {
+        List<MonthInfo> list = new ArrayList<>();
         Integer planCharge = discount.getPlan().getPrice();
         // 공시지원금
-
-        Map<String, Object> map = new HashMap<>();
-        List<Integer> devices = new ArrayList<>();
+        List<Integer> deviceCharges = new ArrayList<>();
         for (int i = 12; i <= 36; i += 12) {
-            devices.add((devicePrice - discount.getDeviceDiscount()) / i);
+            deviceCharges.add(round((devicePrice - discount.getDeviceDiscount()) / i));
         }
         List<Integer> totalCharges = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
-            totalCharges.add(devices.get(i) + planCharge);
+            totalCharges.add(round(deviceCharges.get(i) + planCharge));
         }
-        map.put("deviceCharge", devices);
-        map.put("planCharge", planCharge);
-        map.put("totalCharge", totalCharges);
+        MonthInfo monthInfo = new MonthInfo(deviceCharges, planCharge, totalCharges);
 
-        list.add(map);
+        list.add(monthInfo);
 
         // 12개월
 
         planCharge = (int) (planCharge * 0.75);
 
-        map = new HashMap<>();
-        devices = new ArrayList<>();
+        deviceCharges = new ArrayList<>();
         for (int i = 12; i <= 36; i += 12) {
-            devices.add(devicePrice / i);
+            deviceCharges.add(round(devicePrice / i));
         }
         totalCharges = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            totalCharges.add((int) (devices.get(i) + planCharge));
+            totalCharges.add(round(deviceCharges.get(i) + planCharge));
         }
-        map.put("deviceCharge", devices);
-        map.put("planCharge", planCharge);
-        map.put("totalCharge", totalCharges);
-
-        list.add(map);
-
+        monthInfo = new MonthInfo(deviceCharges, planCharge, totalCharges);
+        list.add(monthInfo);
         // 24개월 -> 12개월과 똑같음
-
-        list.add(map);
-
+        list.add(monthInfo);
         return list;
+    }
 
+    private Integer round(Integer i) {
+        return (i + 50) / 100 * 100;
     }
 }
