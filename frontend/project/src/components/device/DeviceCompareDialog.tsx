@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { CompareDevice } from '../../modules/device'
 // styles
 import styled, { css, useTheme } from 'styled-components'
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
@@ -251,6 +252,7 @@ const CustomCloseIcon = styled(CloseIcon)<{ size: string }>`
 // interface
 interface DeviceProps {
   device: any
+  deleteCompareDevice?: (deviceCode: string) => void
 }
 
 interface DeviceListProps {
@@ -266,16 +268,22 @@ interface InfoTitleProps {
 interface DeviceCompareDialogProps {
   open: boolean
   onClose: () => void
+  compareDeviceList: Array<CompareDevice>
+  deleteCompareDevice: (deviceCode: string) => void
 }
 
 // components
-function Device({ device }: DeviceProps) {
+function priceFormat(value: number) {
+  return `${value.toLocaleString('ko-KR')}`
+}
+
+function Device({ device, deleteCompareDevice }: DeviceProps) {
   const theme = useTheme()
   const navigate = useNavigate()
 
   return (
-    <DeviceDiv border={device.name === '' ? '2px dashed' : '2px solid'}>
-      {device.name === '' ? (
+    <DeviceDiv border={device.deviceName === '' ? '2px dashed' : '2px solid'}>
+      {device.deviceName === '' ? (
         <>
           <CustomPhoneIcon />
           <ContentText>기기 미선택</ContentText>
@@ -284,8 +292,8 @@ function Device({ device }: DeviceProps) {
         <>
           <CustomCloseIcon size="28px" onClick={() => null} />
           <DeviceImage alt="Device Image" src={device.picPath} />
-          <ContentText>{device.name}</ContentText>
-          <PriceText>{device.price}원</PriceText>
+          <ContentText>{device.deviceName}</ContentText>
+          <PriceText>{priceFormat(device.price)}원</PriceText>
           <ButtonContainer>
             <UplusButton
               width="120px"
@@ -295,7 +303,7 @@ function Device({ device }: DeviceProps) {
               fontColor={theme.app.grayFont}
               bgColor={theme.app.background}
               border={`1px solid ${theme.app.grayFont}`}
-              onClick={() => navigate(`/device/galaxy`)}
+              onClick={() => navigate(`/device/${device.deviceCode}`)}
             />
             <CartButton>
               <AddShoppingCartOutlinedIcon color="secondary" fontSize="small" />
@@ -518,7 +526,12 @@ function Spec({ device }: DeviceProps) {
   )
 }
 
-function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
+function DeviceCompareDialog({
+  open,
+  onClose,
+  compareDeviceList,
+  deleteCompareDevice,
+}: DeviceCompareDialogProps) {
   const [isFoldFee, setIsFoldFee] = useState(false)
   const [isFoldPlan, setIsFoldPlan] = useState(false)
   const [isFoldSpec, setIsFoldSpec] = useState(false)
@@ -563,8 +576,12 @@ function DeviceCompareDialog({ open, onClose }: DeviceCompareDialogProps) {
       </CustomDialogTitle>
       <CustomDialogContent dividers={true}>
         <DeviceListDiv>
-          {deviceList.map((device: any, index: number) => (
-            <Device key={index} device={device}></Device>
+          {compareDeviceList.map((device: CompareDevice, index: number) => (
+            <Device
+              key={index}
+              device={device}
+              deleteCompareDevice={deleteCompareDevice}
+            ></Device>
           ))}
         </DeviceListDiv>
         <InfoTitle

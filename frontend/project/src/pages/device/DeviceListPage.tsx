@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import produce from 'immer'
 // import interface
 import { DeviceData, DeviceListData } from '../../api/device'
-import device, { DeviceFilterType } from '../../modules/device'
+import { CompareDevice, DeviceFilterType } from '../../modules/device'
 // import components
 import DeviceFilter from '../../components/device/DeviceFilter'
 import DeviceSubFilter from '../../components/device/DeviceSubFilter'
@@ -13,6 +13,7 @@ import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
 // custom hooks
 import useDeviceList from '../../hooks/device/useDeviceList'
 import useFilter from '../../hooks/device/useFilter'
+import useCompareDeviceList from '../../hooks/device/useCompareDeviceList'
 import usePlanList from '../../hooks/plan/usePlanList'
 
 const DeviceListContainer = styled.div`
@@ -101,10 +102,19 @@ function DeviceListPage() {
   } = useFilter()
   const { data: planListData, isLoading: planListIsLoading } = usePlanList()
   const { deviceList, getDeviceList } = useDeviceList()
+  const { compareDeviceList, setCompareDeviceList, resetCompareDeviceList } =
+    useCompareDeviceList()
   const filteredDeviceList = useMemo(
     () =>
       deviceList.data ? filterDeviceList(deviceList.data, deviceFilter) : null,
     [deviceList.data, deviceFilter]
+  )
+  const selectedCompareDeviceCode = useMemo(
+    () =>
+      compareDeviceList
+        ? compareDeviceList.map((device) => device.deviceCode)
+        : [''],
+    [compareDeviceList]
   )
 
   useEffect(() => {
@@ -182,6 +192,7 @@ function DeviceListPage() {
 
   const closeCompareTab = useCallback(() => {
     setIsOpenCompareTab(false)
+    resetCompareDeviceList()
   }, [])
 
   const clickOpenDialog = useCallback(() => {
@@ -191,6 +202,56 @@ function DeviceListPage() {
   const closeDialog = useCallback(() => {
     setOpenDialog(false)
   }, [])
+
+  const addCompareDevice = (compareDevice: CompareDevice) => {
+    clickCompareButton()
+    for (let i = 0; i < 3; i++) {
+      if (compareDeviceList[i].discountIndex === 3) {
+        const _compareDeviceList = [...compareDeviceList]
+        setCompareDeviceList(
+          produce(_compareDeviceList, (draft) => {
+            draft[i] = compareDevice
+          })
+        )
+        if (i === 2) {
+          setOpenDialog(true)
+        }
+        return
+      }
+    }
+    alert('최대 3개 상품까지 비교하기가 가능합니다.')
+  }
+
+  const changeCompareDeviceOption = (compareDevice: CompareDevice) => {
+    for (let i = 0; i < 3; i++) {
+      if (compareDeviceList[i].deviceCode === compareDevice.deviceCode) {
+        const _compareDeviceList = [...compareDeviceList]
+        setCompareDeviceList(
+          produce(_compareDeviceList, (draft) => {
+            draft[i] = compareDevice
+          })
+        )
+        break
+      }
+    }
+  }
+
+  const deleteCompareDevice = (deviceCode: string) => {
+    const _compareDeviceList = [...compareDeviceList].filter(
+      (device) => device.deviceCode !== deviceCode
+    )
+    _compareDeviceList.push({
+      deviceCode: '',
+      deviceName: '',
+      joinTypeIndex: 0,
+      installmentIndex: 0,
+      discountIndex: 3,
+      planName: '',
+      picPath: '',
+      price: 0,
+    })
+    setCompareDeviceList(_compareDeviceList)
+  }
 
   return (
     <>
@@ -210,6 +271,9 @@ function DeviceListPage() {
         <DeviceCompareTab
           closeCompareTab={closeCompareTab}
           clickOpenDialog={clickOpenDialog}
+          compareDeviceList={compareDeviceList}
+          deleteCompareDevice={deleteCompareDevice}
+          resetCompareDeviceList={resetCompareDeviceList}
         />
       )}
       <DeviceListContainer>
@@ -227,11 +291,18 @@ function DeviceListPage() {
                   : deviceFilter.discountIndex
               }
               installmentIndex={deviceFilter.installmentIndex}
-              clickCompareButton={clickCompareButton}
+              addCompareDevice={addCompareDevice}
+              deleteCompareDevice={deleteCompareDevice}
+              selectedCheck={selectedCompareDeviceCode.includes(device.code)}
             />
           ))}
       </DeviceListContainer>
-      <DeviceCompareDialog open={openDialog} onClose={closeDialog} />
+      <DeviceCompareDialog
+        open={openDialog}
+        onClose={closeDialog}
+        compareDeviceList={compareDeviceList}
+        deleteCompareDevice={deleteCompareDevice}
+      />
     </>
   )
 }

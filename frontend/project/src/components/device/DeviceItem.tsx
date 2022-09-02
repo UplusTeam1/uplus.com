@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { DISCOUNT_TYPE_LIST } from '../../data/staticData'
+import { CompareDevice } from '../../modules/device'
 // styles
 import styled, { css, useTheme } from 'styled-components'
 import { darken } from 'polished'
@@ -131,7 +132,9 @@ interface DeviceItemProps {
   installmentCheck: boolean
   discountIndex: number
   installmentIndex: number
-  clickCompareButton: () => void
+  addCompareDevice: (compareDevice: CompareDevice) => void
+  deleteCompareDevice: (deviceCode: string) => void
+  selectedCheck: boolean
 }
 
 function priceFormat(value: number) {
@@ -145,7 +148,9 @@ function DeviceItem({
   installmentCheck,
   discountIndex,
   installmentIndex,
-  clickCompareButton,
+  addCompareDevice,
+  deleteCompareDevice,
+  selectedCheck,
 }: DeviceItemProps) {
   const theme = useTheme()
   const navigate = useNavigate()
@@ -272,10 +277,29 @@ function DeviceItem({
             height="30px"
             radius="15px"
             text="비교하기"
-            fontColor={theme.app.grayFont}
-            bgColor={theme.app.background}
-            border={`1px solid ${theme.app.grayFont}`}
-            onClick={() => clickCompareButton()}
+            fontColor={selectedCheck ? theme.app.whiteFont : theme.app.grayFont}
+            bgColor={
+              selectedCheck ? theme.app.mainBackground : theme.app.background
+            }
+            border={selectedCheck ? '' : `1px solid ${theme.app.grayFont}`}
+            onClick={() =>
+              selectedCheck
+                ? deleteCompareDevice(device.code)
+                : addCompareDevice({
+                    deviceCode: device.code,
+                    deviceName: device.name,
+                    joinTypeIndex: 0,
+                    installmentIndex: installmentIndex,
+                    discountIndex: discountIndex,
+                    planName: planFilter,
+                    picPath: device.detailPerColor[0].picPaths[0],
+                    price: installmentCheck
+                      ? device.monthlyChargeList[discountIndex].totalCharge[
+                          installmentIndex
+                        ]
+                      : device.monthlyChargeList[discountIndex].planCharge,
+                  })
+            }
           />
           <CartButton>
             <AddShoppingCartOutlinedIcon color="secondary" fontSize="small" />
