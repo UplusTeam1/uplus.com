@@ -35,6 +35,7 @@ public class SearchRepository {
                 .port(PORT)
                 .path("/device/_search")
                 .queryParam("q", keyword)
+                .queryParam("size", 32)
                 .build()
                 .toUri();
 
@@ -52,6 +53,7 @@ public class SearchRepository {
                 .port(PORT)
                 .path("/device/_search")
                 .queryParam("q", input)
+                .queryParam("size", 32)
                 .build()
                 .toUri();
 
