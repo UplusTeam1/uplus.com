@@ -52,14 +52,15 @@ public class DeviceServiceByDongWan {
         Device device = discount.getDevice();
         int deviceCharge = device.getPrice();
         int planCharge = discount.getPlan().getPrice();
+        int deviceDiscount = discount.getDeviceDiscount();
 
         List<MonthlyCharge> monthlyChargeList = new ArrayList<>();
 
         // 공시지원금
         int calculatedPlanCharge = planCharge;
         int calculatedDeviceCharge = deviceCharge - discount.getDeviceDiscount();
-        MonthlyCharge deviceDiscount = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
-        monthlyChargeList.add(deviceDiscount);
+        MonthlyCharge monthlyDeviceDiscount = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
+        monthlyChargeList.add(monthlyDeviceDiscount);
         int recommendedIndex = 0;
 
         // 선택 약정 12개월
@@ -72,7 +73,7 @@ public class DeviceServiceByDongWan {
         // 선택 약정 12개월과 동일한 월별 요금 적용됨
         monthlyChargeList.add(contractDiscount);
 
-        if (contractDiscount.getTotalCharge().get(0) < deviceDiscount.getTotalCharge().get(0))
+        if (contractDiscount.getTotalCharge().get(0) < monthlyDeviceDiscount.getTotalCharge().get(0))
             recommendedIndex = 2;
 
         //할인 없음
@@ -80,6 +81,6 @@ public class DeviceServiceByDongWan {
         MonthlyCharge noDiscount = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
         monthlyChargeList.add(noDiscount);
 
-        return GetDevicePricesResponse.of(device, monthlyChargeList, recommendedIndex);
+        return GetDevicePricesResponse.of(device, deviceDiscount, monthlyChargeList, recommendedIndex);
     }
 }

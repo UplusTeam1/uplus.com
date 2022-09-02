@@ -10,8 +10,12 @@ spring:
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
     show-sql: true
+
+es-info:
+  host: ec2-3-39-36-0.ap-northeast-2.compute.amazonaws.com
+  port: 9200
