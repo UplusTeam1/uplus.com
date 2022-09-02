@@ -23,7 +23,7 @@ public class GetDevicePricesResponse {
                 .code(device.getCode())
                 .name(device.getName())
                 .price(device.getPrice())
-                .deviceDiscount(100000)
+                .deviceDiscount(deviceDiscount)
                 .monthlyChargeList(monthlyChargeList)
                 .recommendedDiscountIndex(recommendedDiscountIndex)
                 .build();
