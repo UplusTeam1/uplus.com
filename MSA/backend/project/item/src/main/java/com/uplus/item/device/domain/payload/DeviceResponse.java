@@ -1,6 +1,8 @@
 package com.uplus.item.device.domain.payload;
 
 import com.uplus.item.device.domain.Device;
+import com.uplus.item.device.domain.DeviceDetail;
+import com.uplus.item.discount.domain.Discount;
 import lombok.*;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public class DeviceResponse {
 
     private Integer price;
 
-    private List<Map<String, Object>> monthlyChargeList;
+    private List<MonthInfo> monthlyChargeList;
 
     private Integer recommendedDiscountIndex;
 
@@ -30,7 +32,13 @@ public class DeviceResponse {
 
     private Integer weeklySale;
 
-    public static DeviceResponse of(Device device, List monthlyChargeList) {
+    private String brand;
+
+    private Integer totalStock;
+
+    private Integer deviceDiscount;
+
+    public static DeviceResponse of(Discount discount, Device device, ChargeInfo chargeInfo) {
         return DeviceResponse.builder()
                 .code(device.getCode())
                 .detailPerColor(device.getDeviceDetails()
@@ -39,10 +47,16 @@ public class DeviceResponse {
                         .collect(Collectors.toList()))
                 .name(device.getName())
                 .price(device.getPrice())
-                .monthlyChargeList(monthlyChargeList)
-                .recommendedDiscountIndex(0)
+                .monthlyChargeList(chargeInfo.getMonthlyCharges())
+                .recommendedDiscountIndex(chargeInfo.getRecommendedIndex())
                 .storage(device.getStorage())
                 .weeklySale(device.getWeeklySale())
+                .brand(device.getBrand())
+                .totalStock(device.getDeviceDetails()
+                        .stream()
+                        .mapToInt(DeviceDetail::getStock)
+                        .sum())
+                .deviceDiscount(discount.getDeviceDiscount())
                 .build();
     }
 
