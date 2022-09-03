@@ -69,7 +69,7 @@
     "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:825207681038:task-definition/UPLUS-BE-ORDER:13",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:825207681038:task-definition/UPLUS-BE-ORDER:15",
   "family": "UPLUS-BE-ORDER",
   "requiresAttributes": [
     {
@@ -110,7 +110,7 @@
   "networkMode": "bridge",
   "runtimePlatform": null,
   "cpu": null,
-  "revision": 13,
+  "revision": 15,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
