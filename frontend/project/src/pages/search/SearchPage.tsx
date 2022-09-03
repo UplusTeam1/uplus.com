@@ -27,11 +27,43 @@ const SearchCountContainer = styled.div`
   color: ${({ theme }) => theme.app.blackFont};
 `
 const SearchCountSpan = styled.span`
-  font-weight: bold;
   color: ${({ theme }) => theme.app.uplusPink};
 `
 const SearchRelationSpan = styled.span`
   margin-right: 50px;
+`
+const SearchNoResultContainer = styled.div`
+  ${flexCenter}
+  width: 1228px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-size: 26px;
+  font-weight: bold;
+  color: ${({ theme }) => theme.app.blackFont};
+`
+const SearchNoResultSpan = styled.span`
+  color: ${({ theme }) => theme.app.uplusPink};
+`
+const SearchRecommendedContainer = styled.div`
+  ${flexCenter}
+  flex-direction: column;
+  width: 1228px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: ${({ theme }) => theme.app.blackFont};
+`
+const SearchRecommendedTextContainer = styled.div`
+  ${flexCenter}
+  width: 1228px;
+  margin-bottom: 10px;
+`
+const SearchRecommendedButtonContainer = styled.div`
+  ${flexCenter}
+  width: 1228px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 `
 const SearchTopContainer = styled.div`
   display: flex;
@@ -142,28 +174,60 @@ function SearchPage() {
   return (
     <>
       <SearchTopContainer>
-        <SearchRelationContainer>
-          <SearchRelationSpan>연관 검색어</SearchRelationSpan>
-          {['Sample1', 'Sample2', 'Sample3'].map((num) => (
-            <UplusButtonDiv>
-              <UplusButton
-                width="100px"
-                height="35px"
-                size="14px"
-                fontColor={theme.app.grayFont}
-                bgColor={theme.app.whiteFont}
-                border={`1px solid ${theme.app.grayFont}`}
-                text={String(num)}
-                onClick={() => null}
-              />
-            </UplusButtonDiv>
-          ))}
-        </SearchRelationContainer>
-        <SearchCountContainer>
-          <SearchCountSpan>"{'SampleSearchText'}"</SearchCountSpan>
-          {'에 대한 검색결과는 총 '}
-          <SearchCountSpan>{`SampleCount`}</SearchCountSpan>건 입니다!!
-        </SearchCountContainer>
+        {true ? (
+          <>
+            <SearchNoResultContainer>
+              <SearchNoResultSpan>"{'No Result Text'}"</SearchNoResultSpan> 에
+              대한 검색결과가 없습니다!
+            </SearchNoResultContainer>
+            <SearchRecommendedContainer>
+              <SearchRecommendedTextContainer>
+                U+ 에서 검색어를 추천해 드려요!
+              </SearchRecommendedTextContainer>
+              <SearchRecommendedButtonContainer>
+                {['Sample1', 'Sample2', 'Sample3'].map((num) => (
+                  <UplusButtonDiv>
+                    <UplusButton
+                      width="100px"
+                      height="35px"
+                      size="14px"
+                      fontColor={theme.app.grayFont}
+                      bgColor={theme.app.whiteFont}
+                      border={`1px solid ${theme.app.grayFont}`}
+                      text={String(num)}
+                      onClick={() => null}
+                    />
+                  </UplusButtonDiv>
+                ))}
+              </SearchRecommendedButtonContainer>
+            </SearchRecommendedContainer>
+          </>
+        ) : (
+          <>
+            <SearchRelationContainer>
+              <SearchRelationSpan>연관 검색어</SearchRelationSpan>
+              {['Sample1', 'Sample2', 'Sample3'].map((num) => (
+                <UplusButtonDiv>
+                  <UplusButton
+                    width="100px"
+                    height="35px"
+                    size="14px"
+                    fontColor={theme.app.grayFont}
+                    bgColor={theme.app.whiteFont}
+                    border={`1px solid ${theme.app.grayFont}`}
+                    text={String(num)}
+                    onClick={() => null}
+                  />
+                </UplusButtonDiv>
+              ))}
+            </SearchRelationContainer>
+            <SearchCountContainer>
+              <SearchCountSpan>"{'SampleSearchText'}"</SearchCountSpan>
+              {'에 대한 검색결과는 총 '}
+              <SearchCountSpan>{`SampleCount`}</SearchCountSpan>건 입니다!!
+            </SearchCountContainer>
+          </>
+        )}
       </SearchTopContainer>
       {isOpenCompareTab && (
         <DeviceCompareTab
