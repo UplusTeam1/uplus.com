@@ -65,17 +65,17 @@ public class DeviceServiceByDongWan {
         List<MonthlyCharge> monthlyChargeList = new ArrayList<>();
 
         // 공시지원금
-        makeMonthlyCharge(monthlyChargeList, planCharge, deviceCharge - deviceDiscount, yearInterestRate);
+        makeMonthlyCharge(monthlyChargeList, planCharge, deviceCharge - deviceDiscount);
 
         // 선택 약정 12개월
-        makeMonthlyCharge(monthlyChargeList, contractPlanCharge, deviceCharge, yearInterestRate);
+        makeMonthlyCharge(monthlyChargeList, contractPlanCharge, deviceCharge);
 
         // 선택 약정 12개월, 24개월
         // 선택 약정 12개월과 동일한 월별 요금 적용됨
-        makeMonthlyCharge(monthlyChargeList, contractPlanCharge, deviceCharge, yearInterestRate);
+        makeMonthlyCharge(monthlyChargeList, contractPlanCharge, deviceCharge);
 
         // 할인 없음
-        makeMonthlyCharge(monthlyChargeList, planCharge, deviceCharge, yearInterestRate);
+        makeMonthlyCharge(monthlyChargeList, planCharge, deviceCharge);
 
         // 추천 할인 제도 선정
         int recommendedIndex = selectRecommendedIndex(monthlyChargeList);
@@ -84,15 +84,12 @@ public class DeviceServiceByDongWan {
         List<Integer> defaultInterestList = makeInterestList(deviceCharge, monthlyChargeList.get(2));
         List<Integer> discountedInterestList = makeInterestList(deviceCharge - deviceDiscount, monthlyChargeList.get(0));
 
-
         return DevicePricesResponse.of(
                 device, deviceDiscount, defaultInterestList,
                 discountedInterestList, monthlyChargeList, recommendedIndex);
     }
 
-    private void makeMonthlyCharge(
-            List<MonthlyCharge> monthlyChargeList, int calculatedPlanCharge,
-            int calculatedDeviceCharge, double yearInterestRate) {
+    private void makeMonthlyCharge(List<MonthlyCharge> monthlyChargeList, int calculatedPlanCharge, int calculatedDeviceCharge) {
         MonthlyCharge monthlyCharge = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge, yearInterestRate);
         monthlyChargeList.add(monthlyCharge);
     }
@@ -108,16 +105,12 @@ public class DeviceServiceByDongWan {
     }
 
     private List<Integer> makeInterestList(int totalDeviceCharge,  MonthlyCharge monthlyCharge) {
-        int[] contractMonthArray = new int[] {1, 12, 24, 36};
         List<Integer> interestList = new ArrayList<>();
         List<Integer> deviceChargeList = monthlyCharge.getDeviceCharge();
-        for (int index=0; index<deviceChargeList.size(); index++) {
+        interestList.add(0);
+        for (int index=1; index<deviceChargeList.size(); index++) {
             int monthDeviceCharge = deviceChargeList.get(index);
-            int contractMonth = contractMonthArray[index];
-            if (monthDeviceCharge == 0) {
-                interestList.add(0);
-                continue;
-            }
+            int contractMonth = index * 12;
             interestList.add(monthDeviceCharge * contractMonth - totalDeviceCharge);
         }
         return interestList;
