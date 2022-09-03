@@ -14,11 +14,13 @@ import com.lguplus.project.discount.repository.DiscountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DeviceServiceByDongWan {
 
@@ -34,7 +36,7 @@ public class DeviceServiceByDongWan {
         Device findDevice = deviceRepository.findByCode(code)
                 .orElseThrow(() -> new DeviceNotFoundException(
                         "code : " + code + "\n" +
-                        "Exception : Device Not Found"));
+                                "Exception : Device Not Found"));
 
         List<DeviceDetail> deviceDetails = findDevice.getDeviceDetails();
         List<DeviceOptionsDetail> detailPerColor = new ArrayList<>();
@@ -50,8 +52,8 @@ public class DeviceServiceByDongWan {
         Discount discount = discountRepository.findByDeviceCodeAndPlanName(code, planName)
                 .orElseThrow(() -> new DeviceAndPlanNotFoundException(
                         "code : " + code + "\n" +
-                        "planName : " + planName + "\n" +
-                        "Exception : Device And PlanName Not Found"));
+                                "planName : " + planName + "\n" +
+                                "Exception : Device And PlanName Not Found"));
 
         Device device = discount.getDevice();
         double discountedRate = 1 - discountRate;
@@ -78,7 +80,14 @@ public class DeviceServiceByDongWan {
         // 추천 할인 제도 선정
         int recommendedIndex = selectRecommendedIndex(monthlyChargeList);
 
-        return DevicePricesResponse.of(device, deviceDiscount, monthlyChargeList, recommendedIndex);
+        // 총 이자 계산
+        List<Integer> defaultInterestList = makeInterestList(deviceCharge, monthlyChargeList.get(2));
+        List<Integer> discountedInterestList = makeInterestList(deviceCharge - deviceDiscount, monthlyChargeList.get(0));
+
+
+        return DevicePricesResponse.of(
+                device, deviceDiscount, defaultInterestList,
+                discountedInterestList, monthlyChargeList, recommendedIndex);
     }
 
     private void makeMonthlyCharge(
@@ -96,5 +105,21 @@ public class DeviceServiceByDongWan {
             recommendedIndex = 2;
         }
         return recommendedIndex;
+    }
+
+    private List<Integer> makeInterestList(int totalDeviceCharge,  MonthlyCharge monthlyCharge) {
+        int[] contractMonthArray = new int[] {1, 12, 24, 36};
+        List<Integer> interestList = new ArrayList<>();
+        List<Integer> deviceChargeList = monthlyCharge.getDeviceCharge();
+        for (int index=0; index<deviceChargeList.size(); index++) {
+            int monthDeviceCharge = deviceChargeList.get(index);
+            int contractMonth = contractMonthArray[index];
+            if (monthDeviceCharge == 0) {
+                interestList.add(0);
+                continue;
+            }
+            interestList.add(monthDeviceCharge * contractMonth - totalDeviceCharge);
+        }
+        return interestList;
     }
 }
