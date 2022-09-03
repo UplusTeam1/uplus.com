@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class GetDeviceOptionsResponse implements Serializable {
+public class DeviceOptionsResponse implements Serializable {
 
     private String code;
     private List<DeviceOptionsDetail> detailPerColor;
@@ -18,9 +18,9 @@ public class GetDeviceOptionsResponse implements Serializable {
     private Integer storage;
     private Integer weeklySale;
 
-    public static GetDeviceOptionsResponse of(Device device, List<DeviceOptionsDetail> detailPerColor) {
+    public static DeviceOptionsResponse of(Device device, List<DeviceOptionsDetail> detailPerColor) {
 
-        return GetDeviceOptionsResponse.builder()
+        return DeviceOptionsResponse.builder()
                 .code(device.getCode())
                 .detailPerColor(detailPerColor)
                 .name(device.getName())
