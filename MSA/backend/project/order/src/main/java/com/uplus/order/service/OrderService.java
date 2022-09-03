@@ -47,8 +47,15 @@ public class OrderService {
         Integer monthlyFee = orderRequest.getMonthlyFee();
         String color = orderRequest.getColor();
 
-        Order order = new Order();
-        order.saveOrder(joinDate, joinType, discountType, deviceCode, planName, monthlyFee, color);
+        Order order = Order.builder()
+                .joinDate(joinDate)
+                .joinType(joinType)
+                .discountType(discountType)
+                .deviceCode(deviceCode)
+                .planName(planName)
+                .monthlyFee(monthlyFee)
+                .color(color)
+                .build();
 
         KafkaCreateOrderRequest kafkaCreateOrderRequest = KafkaCreateOrderRequest.of(orderRepository.save(order));
         ListenableFuture<SendResult<String, Object>> future = kafkaProducer.sendCreateOrder(kafkaCreateOrderRequest);

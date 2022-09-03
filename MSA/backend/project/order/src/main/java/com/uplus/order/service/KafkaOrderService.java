@@ -20,7 +20,10 @@ public class KafkaOrderService {
         Order order = orderRepository.findById(kafkaCreateOrderResponse.getOrderNumber())
                 .orElseThrow(()->new CreateOrderFailedException("Exception : Create Order Failed"));
 
-        orderRepository.save(order.updateOrder(kafkaCreateOrderResponse.getDeviceName(), kafkaCreateOrderResponse.getPicPaths()));
+        orderRepository.save(order.toBuilder()
+                .deviceName(kafkaCreateOrderResponse.getDeviceName())
+                .picPaths(kafkaCreateOrderResponse.getPicPaths())
+                .build());
     }
 
     public void deleteOrder(Long orderNumber){
