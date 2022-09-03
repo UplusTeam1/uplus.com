@@ -80,7 +80,13 @@ public class DeviceServiceByDongWan {
         // 추천 할인 제도 선정
         int recommendedIndex = selectRecommendedIndex(monthlyChargeList);
 
-        return DevicePricesResponse.of(device, deviceDiscount, monthlyChargeList, recommendedIndex);
+        // 총 이자 계산
+        List<Integer> defaultInterestList = makeInterestList(deviceCharge, monthlyChargeList.get(2));
+        List<Integer> discountedInterestList = makeInterestList(deviceCharge - deviceDiscount, monthlyChargeList.get(0));
+
+        return DevicePricesResponse.of(
+                device, deviceDiscount, defaultInterestList,
+                discountedInterestList, monthlyChargeList, recommendedIndex);
     }
 
     private void makeMonthlyCharge(
@@ -98,5 +104,21 @@ public class DeviceServiceByDongWan {
             recommendedIndex = 2;
         }
         return recommendedIndex;
+    }
+
+    private List<Integer> makeInterestList(int totalDeviceCharge,  MonthlyCharge monthlyCharge) {
+        int[] contractMonthArray = new int[] {1, 12, 24, 36};
+        List<Integer> interestList = new ArrayList<>();
+        List<Integer> deviceChargeList = monthlyCharge.getDeviceCharge();
+        for (int index=0; index<deviceChargeList.size(); index++) {
+            int monthDeviceCharge = deviceChargeList.get(index);
+            int contractMonth = contractMonthArray[index];
+            if (monthDeviceCharge == 0) {
+                interestList.add(0);
+                continue;
+            }
+            interestList.add(monthDeviceCharge * contractMonth - totalDeviceCharge);
+        }
+        return interestList;
     }
 }
