@@ -6,7 +6,7 @@ env:
   CONTAINER_NAME: uplus-fe-container
   ECS_SERVICE: uplus-fe-service
   ECS_CLUSTER: uplus-cluster
-  ECS_TASK_DEFINITION: ./frontend/project/order/task-definition.json
+  ECS_TASK_DEFINITION: ./frontend/project/task-definition.json
 
 on:
    push:
