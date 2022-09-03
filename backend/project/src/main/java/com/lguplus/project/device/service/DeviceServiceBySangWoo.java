@@ -3,11 +3,10 @@ package com.lguplus.project.device.service;
 import com.lguplus.project.device.domain.payload.ChargeInfo;
 import com.lguplus.project.device.domain.payload.DeviceResponse;
 import com.lguplus.project.device.domain.payload.MonthInfo;
-import com.lguplus.project.device.repository.DeviceRepository;
 import com.lguplus.project.discount.repository.DiscountRepository;
-import com.lguplus.project.plan.repository.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,11 +15,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@PropertySource(value = {"classpath:price.properties"})
 public class DeviceServiceBySangWoo {
 
     private final DiscountRepository discountRepository;
 
-    @Value("${discount.rate}")
+    @Value("${contract.discount.rate}")
     private Double planDiscountRate;
 
     public List<DeviceResponse> getDevicesWithPlan(String plan) {
