@@ -19,6 +19,8 @@ on:
       paths:
          - 'frontend/project/**'
          - '.github/workflows/fe-msa.yml'
+      types:
+        - closed
         
 jobs:
   build:
