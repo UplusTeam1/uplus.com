@@ -76,12 +76,7 @@ public class DeviceServiceByDongWan {
         makeMonthlyCharge(monthlyChargeList, planCharge, deviceCharge, yearInterestRate);
 
         // 추천 할인 제도 선정
-        int recommendedIndex = 0;
-        int deviceDiscountCharge = monthlyChargeList.get(0).getTotalCharge().get(1);
-        int planDiscountCharge = monthlyChargeList.get(2).getTotalCharge().get(1);
-        if (planDiscountCharge > deviceDiscountCharge) {
-            recommendedIndex = 2;
-        }
+        int recommendedIndex = selectRecommendedIndex(monthlyChargeList);
 
         return DevicePricesResponse.of(device, deviceDiscount, monthlyChargeList, recommendedIndex);
     }
@@ -91,5 +86,15 @@ public class DeviceServiceByDongWan {
             int calculatedDeviceCharge, double yearInterestRate) {
         MonthlyCharge monthlyCharge = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge, yearInterestRate);
         monthlyChargeList.add(monthlyCharge);
+    }
+
+    private int selectRecommendedIndex(List<MonthlyCharge> monthlyChargeList) {
+        int recommendedIndex = 0;
+        int deviceDiscountCharge = monthlyChargeList.get(0).getTotalCharge().get(1);
+        int planDiscountCharge = monthlyChargeList.get(2).getTotalCharge().get(1);
+        if (planDiscountCharge > deviceDiscountCharge) {
+            recommendedIndex = 2;
+        }
+        return recommendedIndex;
     }
 }
