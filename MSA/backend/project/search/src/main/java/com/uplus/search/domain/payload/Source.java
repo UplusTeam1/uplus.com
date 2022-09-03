@@ -17,4 +17,6 @@ public class Source {
     private Integer price;
     @JsonProperty("weekly_sale")
     private Integer weeklySale;
+    @JsonProperty("pic_paths")
+    private String picPaths;
 }
