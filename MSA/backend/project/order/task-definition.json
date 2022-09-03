@@ -19,7 +19,7 @@
         {
           "hostPort": 0,
           "protocol": "tcp",
-          "containerPort": 8081
+          "containerPort": 8080
         }
       ],
       "command": null,
@@ -69,7 +69,7 @@
     "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:825207681038:task-definition/UPLUS-BE-ORDER:8",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:825207681038:task-definition/UPLUS-BE-ORDER:10",
   "family": "UPLUS-BE-ORDER",
   "requiresAttributes": [
     {
@@ -110,7 +110,7 @@
   "networkMode": "bridge",
   "runtimePlatform": null,
   "cpu": null,
-  "revision": 8,
+  "revision": 10,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
