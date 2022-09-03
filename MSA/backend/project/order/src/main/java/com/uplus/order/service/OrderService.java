@@ -12,6 +12,8 @@ import com.uplus.order.exception.DeleteOrderFailedException;
 import com.uplus.order.exception.OrderNotFoundException;
 import com.uplus.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class OrderService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OrderRepository orderRepository;
     private final KafkaProducer kafkaProducer;
 
@@ -58,11 +61,13 @@ public class OrderService {
                 .build();
 
         KafkaCreateOrderRequest kafkaCreateOrderRequest = KafkaCreateOrderRequest.of(orderRepository.save(order));
+
+        //kafka topic send
         ListenableFuture<SendResult<String, Object>> future = kafkaProducer.sendCreateOrder(kafkaCreateOrderRequest);
         future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>(){
             @Override
             public void onSuccess(SendResult<String, Object> result) {
-                System.out.println("Topic send Success");
+                logger.info("Topic send Success");
             }
             @Override
             public void onFailure(Throwable ex) {
@@ -86,11 +91,12 @@ public class OrderService {
                 .color(order.getColor())
                 .build();
 
+        //kafka topic send
         ListenableFuture<SendResult<String, Object>> future = kafkaProducer.sendDeleteOrder(kafkaDeleteOrderRequest);
         future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>(){
             @Override
             public void onSuccess(SendResult<String, Object> result) {
-                System.out.println("Topic send Success");
+                logger.info("Topic send Success");
                 orderRepository.delete(order);
             }
             @Override
