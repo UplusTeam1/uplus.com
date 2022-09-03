@@ -7,7 +7,7 @@ env:
   ECS_SERVICE: uplus-order-service
   ECS_CLUSTER: uplus-cluster
   ECS_TASK_DEFINITION: ./MSA/backend/project/order/task-definition.json
-  CONTAINER_NAME: uplus-be-order
+  CONTAINER_NAME: uplus-be-order-container
   yaml: ${{secrets.YAML_ORDER}}
   
 on:
