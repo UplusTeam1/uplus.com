@@ -8,12 +8,12 @@ on:
     branches: [ "develop" ]
     paths: 
        - 'frontend/project/**'
-       - '.github/workflows/react.yml'
+       - '.github/workflows/fe-mono.yml'
   pull_request:
     branches: [ "develop" ]
     paths:
        - 'frontend/project/**'
-       - '.github/workflows/react.yml'
+       - '.github/workflows/fe-mono.yml'
 
 jobs:
   build:
