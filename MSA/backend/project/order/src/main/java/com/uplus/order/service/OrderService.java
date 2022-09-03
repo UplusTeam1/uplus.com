@@ -71,6 +71,7 @@ public class OrderService {
             }
             @Override
             public void onFailure(Throwable ex) {
+                logger.error("Failed to send topic");
                 throw new CreateOrderFailedException("Exception : Create Order Failed");
             }
         });
@@ -101,6 +102,7 @@ public class OrderService {
             }
             @Override
             public void onFailure(Throwable ex) {
+                logger.error("Failed to send topic");
                 throw new DeleteOrderFailedException("Exception : Delete Order Failed");
             }
         });

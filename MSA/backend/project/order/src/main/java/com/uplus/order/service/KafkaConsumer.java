@@ -3,6 +3,8 @@ package com.uplus.order.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uplus.order.domain.payload.KafkaCreateOrderResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class KafkaConsumer {
     private static final String deleteOrderFail = "deleteOrderFail";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @KafkaListener(topics = createOrderSuccess, groupId = createOrderSuccess)
     public void consumeCreateOrderSuccess(String value) throws IOException {
@@ -30,17 +33,16 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = createOrderFail, groupId = createOrderFail)
     public void consumeCreateOrderFail(String orderNumber) throws IOException {
-        Long number = Long.parseLong(orderNumber);
-        kafkaOrderService.deleteOrder(number);
+        kafkaOrderService.deleteOrder(Long.parseLong(orderNumber));
     }
 
     @KafkaListener(topics = deleteOrderSuccess, groupId = deleteOrderSuccess)
     public void consumeDeleteOrderSuccess(String message) throws IOException {
-        System.out.println(message);
+        logger.error(message);
     }
 
     @KafkaListener(topics = deleteOrderFail, groupId = deleteOrderFail)
     public void consumeDeleteOrderFail(String message) throws IOException {
-        System.out.println(message);
+        logger.error(message);
     }
 }
