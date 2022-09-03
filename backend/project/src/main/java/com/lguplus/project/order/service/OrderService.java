@@ -53,7 +53,7 @@ public class OrderService {
                 .orElseThrow(() -> new PlanNotFoundException(
                         "plan name: " + orderRequest.getPlanName() + "\n" + "Exception : Plan Not Found"));
 
-
+        //재고 반영
         DeviceDetail deviceDetail = decreaseStock(orderRequest.getColor(), device.getDeviceDetails());
 
         Order order = Order.builder()
@@ -80,6 +80,7 @@ public class OrderService {
                         "orderNumber:" + realOrderNumber + "\n" + "Exception : Order Not Found"
                 ));
 
+        //재고 반영
         increaseStock(order.getDevice(), order.getColor());
 
         orderRepository.delete(order);
