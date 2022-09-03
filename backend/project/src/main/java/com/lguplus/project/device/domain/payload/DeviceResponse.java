@@ -40,6 +40,10 @@ public class DeviceResponse {
 
     private Integer deviceDiscount;
 
+    private List<Integer> defaultInterestList;
+
+    private List<Integer> discountedInterestList;
+
     public static DeviceResponse of(Device device, ChargeInfo chargeInfo, Integer deviceDiscount) {
         return DeviceResponse.builder()
                 .code(device.getCode())
@@ -59,6 +63,8 @@ public class DeviceResponse {
                         .mapToInt(DeviceDetail::getStock)
                         .sum())
                 .deviceDiscount(deviceDiscount)
+                .defaultInterestList(chargeInfo.getDefaultInterestList())
+                .discountedInterestList(chargeInfo.getDiscountedInterestList())
                 .build();
     }
 
