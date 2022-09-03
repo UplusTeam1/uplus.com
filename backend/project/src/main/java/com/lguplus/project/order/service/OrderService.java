@@ -53,29 +53,8 @@ public class OrderService {
                 .orElseThrow(() -> new PlanNotFoundException(
                         "plan name: " + orderRequest.getPlanName() + "\n" + "Exception : Plan Not Found"));
 
-        String color = orderRequest.getColor();
-        List<DeviceDetail> deviceDetailList = device.getDeviceDetails();
 
-        boolean flag = false;
-        DeviceDetail deviceDetail = null;
-        for (DeviceDetail d : deviceDetailList) {
-            if (color.equals(d.getColor())) {
-                flag = true;
-                if (d.getStock() <= 0) {
-                    //exception : 재고 없음
-                    throw new DeviceHaveNoStockException(
-                            "code: " + orderRequest.getDeviceCode() + "\ncolor: " + color + "\nException : No Stock");
-                } else {
-                    //재고--
-                    deviceDetail = d.toBuilder().stock(d.getStock() - 1).build();
-                    deviceDetail = deviceDetailRepository.save(deviceDetail);
-                }
-            }
-        }
-        if (!flag) {
-            //exception : 색상 없음
-            throw new DeviceNotFoundException("color: " + color + "\nException : Device does not have this color");
-        }
+        DeviceDetail deviceDetail = decreaseStock(orderRequest.getColor(), device.getDeviceDetails());
 
         Order order = Order.builder()
                 .device(device)
@@ -101,7 +80,21 @@ public class OrderService {
                         "orderNumber:" + realOrderNumber + "\n" + "Exception : Order Not Found"
                 ));
 
-        Optional<DeviceDetail> d = deviceDetailRepository.findByDeviceAndColor(order.getDevice(), order.getColor());
+        increaseStock(order.getDevice(), order.getColor());
+
+        orderRepository.delete(order);
+    }
+    private DeviceDetail decreaseStock (String color, List<DeviceDetail> deviceDetailList){
+        for (DeviceDetail d : deviceDetailList) {
+            if (color.equals(d.getColor()) && d.getStock() > 0) {
+                return deviceDetailRepository.save(d.toBuilder().stock(d.getStock() - 1).build());
+            }
+        }
+        throw new DeviceHaveNoStockException("Exception : This device is out of stock");
+
+    }
+    private void increaseStock(Device device, String color){
+        Optional<DeviceDetail> d = deviceDetailRepository.findByDeviceAndColor(device, color);
 
         d.ifPresent(deviceDetail ->
                 deviceDetailRepository.save(
@@ -109,7 +102,5 @@ public class OrderService {
                                 .stock(deviceDetail.getStock() + 1).build()
                 )
         );
-
-        orderRepository.delete(order);
     }
 }
