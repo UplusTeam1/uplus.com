@@ -80,6 +80,6 @@ public class DeviceServiceBySangWoo {
     }
 
     private Integer round(Integer i) {
-        return (i + 50) / 100 * 100;
+        return (i + 5) / 10 * 10;
     }
 }
