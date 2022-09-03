@@ -10,5 +10,5 @@ RUN ./gradlew build -x test
 
 FROM openjdk:8-jdk-alpine
 COPY --from=builder /home/ec2-user/app/build/libs/item-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8080
+EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "app.jar"]     
