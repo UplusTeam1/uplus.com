@@ -5,6 +5,7 @@ import { DeviceData } from '../../api/device'
 import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
 import DeviceCompareTab from '../../components/device/DeviceCompareTab'
 import DeviceItem from '../../components/device/DeviceItem'
+import SearchTextButton from '../../components/search/SearchTextButton'
 import UplusButton from '../../components/UplusButton'
 import useCompareDeviceList from '../../hooks/device/useCompareDeviceList'
 import useDeviceList from '../../hooks/device/useDeviceList'
@@ -12,6 +13,7 @@ import { CompareDevice } from '../../modules/device'
 import { flexCenter } from '../../styles/basicStyles'
 
 const SearchRelationContainer = styled.div`
+  flex-wrap: wrap;
   ${flexCenter}
   width: 1228px;
   margin-bottom: 50px;
@@ -54,12 +56,16 @@ const SearchRecommendedContainer = styled.div`
   font-weight: bold;
   color: ${({ theme }) => theme.app.blackFont};
 `
+const SearchRelationTextContainer = styled.div`
+  ${flexCenter}
+  width: 1228px;
+`
 const SearchRecommendedTextContainer = styled.div`
   ${flexCenter}
   width: 1228px;
-  margin-bottom: 10px;
 `
 const SearchRecommendedButtonContainer = styled.div`
+  flex-wrap: wrap;
   ${flexCenter}
   width: 1228px;
   margin-bottom: 10px;
@@ -80,10 +86,10 @@ const SearchListContainer = styled.div`
     margin-right: 0;
   }
 `
-const UplusButtonDiv = styled.div`
+const SearchTextButtonDiv = styled.div`
+  margin-top: 10px;
   margin-left: 10px;
 `
-
 function SearchPage() {
   const theme = useTheme()
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
@@ -185,10 +191,28 @@ function SearchPage() {
                 U+ 에서 검색어를 추천해 드려요!
               </SearchRecommendedTextContainer>
               <SearchRecommendedButtonContainer>
-                {['Sample1', 'Sample2', 'Sample3'].map((num) => (
-                  <UplusButtonDiv>
-                    <UplusButton
-                      width="100px"
+                {[
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'ShortSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'ShortSample',
+                  'ShortSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'ShortSample',
+                  'ShortSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                ].map((num) => (
+                  <SearchTextButtonDiv>
+                    <SearchTextButton
+                      width="auto"
+                      minWidth="70px"
+                      paddingLeft="10px"
+                      paddingRight="10px"
                       height="35px"
                       size="14px"
                       fontColor={theme.app.grayFont}
@@ -197,7 +221,7 @@ function SearchPage() {
                       text={String(num)}
                       onClick={() => null}
                     />
-                  </UplusButtonDiv>
+                  </SearchTextButtonDiv>
                 ))}
               </SearchRecommendedButtonContainer>
             </SearchRecommendedContainer>
@@ -205,11 +229,31 @@ function SearchPage() {
         ) : (
           <>
             <SearchRelationContainer>
-              <SearchRelationSpan>연관 검색어</SearchRelationSpan>
-              {['Sample1', 'Sample2', 'Sample3'].map((num) => (
-                <UplusButtonDiv>
-                  <UplusButton
-                    width="100px"
+              <SearchRelationTextContainer>
+                연관검색어
+              </SearchRelationTextContainer>
+              {[
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'ShortSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'ShortSample',
+                'ShortSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'ShortSample',
+                'ShortSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+              ].map((num) => (
+                <SearchTextButtonDiv>
+                  <SearchTextButton
+                    width="auto"
+                    minWidth="70px"
+                    paddingLeft="10px"
+                    paddingRight="10px"
                     height="35px"
                     size="14px"
                     fontColor={theme.app.grayFont}
@@ -218,7 +262,7 @@ function SearchPage() {
                     text={String(num)}
                     onClick={() => null}
                   />
-                </UplusButtonDiv>
+                </SearchTextButtonDiv>
               ))}
             </SearchRelationContainer>
             <SearchCountContainer>
