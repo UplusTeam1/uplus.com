@@ -12,9 +12,12 @@ export async function getDeviceOption(code: string) {
   return response.data
 }
 
-export async function getDevicePrice(code: string, planName: string) {
+export async function getDevicePrice(data: {
+  deviceCode: string
+  planName: string
+}) {
   const response = await Api.get<DevicePrice>(
-    `/api/device/price/${code}/${planName}`
+    `/api/device/price/${data.deviceCode}/${data.planName}`
   )
   return response.data
 }
@@ -48,6 +51,8 @@ export interface DeviceData {
   brand: string
   totalStock: number
   deviceDiscount: number
+  defaultInterestList: Array<number>
+  discountedInterestList: Array<number>
 }
 
 export interface DeviceListData extends Array<DeviceData> {}
@@ -67,5 +72,7 @@ export interface DevicePrice {
   price: number
   deviceDiscount: number
   monthlyChargeList: MonthlyChargeList
-  recommendedDiscount: number
+  recommendedDiscountIndex: number
+  defaultInterestList: Array<number>
+  discountedInterestList: Array<number>
 }

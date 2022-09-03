@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import styled from 'styled-components'
 // import interface
 import { DeviceFilterType } from '../../modules/device'
@@ -13,7 +12,6 @@ import {
   FormControl,
 } from '@mui/material'
 import { SliderThumb } from '@mui/material/Slider'
-import { SelectChangeEvent } from '@mui/material/Select'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 
 // styled

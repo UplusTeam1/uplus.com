@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 // styles
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
 import styled, { css, useTheme } from 'styled-components'
@@ -8,16 +8,17 @@ import { darken } from 'polished'
 import { Radio } from '@mui/material'
 import UplusButton from '../../components/UplusButton'
 import PlanListDialog from '../../components/device/PlanListDialog'
+import Swal from 'sweetalert2'
 // custom hooks
 import useDeviceOption from '../../hooks/device/useDeviceOption'
 import useDevicePrice from '../../hooks/device/useDevicePrice'
 import usePlanList from '../../hooks/plan/usePlanList'
 import useOrder from '../../hooks/order/useOrder'
+import useCalculatedPrice from '../../hooks/device/useCalculatedPrice'
 // import interface
 import { DetailPerColor } from '../../api/device'
 import { PlanListData } from '../../api/plan'
 import {
-  DISCOUNT_TYPE_LIST,
   InstallmentType,
   INSTALLMENT_LIST,
   JoinType,
@@ -50,6 +51,7 @@ const ContentContainer = styled.div`
   flex-direction: column;
   width: 680px;
   padding: 20px;
+  margin-bottom: 100px;
 `
 const DeviceNameDiv = styled.div`
   display: flex;
@@ -282,16 +284,13 @@ export type DeviceDetailParams = {
   deviceCode: string
 }
 
-function priceFormat(value: number) {
-  return `${value.toLocaleString('ko-KR')}`
-}
-
 function findPlanData(planListData: PlanListData, selectedPlan: string) {
   return planListData.find((planData) => planData.name === selectedPlan)
 }
 
 function DeviceDetailPage() {
   const params = useParams<keyof DeviceDetailParams>() as DeviceDetailParams
+  const navigate = useNavigate()
   const location = useLocation()
   const locationState = location.state as LocationState
   const theme = useTheme()
@@ -305,31 +304,21 @@ function DeviceDetailPage() {
     locationState ? locationState.discountIndex : 0
   )
   const [selectedInstallment, setSelectedInstallment] = useState(
-    locationState ? locationState.installmentIndex : 0
+    locationState ? locationState.installmentIndex : 2
   )
   const deviceOption = useDeviceOption(params.deviceCode)
   const devicePrice = useDevicePrice(params.deviceCode, selectedPlan)
+  const { calculatePrice } = useCalculatedPrice()
+  const calculatedPrice = calculatePrice(
+    devicePrice.data,
+    selectedDiscount,
+    selectedInstallment
+  )
   const { data: planListData } = usePlanList()
   const { orderSave } = useOrder()
   const selectedPlanData = useMemo(
     () => (planListData ? findPlanData(planListData, selectedPlan) : null),
     [planListData, selectedPlan]
-  )
-  const monthlyFee = useMemo(
-    () =>
-      !(selectedInstallment === -1)
-        ? Number(
-            devicePrice.data
-              ? devicePrice.data.monthlyChargeList[selectedDiscount]
-                  .totalCharge[selectedInstallment]
-              : 0
-          )
-        : Number(
-            devicePrice.data
-              ? devicePrice.data.monthlyChargeList[selectedDiscount].planCharge
-              : 0
-          ),
-    [devicePrice.data, selectedDiscount, selectedInstallment]
   )
 
   const clickOpenDialog = () => {
@@ -346,14 +335,41 @@ function DeviceDetailPage() {
   }
 
   const clickOrder = () => {
-    if (params.deviceCode && deviceOption.data) {
-      orderSave({
-        deviceCode: params.deviceCode,
-        planName: selectedPlan,
-        joinType: JOIN_TYPE_LIST[selectedJoin].value,
-        monthlyFee: monthlyFee,
-        discountType: DISCOUNT_VALUE_LIST[selectedDiscount],
-        color: deviceOption.data.detailPerColor[selectedColor].color,
+    if (params.deviceCode && deviceOption.data && calculatedPrice) {
+      Swal.fire({
+        title: '온라인 주문',
+        text: '상품을 주문하시겠습니까?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '주문하기',
+        cancelButtonText: '취소',
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          orderSave({
+            deviceCode: params.deviceCode,
+            planName: selectedPlan,
+            joinType: JOIN_TYPE_LIST[selectedJoin].value,
+            monthlyFee: calculatedPrice._totalMonthlyCharge,
+            discountType: DISCOUNT_VALUE_LIST[selectedDiscount],
+            color: deviceOption.data.detailPerColor[selectedColor].color,
+          })
+          Swal.fire({
+            title: '주문 완료!',
+            text: '주문 내역을 확인하시겠습니까?',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+          }).then((result: any) => {
+            if (result.isConfirmed) {
+              navigate('/order')
+            }
+          })
+        }
       })
     }
   }
@@ -423,9 +439,7 @@ function DeviceDetailPage() {
         <SelectedPlanDiv onClick={() => clickOpenDialog()}>
           <PlanTitleDiv>
             <PlanName>{selectedPlan}</PlanName>
-            <PlanPrice>
-              {selectedPlanData ? priceFormat(selectedPlanData.price) : 0}원
-            </PlanPrice>
+            <PlanPrice>{calculatedPrice?.monthlyRealPlanCharge}원</PlanPrice>
           </PlanTitleDiv>
           <PlanInfoDiv>
             <PlanText>
@@ -453,14 +467,7 @@ function DeviceDetailPage() {
               </DiscountInfoText>
             </DiscountTitleDiv>
             <DiscountPriceDiv>
-              총
-              <PlanPrice>
-                -
-                {devicePrice.data
-                  ? priceFormat(devicePrice.data.deviceDiscount)
-                  : 0}
-              </PlanPrice>
-              원
+              총<PlanPrice>-{calculatedPrice?.deviceDiscount}</PlanPrice>원
             </DiscountPriceDiv>
           </DiscountDiv>
           <DiscountDiv
@@ -488,19 +495,14 @@ function DeviceDetailPage() {
                   <Radio
                     checked={selectedDiscount === 1}
                     onChange={() => setSelectedDiscount(1)}
-                    value="24개월 할인"
+                    value="12개월 할인"
                     name="radio-1"
                   />
-                  24개월 할인
+                  12개월 할인
                 </span>
                 <span>
                   총
-                  <PlanPrice>
-                    -
-                    {selectedPlanData
-                      ? priceFormat(selectedPlanData.price * 0.25 * 24)
-                      : 0}
-                  </PlanPrice>
+                  <PlanPrice>-{calculatedPrice?.month12PlanDiscount}</PlanPrice>
                   원
                 </span>
               </RadioDiv>
@@ -515,19 +517,14 @@ function DeviceDetailPage() {
                   <Radio
                     checked={selectedDiscount === 2}
                     onChange={() => setSelectedDiscount(2)}
-                    value="12개월 할인"
+                    value="24개월 할인"
                     name="radio-2"
                   />
-                  12개월 할인
+                  24개월 할인
                 </span>
                 <span>
                   총
-                  <PlanPrice>
-                    -
-                    {selectedPlanData
-                      ? priceFormat(selectedPlanData.price * 0.25 * 12)
-                      : 0}
-                  </PlanPrice>
+                  <PlanPrice>-{calculatedPrice?.month24PlanDiscount}</PlanPrice>
                   원
                 </span>
               </RadioDiv>
@@ -558,10 +555,9 @@ function DeviceDetailPage() {
         <MainTitleText>결제 정보</MainTitleText>
         <MonthlyFeeContainer>
           <MonthlyFeeTitle>
-            <PlanPrice>월 {priceFormat(monthlyFee)}원</PlanPrice>
+            <PlanPrice>월 {calculatedPrice?.totalMonthlyCharge}원</PlanPrice>
             <DiscountInfoText size="18px" mb="0">
-              {selectedPlan}, {DISCOUNT_TYPE_LIST[selectedDiscount + 1].label}{' '}
-              기준
+              {selectedPlan}, {calculatedPrice?.discountType.name} 기준
             </DiscountInfoText>
           </MonthlyFeeTitle>
           <MonthlyFeeInfoDiv>
@@ -571,88 +567,57 @@ function DeviceDetailPage() {
             >
               <HalfContentDiv>
                 <DiscountInfoTopText size="18px" mb="4px">
-                  {selectedInstallment === -1
+                  {selectedInstallment === 0
                     ? '기기 완납 결제 가격'
                     : '월 휴대폰 할부금'}
                 </DiscountInfoTopText>
-                {!(selectedInstallment === -1) ? (
-                  <DiscountInfoTopText size="20px" mb="4px">
-                    월{' '}
-                    {devicePrice.data
-                      ? priceFormat(
-                          devicePrice.data.monthlyChargeList[selectedDiscount]
-                            .deviceCharge[selectedInstallment]
-                        )
-                      : 0}
-                    원
-                  </DiscountInfoTopText>
-                ) : (
-                  <DiscountInfoTopText size="20px" mb="4px">
-                    {devicePrice.data
-                      ? priceFormat(
-                          selectedDiscount === 0
-                            ? devicePrice.data.price -
-                                devicePrice.data.deviceDiscount
-                            : devicePrice.data.price
-                        )
-                      : 0}
-                    원
-                  </DiscountInfoTopText>
-                )}
+                <DiscountInfoTopText size="20px" mb="4px">
+                  {calculatedPrice?.monthlyDiscountedDevicePrice}원
+                </DiscountInfoTopText>
               </HalfContentDiv>
               <HalfContentDiv>
                 <DiscountInfoText size="16px" mb="2px">
                   정상가
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  {devicePrice.data ? priceFormat(devicePrice.data.price) : 0}원
+                  {calculatedPrice?.realDevicePrice}원
                 </DiscountInfoText>
               </HalfContentDiv>
               {selectedDiscount === 0 && (
-                <HalfContentDiv>
-                  <DiscountInfoText size="16px" mb="2px">
-                    공시지원금
-                  </DiscountInfoText>
-                  <DiscountInfoText size="16px" mb="2px">
-                    -
-                    {devicePrice.data
-                      ? priceFormat(devicePrice.data.deviceDiscount)
-                      : 0}
-                    원
-                  </DiscountInfoText>
-                </HalfContentDiv>
+                <>
+                  <HalfContentDiv>
+                    <DiscountInfoText size="16px" mb="2px">
+                      공시지원금
+                    </DiscountInfoText>
+                    <DiscountInfoText size="16px" mb="2px">
+                      -{calculatedPrice?.deviceDiscount}원
+                    </DiscountInfoText>
+                  </HalfContentDiv>
+                  <HalfContentDiv>
+                    <DiscountInfoText size="16px" mb="2px">
+                      실구매가
+                    </DiscountInfoText>
+                    <DiscountInfoText size="16px" mb="2px">
+                      {calculatedPrice?.discountedDevicePrice}원
+                    </DiscountInfoText>
+                  </HalfContentDiv>
+                </>
               )}
-              <HalfContentDiv>
-                <DiscountInfoText size="16px" mb="2px">
-                  실구매가
-                </DiscountInfoText>
-                <DiscountInfoText size="16px" mb="2px">
-                  {devicePrice.data
-                    ? priceFormat(
-                        selectedDiscount === 0
-                          ? devicePrice.data.price -
-                              devicePrice.data.deviceDiscount
-                          : devicePrice.data.price
-                      )
-                    : 0}
-                  원
-                </DiscountInfoText>
-              </HalfContentDiv>
               <HalfContentDiv>
                 <DiscountInfoText size="16px" mb="2px">
                   할부 개월 수
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  {INSTALLMENT_LIST[selectedInstallment + 1].label}
+                  {INSTALLMENT_LIST[selectedInstallment].label}
                 </DiscountInfoText>
               </HalfContentDiv>
-              {!(selectedInstallment === -1) && (
+              {!(selectedInstallment === 0) && (
                 <HalfContentDiv>
                   <DiscountInfoText size="16px" mb="0">
                     할부수수료 (연 5.9%)
                   </DiscountInfoText>
                   <DiscountInfoText size="16px" mb="0">
-                    0원
+                    {calculatedPrice?.interestCharge}원
                   </DiscountInfoText>
                 </HalfContentDiv>
               )}
@@ -663,13 +628,7 @@ function DeviceDetailPage() {
                   월 통신료
                 </DiscountInfoTopText>
                 <DiscountInfoTopText size="20px" mb="4px">
-                  {devicePrice.data
-                    ? priceFormat(
-                        devicePrice.data.monthlyChargeList[selectedDiscount]
-                          .planCharge
-                      )
-                    : 0}
-                  원
+                  {calculatedPrice?.monthlyDiscountedPlanCharge}원
                 </DiscountInfoTopText>
               </HalfContentDiv>
               <HalfContentDiv>
@@ -677,12 +636,7 @@ function DeviceDetailPage() {
                   {selectedPlan}
                 </DiscountInfoText>
                 <DiscountInfoText size="16px" mb="2px">
-                  {devicePrice.data
-                    ? priceFormat(
-                        devicePrice.data.monthlyChargeList[0].planCharge
-                      )
-                    : 0}
-                  원
+                  {calculatedPrice?.monthlyRealPlanCharge}원
                 </DiscountInfoText>
               </HalfContentDiv>
               {(selectedDiscount === 1 || selectedDiscount === 2) && (
@@ -691,11 +645,7 @@ function DeviceDetailPage() {
                     선택 약정 할인
                   </DiscountInfoText>
                   <DiscountInfoText size="16px" mb="0">
-                    -
-                    {selectedPlanData
-                      ? priceFormat(selectedPlanData.price * 0.25)
-                      : 0}
-                    원
+                    -{calculatedPrice?.monthlyPlanDiscount}원
                   </DiscountInfoText>
                 </HalfContentDiv>
               )}
