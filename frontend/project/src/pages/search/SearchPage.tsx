@@ -5,6 +5,7 @@ import { DeviceData } from '../../api/device'
 import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
 import DeviceCompareTab from '../../components/device/DeviceCompareTab'
 import DeviceItem from '../../components/device/DeviceItem'
+import SearchTextButton from '../../components/search/SearchTextButton'
 import UplusButton from '../../components/UplusButton'
 import useCompareDeviceList from '../../hooks/device/useCompareDeviceList'
 import useDeviceList from '../../hooks/device/useDeviceList'
@@ -12,6 +13,7 @@ import { CompareDevice } from '../../modules/device'
 import { flexCenter } from '../../styles/basicStyles'
 
 const SearchRelationContainer = styled.div`
+  flex-wrap: wrap;
   ${flexCenter}
   width: 1228px;
   margin-bottom: 50px;
@@ -27,11 +29,47 @@ const SearchCountContainer = styled.div`
   color: ${({ theme }) => theme.app.blackFont};
 `
 const SearchCountSpan = styled.span`
-  font-weight: bold;
   color: ${({ theme }) => theme.app.uplusPink};
 `
 const SearchRelationSpan = styled.span`
   margin-right: 50px;
+`
+const SearchNoResultContainer = styled.div`
+  ${flexCenter}
+  width: 1228px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-size: 26px;
+  font-weight: bold;
+  color: ${({ theme }) => theme.app.blackFont};
+`
+const SearchNoResultSpan = styled.span`
+  color: ${({ theme }) => theme.app.uplusPink};
+`
+const SearchRecommendedContainer = styled.div`
+  ${flexCenter}
+  flex-direction: column;
+  width: 1228px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 26px;
+  font-weight: bold;
+  color: ${({ theme }) => theme.app.blackFont};
+`
+const SearchRelationTextContainer = styled.div`
+  ${flexCenter}
+  width: 1228px;
+`
+const SearchRecommendedTextContainer = styled.div`
+  ${flexCenter}
+  width: 1228px;
+`
+const SearchRecommendedButtonContainer = styled.div`
+  flex-wrap: wrap;
+  ${flexCenter}
+  width: 1228px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 `
 const SearchTopContainer = styled.div`
   display: flex;
@@ -48,10 +86,10 @@ const SearchListContainer = styled.div`
     margin-right: 0;
   }
 `
-const UplusButtonDiv = styled.div`
+const SearchTextButtonDiv = styled.div`
+  margin-top: 10px;
   margin-left: 10px;
 `
-
 function SearchPage() {
   const theme = useTheme()
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
@@ -142,28 +180,98 @@ function SearchPage() {
   return (
     <>
       <SearchTopContainer>
-        <SearchRelationContainer>
-          <SearchRelationSpan>연관 검색어</SearchRelationSpan>
-          {['Sample1', 'Sample2', 'Sample3'].map((num) => (
-            <UplusButtonDiv>
-              <UplusButton
-                width="100px"
-                height="35px"
-                size="14px"
-                fontColor={theme.app.grayFont}
-                bgColor={theme.app.whiteFont}
-                border={`1px solid ${theme.app.grayFont}`}
-                text={String(num)}
-                onClick={() => null}
-              />
-            </UplusButtonDiv>
-          ))}
-        </SearchRelationContainer>
-        <SearchCountContainer>
-          <SearchCountSpan>"{'SampleSearchText'}"</SearchCountSpan>
-          {'에 대한 검색결과는 총 '}
-          <SearchCountSpan>{`SampleCount`}</SearchCountSpan>건 입니다!!
-        </SearchCountContainer>
+        {true ? (
+          <>
+            <SearchNoResultContainer>
+              <SearchNoResultSpan>"{'No Result Text'}"</SearchNoResultSpan> 에
+              대한 검색결과가 없습니다!
+            </SearchNoResultContainer>
+            <SearchRecommendedContainer>
+              <SearchRecommendedTextContainer>
+                U+ 에서 검색어를 추천해 드려요!
+              </SearchRecommendedTextContainer>
+              <SearchRecommendedButtonContainer>
+                {[
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'ShortSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'ShortSample',
+                  'ShortSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                  'ShortSample',
+                  'ShortSample',
+                  'LongLongLongSample',
+                  'LongLongLongSample',
+                ].map((num) => (
+                  <SearchTextButtonDiv>
+                    <SearchTextButton
+                      width="auto"
+                      minWidth="70px"
+                      paddingLeft="10px"
+                      paddingRight="10px"
+                      height="35px"
+                      size="14px"
+                      fontColor={theme.app.grayFont}
+                      bgColor={theme.app.whiteFont}
+                      border={`1px solid ${theme.app.grayFont}`}
+                      text={String(num)}
+                      onClick={() => null}
+                    />
+                  </SearchTextButtonDiv>
+                ))}
+              </SearchRecommendedButtonContainer>
+            </SearchRecommendedContainer>
+          </>
+        ) : (
+          <>
+            <SearchRelationContainer>
+              <SearchRelationTextContainer>
+                연관검색어
+              </SearchRelationTextContainer>
+              {[
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'ShortSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'ShortSample',
+                'ShortSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+                'ShortSample',
+                'ShortSample',
+                'LongLongLongSample',
+                'LongLongLongSample',
+              ].map((num) => (
+                <SearchTextButtonDiv>
+                  <SearchTextButton
+                    width="auto"
+                    minWidth="70px"
+                    paddingLeft="10px"
+                    paddingRight="10px"
+                    height="35px"
+                    size="14px"
+                    fontColor={theme.app.grayFont}
+                    bgColor={theme.app.whiteFont}
+                    border={`1px solid ${theme.app.grayFont}`}
+                    text={String(num)}
+                    onClick={() => null}
+                  />
+                </SearchTextButtonDiv>
+              ))}
+            </SearchRelationContainer>
+            <SearchCountContainer>
+              <SearchCountSpan>"{'SampleSearchText'}"</SearchCountSpan>
+              {'에 대한 검색결과는 총 '}
+              <SearchCountSpan>{`SampleCount`}</SearchCountSpan>건 입니다!!
+            </SearchCountContainer>
+          </>
+        )}
       </SearchTopContainer>
       {isOpenCompareTab && (
         <DeviceCompareTab
