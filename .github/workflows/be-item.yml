@@ -7,7 +7,7 @@ env:
   ECS_SERVICE: uplus-item-service
   ECS_CLUSTER: uplus-cluster
   ECS_TASK_DEFINITION: ./MSA/backend/project/item/task-definition.json
-  CONTAINER_NAME: uplus-be-item
+  CONTAINER_NAME: uplus-be-item-container
   yaml: ${{secrets.YAML_ITEM}}
   
 on:
