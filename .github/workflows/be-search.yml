@@ -7,7 +7,7 @@ env:
   ECS_SERVICE: uplus-search-service
   ECS_CLUSTER: uplus-cluster
   ECS_TASK_DEFINITION: ./MSA/backend/project/search/task-definition.json
-  CONTAINER_NAME: uplus-search-container
+  CONTAINER_NAME: uplus-be-search-container
   yaml: ${{secrets.YAML_SEARCH}}
   
 on:
