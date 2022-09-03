@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,34 +27,31 @@ public class SearchRepository {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        URI uri = UriComponentsBuilder.newInstance()
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .scheme("http")
                 .host(HOST)
                 .port(PORT)
                 .path("/device/_search")
                 .queryParam("q", keyword)
                 .queryParam("size", 32)
-                .build()
-                .toUri();
+                .build();
 
-        return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, SearchResult.class);
+        return restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, SearchResult.class);
     }
 
     public ResponseEntity<AutoCompletionResult> getAllAutoCompletions(String input) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        URI uri = UriComponentsBuilder.newInstance()
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .scheme("http")
                 .host(HOST)
                 .port(PORT)
-                .path("/device/_search")
+                .path("/auto-completion/_search")
                 .queryParam("q", input)
                 .queryParam("size", 32)
-                .build()
-                .toUri();
+                .build();
 
-        return restTemplate.exchange(uri.toString(), HttpMethod.GET, entity, AutoCompletionResult.class);
+        return restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, AutoCompletionResult.class);
     }
 }
