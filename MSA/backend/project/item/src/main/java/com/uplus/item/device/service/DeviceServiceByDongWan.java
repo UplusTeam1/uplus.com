@@ -3,8 +3,8 @@ package com.uplus.item.device.service;
 import com.uplus.item.device.domain.Device;
 import com.uplus.item.device.domain.DeviceDetail;
 import com.uplus.item.device.domain.payload.DeviceOptionsDetail;
-import com.uplus.item.device.domain.payload.GetDeviceOptionsResponse;
-import com.uplus.item.device.domain.payload.GetDevicePricesResponse;
+import com.uplus.item.device.domain.payload.DeviceOptionsResponse;
+import com.uplus.item.device.domain.payload.DevicePricesResponse;
 import com.uplus.item.device.domain.payload.MonthlyCharge;
 import com.uplus.item.device.exception.DeviceAndPlanNotFoundException;
 import com.uplus.item.device.exception.DeviceNotFoundException;
@@ -12,6 +12,7 @@ import com.uplus.item.device.repository.DeviceRepository;
 import com.uplus.item.discount.domain.Discount;
 import com.uplus.item.discount.repository.DiscountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +27,16 @@ public class DeviceServiceByDongWan {
     private final DeviceRepository deviceRepository;
     private final DiscountRepository discountRepository;
 
-    public GetDeviceOptionsResponse getDeviceOptions(String code) {
+    @Value("${contract.discount.rate}")
+    private double discountRate;
+    @Value("${year.interest.rate}")
+    private double yearInterestRate;
+
+    public DeviceOptionsResponse getDeviceOptions(String code) {
         Device findDevice = deviceRepository.findByCode(code)
                 .orElseThrow(() -> new DeviceNotFoundException(
                         "code : " + code + "\n" +
-                        "Exception : Device Not Found"));
+                                "Exception : Device Not Found"));
 
         List<DeviceDetail> deviceDetails = findDevice.getDeviceDetails();
         List<DeviceOptionsDetail> detailPerColor = new ArrayList<>();
@@ -39,48 +45,58 @@ public class DeviceServiceByDongWan {
             detailPerColor.add(DeviceOptionsDetail.of(deviceDetail));
         }
 
-        return GetDeviceOptionsResponse.of(findDevice, detailPerColor);
+        return DeviceOptionsResponse.of(findDevice, detailPerColor);
     }
 
-    public GetDevicePricesResponse getDevicePrices(String code, String planName) {
+    public DevicePricesResponse getDevicePrices(String code, String planName) {
         Discount discount = discountRepository.findByDeviceCodeAndPlanName(code, planName)
                 .orElseThrow(() -> new DeviceAndPlanNotFoundException(
                         "code : " + code + "\n" +
-                        "planName : " + planName + "\n" +
-                        "Exception : Device And PlanName Not Found"));
+                                "planName : " + planName + "\n" +
+                                "Exception : Device And PlanName Not Found"));
 
         Device device = discount.getDevice();
+        double discountedRate = 1 - discountRate;
         int deviceCharge = device.getPrice();
         int planCharge = discount.getPlan().getPrice();
         int deviceDiscount = discount.getDeviceDiscount();
+        int contractPlanCharge = (int) Math.floor(planCharge * discountedRate);
 
         List<MonthlyCharge> monthlyChargeList = new ArrayList<>();
 
         // 공시지원금
-        int calculatedPlanCharge = planCharge;
-        int calculatedDeviceCharge = deviceCharge - discount.getDeviceDiscount();
-        MonthlyCharge monthlyDeviceDiscount = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
-        monthlyChargeList.add(monthlyDeviceDiscount);
-        int recommendedIndex = 0;
+        makeMonthlyCharge(monthlyChargeList, planCharge, deviceCharge - deviceDiscount, yearInterestRate);
 
         // 선택 약정 12개월
-        calculatedDeviceCharge = deviceCharge;
-        calculatedPlanCharge = (int) Math.round(planCharge * 0.75);
-        MonthlyCharge contractDiscount = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
-        monthlyChargeList.add(contractDiscount);
+        makeMonthlyCharge(monthlyChargeList, contractPlanCharge, deviceCharge, yearInterestRate);
 
-        // 선택 약정 24개월
+        // 선택 약정 12개월, 24개월
         // 선택 약정 12개월과 동일한 월별 요금 적용됨
-        monthlyChargeList.add(contractDiscount);
+        makeMonthlyCharge(monthlyChargeList, contractPlanCharge, deviceCharge, yearInterestRate);
 
-        if (contractDiscount.getTotalCharge().get(0) < monthlyDeviceDiscount.getTotalCharge().get(0))
+        // 할인 없음
+        makeMonthlyCharge(monthlyChargeList, planCharge, deviceCharge, yearInterestRate);
+
+        // 추천 할인 제도 선정
+        int recommendedIndex = selectRecommendedIndex(monthlyChargeList);
+
+        return DevicePricesResponse.of(device, deviceDiscount, monthlyChargeList, recommendedIndex);
+    }
+
+    private void makeMonthlyCharge(
+            List<MonthlyCharge> monthlyChargeList, int calculatedPlanCharge,
+            int calculatedDeviceCharge, double yearInterestRate) {
+        MonthlyCharge monthlyCharge = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge, yearInterestRate);
+        monthlyChargeList.add(monthlyCharge);
+    }
+
+    private int selectRecommendedIndex(List<MonthlyCharge> monthlyChargeList) {
+        int recommendedIndex = 0;
+        int deviceDiscountCharge = monthlyChargeList.get(0).getTotalCharge().get(1);
+        int planDiscountCharge = monthlyChargeList.get(2).getTotalCharge().get(1);
+        if (planDiscountCharge > deviceDiscountCharge) {
             recommendedIndex = 2;
-
-        //할인 없음
-        calculatedPlanCharge = planCharge;
-        MonthlyCharge noDiscount = MonthlyCharge.of(calculatedDeviceCharge, calculatedPlanCharge);
-        monthlyChargeList.add(noDiscount);
-
-        return GetDevicePricesResponse.of(device, deviceDiscount, monthlyChargeList, recommendedIndex);
+        }
+        return recommendedIndex;
     }
 }

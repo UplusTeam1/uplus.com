@@ -2,7 +2,6 @@ package com.uplus.item.device.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uplus.item.device.domain.payload.KafkaCreateOrderSuccessResponse;
-import com.uplus.item.device.domain.payload.KafkaDeleteOrderRequest;
 import com.uplus.item.device.domain.payload.KafkaCreateOrderRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,42 +14,35 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class KafkaProducer {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-
-    private static final String createOrderSuccess = "createOrderSuccess";
-    private static final String createOrderFail = "createOrderFail";
-    private static final String deleteOrderSuccess = "deleteOrderSuccess";
-    private static final String deleteOrderFail = "deleteOrderFail";
-
-    // Test kafka
-    private static final String testKafka = "testKafka";
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String CREATE_ORDER_SUCCESS = "createOrderSuccess";
+    private static final String CREATE_ORDER_FAIL = "createOrderFail";
+    private static final String DELETE_ORDER_SUCCESS = "deleteOrderSuccess";
+    private static final String DELETE_ORDER_FAIL = "deleteOrderFail";
+    private static final String TEST_KAFKA = "testKafka";
 
     public void sendCreateOrderSuccessObject(KafkaCreateOrderSuccessResponse kafkaCreateOrderSuccessResponse) throws IOException{
         String value = MAPPER.writeValueAsString(kafkaCreateOrderSuccessResponse);
-        System.out.println("value = " + value);
-        this.kafkaTemplate.send(createOrderSuccess, value);
+        this.kafkaTemplate.send(CREATE_ORDER_SUCCESS, value);
     }
 
     public void sendCreateOrderFailMessage(Long orderNumber) {
         String value = orderNumber.toString();
-        this.kafkaTemplate.send(createOrderFail, value);
+        this.kafkaTemplate.send(CREATE_ORDER_FAIL, value);
     }
 
     public void sendDeleteOrderSuccessMessage() {
-        this.kafkaTemplate.send(deleteOrderSuccess, deleteOrderSuccess);
+        this.kafkaTemplate.send(DELETE_ORDER_SUCCESS, DELETE_ORDER_SUCCESS);
     }
 
     public void sendDeleteOrderFailMessage() {
-        this.kafkaTemplate.send(deleteOrderFail, deleteOrderFail);
+        this.kafkaTemplate.send(DELETE_ORDER_FAIL, DELETE_ORDER_FAIL);
     }
 
-    // Test kafka
     public void sendTestKafka(KafkaCreateOrderRequest kafkaCreateOrderRequest) throws IOException {
-        System.out.println("KafkaProducer.sendTestKafka");
-        System.out.println("kafkaOrderDetail = " + kafkaCreateOrderRequest.toString());
         String value = MAPPER.writeValueAsString(kafkaCreateOrderRequest);
-        this.kafkaTemplate.send(testKafka, value);
+        this.kafkaTemplate.send(TEST_KAFKA, value);
     }
 
 }
