@@ -6,8 +6,7 @@ env:
   ECR_REPOSITORY: lguplus
   ECS_SERVICE: uplus-search-service
   ECS_CLUSTER: uplus-cluster
-  TASK_JSON_NAME: task-definition.json
-  ECS_TASK_DEFINITION: $working-directory/$TASK_JSON_NAME
+  ECS_TASK_DEFINITION: ./MSA/backend/project/search/task-definition.json
   CONTAINER_NAME: uplus-search-container
   yaml: ${{secrets.YAML_SEARCH}}
   
