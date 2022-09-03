@@ -1,6 +1,7 @@
 package com.uplus.order.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "orders")
@@ -39,22 +41,4 @@ public class Order {
     @Column(length = 1000)
     private String picPaths;
 
-    public Order saveOrder(LocalDate joinDate, JoinType joinType, DiscountType discountType, String deviceCode,
-                          String planName, Integer monthlyFee, String color){
-        this.joinDate = joinDate;
-        this.joinType = joinType;
-        this.discountType = discountType;
-        this.deviceCode = deviceCode;
-        this.planName = planName;
-        this.monthlyFee = monthlyFee;
-        this.color = color;
-
-        return this;
-    }
-    public Order updateOrder(String deviceName, String picPaths){
-        this.deviceName = deviceName;
-        this.picPaths = picPaths;
-
-        return this;
-    }
 }
