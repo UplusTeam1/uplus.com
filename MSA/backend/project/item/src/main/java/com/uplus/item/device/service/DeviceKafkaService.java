@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class DeviceKafkaService {
     private final PlanRepository planRepository;
     private final KafkaProducer kafkaProducer;
 
-    public void createOrder(KafkaCreateOrderRequest kafkaCreateOrderRequest) {
+    public void createOrder(@Valid KafkaCreateOrderRequest kafkaCreateOrderRequest) {
         Long orderNumber = null;
         try {
             orderNumber = kafkaCreateOrderRequest.getOrderNumber();
@@ -48,15 +50,13 @@ public class DeviceKafkaService {
 
             kafkaProducer.sendCreateOrderSuccessObject(kafkaCreateOrderSuccessResponse);
         } catch (Exception exception) {
-            System.out.println(exception);
+            exception.printStackTrace();
             kafkaProducer.sendCreateOrderFailMessage(orderNumber);
         }
-
     }
 
     public void deleteOrder(KafkaDeleteOrderRequest kafkaDeleteOrderRequest) {
         try {
-            Long orderNumber = kafkaDeleteOrderRequest.getOrderNumber();
             String deviceCode = kafkaDeleteOrderRequest.getDeviceCode();
             String color = kafkaDeleteOrderRequest.getColor();
 
@@ -69,20 +69,17 @@ public class DeviceKafkaService {
             kafkaProducer.sendDeleteOrderSuccessMessage();
         }
         catch (Exception exception) {
+            exception.printStackTrace();
             kafkaProducer.sendDeleteOrderFailMessage();
         }
     }
 
     public void testKafka(KafkaCreateOrderRequest kafkaCreateOrderRequest) {
-        System.out.println("DeviceKafkaService.testKafka");
         Long orderNumber = kafkaCreateOrderRequest.getOrderNumber();
         String deviceCode = kafkaCreateOrderRequest.getDeviceCode();
         String planName = kafkaCreateOrderRequest.getPlanName();
         String color = kafkaCreateOrderRequest.getColor();
-
         KafkaCreateOrderRequest result = new KafkaCreateOrderRequest(orderNumber, deviceCode, planName, color);
-
-        System.out.println("Consume = " + result.toString());
     }
 }
 

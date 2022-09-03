@@ -10,25 +10,23 @@ import java.util.List;
 @Builder
 public class MonthlyCharge {
 
-    List<Integer> deviceCharge;
-    Integer planCharge;
-    List<Integer> totalCharge;
+    private List<Integer> deviceCharge;
+    private Integer planCharge;
+    private List<Integer> totalCharge;
 
-    public static MonthlyCharge of(int deviceCharge, int planCharge) {
+    public static MonthlyCharge of(int deviceCharge, int planCharge, double yearInterestRate) {
+        int[] contractMonthArray = new int[] {12, 24, 36};
         List<Integer> deviceChargeList = new ArrayList<>();
         List<Integer> totalChargeList = new ArrayList<>();
 
-        int deviceChargeWithInterest = getDeviceChargeWithInterest(deviceCharge, 12);
-        deviceChargeList.add(deviceChargeWithInterest);
-        totalChargeList.add(planCharge + deviceChargeWithInterest);
+        deviceChargeList.add(deviceCharge);
+        totalChargeList.add(planCharge);
 
-        deviceChargeWithInterest = getDeviceChargeWithInterest(deviceCharge, 24);
-        deviceChargeList.add(deviceChargeWithInterest);
-        totalChargeList.add(planCharge + deviceChargeWithInterest);
-
-        deviceChargeWithInterest = getDeviceChargeWithInterest(deviceCharge, 36);
-        deviceChargeList.add(deviceChargeWithInterest);
-        totalChargeList.add(planCharge + deviceChargeWithInterest);
+        for (int contractMonth : contractMonthArray) {
+            int deviceChargeWithInterest = getDeviceChargeWithInterest(deviceCharge, contractMonth, yearInterestRate);
+            deviceChargeList.add(deviceChargeWithInterest);
+            totalChargeList.add(planCharge + deviceChargeWithInterest);
+        }
 
         return MonthlyCharge.builder()
                 .deviceCharge(deviceChargeList)
@@ -37,11 +35,11 @@ public class MonthlyCharge {
                 .build();
     }
 
-    private static int getDeviceChargeWithInterest(int deviceCharge, int contractMonth) {
-        final double interestRate = 0.00492;
-        double varianceRate = power(1 + interestRate, contractMonth);
+    private static int getDeviceChargeWithInterest(int deviceCharge, int contractMonth, double yearInterestRate) {
+        double monthInterestRate = yearInterestRate / 12;
+        double varianceRate = power(1 + monthInterestRate, contractMonth);
         int monthlyDeviceCharge =
-                (int)Math.round(deviceCharge * interestRate * varianceRate / (varianceRate - 1));
+                (int)Math.round(deviceCharge * monthInterestRate * varianceRate / (varianceRate - 1));
         monthlyDeviceCharge -= (monthlyDeviceCharge % 10);
         return monthlyDeviceCharge;
     }
@@ -51,7 +49,6 @@ public class MonthlyCharge {
         for (int index = 1; index < exponent; index++) {
             result *= base;
         }
-        System.out.println("result = " + result);
         return result;
     }
 }
