@@ -21,7 +21,7 @@ on:
          - 'frontend/project/**'
          - '.github/workflows/fe-msa.yml'
       types:
-        - closed
+        - merged
         
 jobs:
   build:
