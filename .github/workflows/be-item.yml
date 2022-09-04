@@ -4,10 +4,10 @@ env:
   RESOURCE_PATH: ./MSA/backend/project/item/src/main/resources/application.yaml
   working-directory: ./MSA/backend/project/item
   ECR_REPOSITORY: lguplus
-  ECS_SERVICE: uplus-item-service
+  ECS_SERVICE: fargate-be-item
   ECS_CLUSTER: uplus-cluster
   ECS_TASK_DEFINITION: ./MSA/backend/project/item/task-definition.json
-  CONTAINER_NAME: uplus-be-item-container
+  CONTAINER_NAME: be-item
   yaml: ${{secrets.YAML_ITEM}}
   
 on:
