@@ -1,4 +1,6 @@
 import { useCookies } from 'react-cookie'
+import { useNavigate } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 export interface CartData {
   name: string
@@ -18,6 +20,7 @@ export interface CartDataList extends Array<CartData> {}
 
 function useCookieCart() {
   const [cookies, setCookie, removeCookie] = useCookies()
+  const navigate = useNavigate()
 
   const setCookieFunc = (cartData: CartData) => {
     const date = new Date()
@@ -28,6 +31,20 @@ function useCookieCart() {
       { ...cartData, name: name, expires: date },
       { path: '/', expires: date }
     )
+    Swal.fire({
+      title: '장바구니 담기 완료!',
+      text: '장바구니를 확인하시겠습니까?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        navigate('/cart')
+      }
+    })
   }
 
   const getCookieFunc = () => {
@@ -41,7 +58,7 @@ function useCookieCart() {
     removeCookie(cartData.name)
   }
 
-  return { setCookieFunc, getCookieFunc, removeCookieFunc }
+  return { cookies, setCookieFunc, getCookieFunc, removeCookieFunc }
 }
 
 export default useCookieCart

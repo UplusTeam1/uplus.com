@@ -26,6 +26,7 @@ import {
   STORAGE_INFO,
   DISCOUNT_VALUE_LIST,
 } from '../../data/staticData'
+import useCookieCart from '../../hooks/cart/useCookieCart'
 
 // styled
 const MainContainer = styled.div`
@@ -320,6 +321,7 @@ function DeviceDetailPage() {
     () => (planListData ? findPlanData(planListData, selectedPlan) : null),
     [planListData, selectedPlan]
   )
+  const { setCookieFunc } = useCookieCart()
 
   const clickOpenDialog = () => {
     setOpenDialog(true)
@@ -662,7 +664,25 @@ function DeviceDetailPage() {
             fontColor={theme.app.grayFont}
             bgColor={theme.app.background}
             border={`1px solid ${theme.app.grayFont}`}
-            onClick={() => null}
+            onClick={() =>
+              setCookieFunc({
+                name: '',
+                expires: null,
+                deviceCode: params.deviceCode,
+                deviceName: deviceOption.data ? deviceOption.data.name : '',
+                joinTypeIndex: selectedJoin,
+                installmentIndex: selectedInstallment,
+                discountIndex: selectedDiscount,
+                planName: selectedPlan,
+                picPath: deviceOption.data
+                  ? deviceOption.data.detailPerColor[0].picPaths[0]
+                  : '',
+                color: deviceOption.data
+                  ? deviceOption.data.detailPerColor[selectedColor].color
+                  : '',
+                storage: deviceOption.data ? deviceOption.data.storage : 0,
+              })
+            }
           />
           <UplusButton
             width="200px"

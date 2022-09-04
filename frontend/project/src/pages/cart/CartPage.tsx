@@ -27,25 +27,17 @@ const Line = styled.hr`
   background-color: ${({ theme }) => theme.app.dividerGray};
 `
 
-type DiscountType =
-  | 'DEVICE_DISCOUNT'
-  | 'PLAN_DISCOUNT_24'
-  | 'PLAN_DISCOUNT_12'
-  | 'NO_DISCOUNT'
-type JoinType = 'DEVICE_CHANGE' | 'NUMBER_TRANSFER' | 'NEW_SUBSCRIPTION'
-
 function CartPage() {
   const [cartList, setCartList] = useState<CartDataList>([])
   const { orderSave } = useOrder()
-  const { getCookieFunc, removeCookieFunc } = useCookieCart()
+  const { cookies, getCookieFunc, removeCookieFunc } = useCookieCart()
 
   useEffect(() => {
     setCartList(getCookieFunc())
-  }, [])
+  }, [cookies])
 
   const handleRemoveCookie = (cart: CartData) => {
     removeCookieFunc(cart)
-    setCartList(getCookieFunc())
   }
 
   return (
@@ -53,8 +45,9 @@ function CartPage() {
       <MainText>장바구니</MainText>
       <Line></Line>
       {cartList &&
-        cartList.map((cart: CartData) => (
+        cartList.map((cart: CartData, index: number) => (
           <CartItem
+            key={index}
             cart={cart}
             orderRequest={orderSave}
             handleRemoveCookie={handleRemoveCookie}

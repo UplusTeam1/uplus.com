@@ -8,7 +8,9 @@ import UplusButton from '../UplusButton'
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined'
 // import interface
 import { DetailPerColor, DeviceData } from '../../api/device'
+// custom hooks
 import useCalculatedPrice from '../../hooks/device/useCalculatedPrice'
+import useCookieCart from '../../hooks/cart/useCookieCart'
 
 // styled
 const DeviceItemContainer = styled.div`
@@ -156,6 +158,7 @@ function DeviceItem({
     discountIndex,
     installmentIndex
   )
+  const { setCookieFunc } = useCookieCart()
 
   return (
     <DeviceItemContainer>
@@ -258,7 +261,25 @@ function DeviceItem({
                   })
             }
           />
-          <CartButton>
+          <CartButton
+            onClick={() =>
+              setCookieFunc({
+                name: '',
+                expires: null,
+                deviceCode: device.code,
+                deviceName: device.name,
+                joinTypeIndex: 0,
+                installmentIndex: installmentIndex,
+                discountIndex: calculatedPrice
+                  ? calculatedPrice.discountType.index
+                  : 0,
+                planName: planFilter,
+                picPath: device.detailPerColor[0].picPaths[0],
+                color: device.detailPerColor[0].color,
+                storage: device.storage,
+              })
+            }
+          >
             <AddShoppingCartOutlinedIcon color="secondary" fontSize="small" />
           </CartButton>
         </ButtonContainer>
