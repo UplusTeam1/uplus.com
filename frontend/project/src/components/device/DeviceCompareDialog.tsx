@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import produce from 'immer'
 // custom hooks
 import usePlanList from '../../hooks/plan/usePlanList'
+import useCookieCart from '../../hooks/cart/useCookieCart'
 // import interface
 import { CompareDevice } from '../../modules/device'
 import {
@@ -298,6 +299,7 @@ interface DeviceCompareDialogProps {
 function Device({ device, deleteCompareDevice }: CompareDeviceProps) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const { setCookieFunc } = useCookieCart()
 
   return (
     <DeviceDiv border={device.deviceName === '' ? '2px dashed' : '2px solid'}>
@@ -336,7 +338,23 @@ function Device({ device, deleteCompareDevice }: CompareDeviceProps) {
                 })
               }
             />
-            <CartButton>
+            <CartButton
+              onClick={() =>
+                setCookieFunc({
+                  name: '',
+                  expires: null,
+                  deviceCode: device.deviceCode,
+                  deviceName: device.deviceName,
+                  joinTypeIndex: device.joinTypeIndex,
+                  installmentIndex: device.installmentIndex,
+                  discountIndex: device.discountIndex,
+                  planName: device.planName,
+                  picPath: device.picPath,
+                  color: device.color[0],
+                  storage: device.storage,
+                })
+              }
+            >
               <AddShoppingCartOutlinedIcon color="secondary" fontSize="small" />
             </CartButton>
           </ButtonContainer>

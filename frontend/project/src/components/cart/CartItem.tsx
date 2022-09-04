@@ -91,6 +91,13 @@ const CustomCloseIcon = styled(CloseIcon)<{ size: string }>`
     `
   }};
 `
+const ExpiresText = styled.div`
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  font-size: 20px;
+  color: ${({ theme }) => theme.app.uplusPink};
+`
 interface CartItemProps {
   cart: CartData
   orderRequest: UseMutateFunction<OrderData, unknown, OrderRequest, unknown>
@@ -106,6 +113,12 @@ function CartItem({ cart, orderRequest, handleRemoveCookie }: CartItemProps) {
     cart.installmentIndex
   )
   const navigate = useNavigate()
+  const deleteDate = cart.expires
+    ? Math.ceil(
+        (new Date(cart.expires).getTime() - new Date().getTime()) /
+          (1000 * 60 * 60 * 24)
+      )
+    : 0
 
   const clickOrderButton = () => {
     Swal.fire({
@@ -127,6 +140,7 @@ function CartItem({ cart, orderRequest, handleRemoveCookie }: CartItemProps) {
           discountType: DISCOUNT_VALUE_LIST[cart.discountIndex],
           color: cart.color,
         })
+        handleRemoveCookie(cart)
         Swal.fire({
           title: '주문 완료!',
           text: '주문 내역을 확인하시겠습니까?',
@@ -180,6 +194,7 @@ function CartItem({ cart, orderRequest, handleRemoveCookie }: CartItemProps) {
           onClick={() => clickOrderButton()}
         />
       </ButtonContainer>
+      <ExpiresText>삭제까지 {deleteDate}일</ExpiresText>
     </CartItemContainer>
   )
 }

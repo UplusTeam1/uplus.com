@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMutation } from 'react-query'
-import styled, { useTheme } from 'styled-components'
+import styled from 'styled-components'
 import produce from 'immer'
 // import interface
 import { DeviceData, DeviceListData, getDevicePrice } from '../../api/device'
