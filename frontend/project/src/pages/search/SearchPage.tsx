@@ -1,16 +1,18 @@
 import produce from 'immer'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { DeviceData } from '../../api/device'
+import { DeviceData, getDevicePrice } from '../../api/device'
 import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
 import DeviceCompareTab from '../../components/device/DeviceCompareTab'
 import DeviceItem from '../../components/device/DeviceItem'
 import SearchTextButton from '../../components/search/SearchTextButton'
-import UplusButton from '../../components/UplusButton'
 import useCompareDeviceList from '../../hooks/device/useCompareDeviceList'
 import useDeviceList from '../../hooks/device/useDeviceList'
 import { CompareDevice } from '../../modules/device'
 import { flexCenter } from '../../styles/basicStyles'
+import Swal from 'sweetalert2'
+import { useMutation } from 'react-query'
+import useCalculatedPrice from '../../hooks/device/useCalculatedPrice'
 
 const SearchRelationContainer = styled.div`
   flex-wrap: wrap;
@@ -91,12 +93,15 @@ const SearchTextButtonDiv = styled.div`
   margin-left: 10px;
 `
 function SearchPage() {
-  const theme = useTheme()
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
   const { deviceList, getDeviceList } = useDeviceList()
   const { compareDeviceList, setCompareDeviceList, resetCompareDeviceList } =
     useCompareDeviceList()
+
+  const priceMutation = useMutation(getDevicePrice)
+  const { calculatePrice } = useCalculatedPrice()
+  const theme = useTheme()
 
   const selectedCompareDeviceCode = useMemo(
     () =>
@@ -110,6 +115,12 @@ function SearchPage() {
     getDeviceList('5G 심플+')
   }, [getDeviceList])
 
+  useEffect(() => {
+    if (compareDeviceList[0].installmentIndex !== 4) {
+      setIsOpenCompareTab(true)
+    }
+  }, [])
+
   const clickCompareButton = useCallback(() => {
     setIsOpenCompareTab(true)
   }, [])
@@ -120,9 +131,18 @@ function SearchPage() {
   }, [])
 
   const clickOpenDialog = useCallback(() => {
-    setOpenDialog(true)
-  }, [])
-
+    if (compareDeviceList[1].discountIndex !== 4) {
+      setOpenDialog(true)
+    } else {
+      Swal.fire({
+        text: '2개 이상의 상품을 선택하셔야 비교하기가 가능합니다.',
+        icon: 'warning',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+        },
+      })
+    }
+  }, [compareDeviceList])
   const closeDialog = useCallback(() => {
     setOpenDialog(false)
   }, [])
@@ -130,10 +150,9 @@ function SearchPage() {
   const addCompareDevice = (compareDevice: CompareDevice) => {
     clickCompareButton()
     for (let i = 0; i < 3; i++) {
-      if (compareDeviceList[i].discountIndex === 3) {
-        const _compareDeviceList = [...compareDeviceList]
+      if (compareDeviceList[i].discountIndex === 4) {
         setCompareDeviceList(
-          produce(_compareDeviceList, (draft) => {
+          produce(compareDeviceList, (draft) => {
             draft[i] = compareDevice
           })
         )
@@ -143,17 +162,42 @@ function SearchPage() {
         return
       }
     }
-    alert('최대 3개 상품까지 비교하기가 가능합니다.')
+    Swal.fire({
+      text: '최대 3개 상품까지 비교하기가 가능합니다.',
+      icon: 'warning',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+      },
+    })
   }
 
   const changeCompareDeviceOption = (compareDevice: CompareDevice) => {
     for (let i = 0; i < 3; i++) {
       if (compareDeviceList[i].deviceCode === compareDevice.deviceCode) {
-        const _compareDeviceList = [...compareDeviceList]
-        setCompareDeviceList(
-          produce(_compareDeviceList, (draft) => {
-            draft[i] = compareDevice
-          })
+        priceMutation.mutate(
+          {
+            deviceCode: compareDevice.deviceCode,
+            planName: compareDevice.planName,
+          },
+          {
+            onSuccess: (devicePrice) => {
+              setCompareDeviceList(
+                produce(compareDeviceList, (draft) => {
+                  draft[i] = {
+                    ...compareDevice,
+                    calculatedPrice: calculatePrice(
+                      devicePrice,
+                      compareDevice.discountIndex,
+                      compareDevice.installmentIndex
+                    ),
+                  }
+                })
+              )
+            },
+            onError: (e) => {
+              console.error(e)
+            },
+          }
         )
         break
       }
@@ -169,10 +213,12 @@ function SearchPage() {
       deviceName: '',
       joinTypeIndex: 0,
       installmentIndex: 0,
-      discountIndex: 3,
+      discountIndex: 4,
       planName: '',
       picPath: '',
-      price: 0,
+      calculatedPrice: null,
+      color: [''],
+      storage: 0,
     })
     setCompareDeviceList(_compareDeviceList)
   }
@@ -180,7 +226,7 @@ function SearchPage() {
   return (
     <>
       <SearchTopContainer>
-        {true ? (
+        {false ? (
           <>
             <SearchNoResultContainer>
               <SearchNoResultSpan>"{'No Result Text'}"</SearchNoResultSpan> 에
@@ -289,8 +335,6 @@ function SearchPage() {
               key={index}
               device={device}
               planFilter={'5G 심플+'}
-              recommendCheck={true}
-              installmentCheck={true}
               discountIndex={device.recommendedDiscountIndex}
               installmentIndex={2}
               addCompareDevice={addCompareDevice}
@@ -303,6 +347,7 @@ function SearchPage() {
         open={openDialog}
         onClose={closeDialog}
         compareDeviceList={compareDeviceList}
+        changeCompareDeviceOption={changeCompareDeviceOption}
         deleteCompareDevice={deleteCompareDevice}
       />
     </>
