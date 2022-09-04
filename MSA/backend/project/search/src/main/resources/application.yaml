@@ -7,3 +7,11 @@ spring:
 es-info:
   host: ec2-3-39-36-0.ap-northeast-2.compute.amazonaws.com
   port: 9200
+
+contract:
+  discount:
+    rate: 0.25
+
+year:
+  interest:
+    rate: 0.059

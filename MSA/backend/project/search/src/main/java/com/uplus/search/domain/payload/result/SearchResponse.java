@@ -15,30 +15,52 @@ import java.util.StringTokenizer;
 public class SearchResponse {
 
     private String code;
-    private String name;
-    private String brand;
-    private Integer price;
-    private Integer weeklySale;
-    private List<String> picPaths;
 
-    public static SearchResponse of(Source source) {
+    private String name;
+
+    private Integer price;
+
+    private List<Detail> detailPerColor;
+
+    private List<MonthInfo> monthlyChargeList;
+
+    private Integer recommendedDiscountIndex;
+
+    private String brand;
+
+    private Integer storage;
+
+    private Integer weeklySale;
+
+    private Integer totalStock;
+
+    private Integer deviceDiscount;
+
+    private Integer planCharge;
+
+    private List<Integer> defaultInterestList;
+
+    private List<Integer> discountedInterestList;
+
+    public static SearchResponse of(Source source, ChargeInfo chargeInfo) {
         return SearchResponse.builder()
                 .code(source.getCode())
                 .name(source.getName())
                 .brand(source.getBrand())
                 .price(source.getPrice())
-                .weeklySale(source.getWeeklySale())
-                .picPaths(csvToList(source.getPicPaths()))
+                .monthlyChargeList(chargeInfo.getMonthlyCharges())
+                .recommendedDiscountIndex(chargeInfo.getRecommendedIndex())
+                .deviceDiscount(source.getDeviceDiscount())
+                .defaultInterestList(chargeInfo.getDefaultInterestList())
+                .discountedInterestList(chargeInfo.getDiscountedInterestList())
                 .build();
     }
 
-    private static List<String> csvToList(String csvString) {
-        StringTokenizer st = new StringTokenizer(csvString, ",");
-        List<String> list = new ArrayList<>();
-        while(st.hasMoreTokens()) {
-            list.add(st.nextToken());
-        }
-        return list;
+    public void setValues(ChargeInfo chargeInfo) {
+        setMonthlyChargeList(chargeInfo.getMonthlyCharges());
+        setRecommendedDiscountIndex(chargeInfo.getRecommendedIndex());
+        setDefaultInterestList(chargeInfo.getDefaultInterestList());
+        setDiscountedInterestList(chargeInfo.getDiscountedInterestList());
     }
 
 }
