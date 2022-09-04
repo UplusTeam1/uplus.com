@@ -1,14 +1,17 @@
-import Api from '../lib/customApi'
+import searchApi from '../lib/customApi'
 
 export async function autoCompletion(input: string) {
-  const response = await Api.get<AutoCompletionList>(`/api/auto-completion`, {
-    params: { input: input },
-  })
+  const response = await searchApi.get<AutoCompletionList>(
+    `/api/auto-completion`,
+    {
+      params: { input: input },
+    }
+  )
   return response.data
 }
 
 export async function searchDevice(keyword: string) {
-  const response = await Api.get<SearchDeviceList>(`/api/search`, {
+  const response = await searchApi.get<SearchDeviceList>(`/api/search`, {
     params: { keyword: keyword },
   })
   return response.data

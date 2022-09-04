@@ -1,8 +1,8 @@
-import Api from '../lib/customApi'
+import itemApi from '../lib/customApi'
 
 // api
 export async function getPlanList() {
-  const response = await Api.get(`/api/plan`)
+  const response = await itemApi.get(`/api/plan`)
   return response.data
 }
 

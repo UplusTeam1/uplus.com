@@ -1,14 +1,14 @@
-import Api from '../lib/customApi'
+import itemApi from '../lib/customApi'
 
 export async function getDeviceList(planName: string) {
-  const response = await Api.get<DeviceListData>(`/api/device`, {
+  const response = await itemApi.get<DeviceListData>(`/api/device`, {
     params: { plan: planName },
   })
   return response.data
 }
 
 export async function getDeviceOption(code: string) {
-  const response = await Api.get<DeviceOption>(`/api/device/${code}`)
+  const response = await itemApi.get<DeviceOption>(`/api/device/${code}`)
   return response.data
 }
 
@@ -16,7 +16,7 @@ export async function getDevicePrice(data: {
   deviceCode: string
   planName: string
 }) {
-  const response = await Api.get<DevicePrice>(
+  const response = await itemApi.get<DevicePrice>(
     `/api/device/price/${data.deviceCode}/${data.planName}`
   )
   return response.data
