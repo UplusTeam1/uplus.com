@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import CartItem from '../../components/cart/CartItem'
+import useCookieCart from '../../hooks/cart/useCookieCart'
 import useOrder from '../../hooks/order/useOrder'
 
 const CartContainer = styled.div`
@@ -44,6 +46,12 @@ export interface CartData {
 
 function CartPage() {
   const { orderSave } = useOrder()
+  const { setCookieFunc, getCookieFunc, removeCookieFunc } = useCookieCart()
+
+  useEffect(() => {
+    getCookieFunc()
+  }, [])
+
   const cartList: Array<CartData> = [
     {
       cartNumber: '12345', // String
