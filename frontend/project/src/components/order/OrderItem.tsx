@@ -51,12 +51,12 @@ function OrderItem({ order, clickDeleteButton }: OrderItemProps) {
   return (
     <OrderItemContainer>
       <ImageContainer>
-        <OrderImage src="https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg" />
+        <OrderImage src={order.picPaths[0]} />
       </ImageContainer>
       <ContentContainer>
         <OrderText>주문번호 {order.orderNumber}</OrderText>
         <OrderText>주문날짜 {order.joinDate}</OrderText>
-        <OrderText>제품명 {order.deviceCode}</OrderText>
+        <OrderText>제품명 {order.deviceName}</OrderText>
         <OrderText>색상 {order.color}</OrderText>
         <OrderText>요금제 {order.planName}</OrderText>
         <OrderText>
