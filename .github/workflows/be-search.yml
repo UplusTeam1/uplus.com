@@ -4,10 +4,10 @@ env:
   RESOURCE_PATH: ./MSA/backend/project/search/src/main/resources/application.yaml
   working-directory: ./MSA/backend/project/search
   ECR_REPOSITORY: lguplus
-  ECS_SERVICE: uplus-search-service
+  ECS_SERVICE: fargate-be-search
   ECS_CLUSTER: uplus-cluster
   ECS_TASK_DEFINITION: ./MSA/backend/project/search/task-definition.json
-  CONTAINER_NAME: uplus-be-search-container
+  CONTAINER_NAME: be-search
   yaml: ${{secrets.YAML_SEARCH}}
   
 on:
