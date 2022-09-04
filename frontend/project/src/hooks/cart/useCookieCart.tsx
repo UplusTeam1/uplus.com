@@ -4,7 +4,7 @@ export interface CartData {
   name: string
   expires: Date | null
   deviceCode: string
-  deviceNmae: string
+  deviceName: string
   joinTypeIndex: number
   installmentIndex: number
   discountIndex: number
