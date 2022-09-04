@@ -11,15 +11,18 @@ import useDeviceList from '../../hooks/device/useDeviceList'
 import { CompareDevice } from '../../modules/device'
 import { flexCenter } from '../../styles/basicStyles'
 import Swal from 'sweetalert2'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import useCalculatedPrice from '../../hooks/device/useCalculatedPrice'
+import { AxiosError } from 'axios'
+import { searchDevice, SearchDeviceList } from '../../api/search'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const SearchRelationContainer = styled.div`
   flex-wrap: wrap;
   ${flexCenter}
   width: 1228px;
   margin-bottom: 50px;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: bold;
   color: ${({ theme }) => theme.app.blackFont};
 `
@@ -31,6 +34,7 @@ const SearchCountContainer = styled.div`
   color: ${({ theme }) => theme.app.blackFont};
 `
 const SearchCountSpan = styled.span`
+  margin-left: 5px;
   color: ${({ theme }) => theme.app.uplusPink};
 `
 const SearchRelationSpan = styled.span`
@@ -39,8 +43,8 @@ const SearchRelationSpan = styled.span`
 const SearchNoResultContainer = styled.div`
   ${flexCenter}
   width: 1228px;
-  margin-top: 50px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   font-size: 26px;
   font-weight: bold;
   color: ${({ theme }) => theme.app.blackFont};
@@ -60,6 +64,7 @@ const SearchRecommendedContainer = styled.div`
 `
 const SearchRelationTextContainer = styled.div`
   ${flexCenter}
+  margin-top: 20px;
   width: 1228px;
 `
 const SearchRecommendedTextContainer = styled.div`
@@ -92,17 +97,24 @@ const SearchTextButtonDiv = styled.div`
   margin-top: 10px;
   margin-left: 10px;
 `
+export type SearchParams = {
+  keyword: string
+}
 function SearchPage() {
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
   const { deviceList, getDeviceList } = useDeviceList()
   const { compareDeviceList, setCompareDeviceList, resetCompareDeviceList } =
     useCompareDeviceList()
-
+  const params = useParams<keyof SearchParams>() as SearchParams
+  const navigate = useNavigate()
   const priceMutation = useMutation(getDevicePrice)
   const { calculatePrice } = useCalculatedPrice()
   const theme = useTheme()
-
+  const searchList = useQuery<SearchDeviceList, AxiosError>(
+    ['searchList', params.keyword],
+    () => searchDevice(params.keyword)
+  )
   const selectedCompareDeviceCode = useMemo(
     () =>
       compareDeviceList
@@ -112,11 +124,17 @@ function SearchPage() {
   )
 
   useEffect(() => {
+    if (searchList.data) {
+      console.log(searchList.data)
+    }
+  }, [searchList.data])
+
+  useEffect(() => {
     getDeviceList('5G 심플+')
   }, [getDeviceList])
 
   useEffect(() => {
-    if (compareDeviceList[0].installmentIndex !== 4) {
+    if (compareDeviceList[0].discountIndex !== 4) {
       setIsOpenCompareTab(true)
     }
   }, [])
@@ -226,33 +244,21 @@ function SearchPage() {
   return (
     <>
       <SearchTopContainer>
-        {false ? (
+        {searchList.data?.length === 0 ? (
           <>
-            <SearchNoResultContainer>
-              <SearchNoResultSpan>"{'No Result Text'}"</SearchNoResultSpan> 에
-              대한 검색결과가 없습니다!
-            </SearchNoResultContainer>
             <SearchRecommendedContainer>
               <SearchRecommendedTextContainer>
                 U+ 에서 검색어를 추천해 드려요!
               </SearchRecommendedTextContainer>
               <SearchRecommendedButtonContainer>
                 {[
-                  'LongLongLongSample',
-                  'LongLongLongSample',
-                  'LongLongLongSample',
-                  'ShortSample',
-                  'LongLongLongSample',
-                  'LongLongLongSample',
-                  'ShortSample',
-                  'ShortSample',
-                  'LongLongLongSample',
-                  'LongLongLongSample',
-                  'ShortSample',
-                  'ShortSample',
-                  'LongLongLongSample',
-                  'LongLongLongSample',
-                ].map((num) => (
+                  '갤럭시 S22',
+                  '갤럭시 노트 20',
+                  '갤럭시 S21',
+                  'iPhone 13',
+                  'iPhone 13 Pro',
+                  'iPhone 12',
+                ].map((recommendText) => (
                   <SearchTextButtonDiv>
                     <SearchTextButton
                       width="auto"
@@ -264,13 +270,17 @@ function SearchPage() {
                       fontColor={theme.app.grayFont}
                       bgColor={theme.app.whiteFont}
                       border={`1px solid ${theme.app.grayFont}`}
-                      text={String(num)}
-                      onClick={() => null}
+                      text={recommendText}
+                      onClick={() => navigate(`/search/${recommendText}`)}
                     />
                   </SearchTextButtonDiv>
                 ))}
               </SearchRecommendedButtonContainer>
             </SearchRecommendedContainer>
+            <SearchNoResultContainer>
+              <SearchNoResultSpan>'{params.keyword}'</SearchNoResultSpan> 에
+              대한 검색결과가 없습니다!
+            </SearchNoResultContainer>
           </>
         ) : (
           <>
@@ -278,22 +288,7 @@ function SearchPage() {
               <SearchRelationTextContainer>
                 연관검색어
               </SearchRelationTextContainer>
-              {[
-                'LongLongLongSample',
-                'LongLongLongSample',
-                'LongLongLongSample',
-                'ShortSample',
-                'LongLongLongSample',
-                'LongLongLongSample',
-                'ShortSample',
-                'ShortSample',
-                'LongLongLongSample',
-                'LongLongLongSample',
-                'ShortSample',
-                'ShortSample',
-                'LongLongLongSample',
-                'LongLongLongSample',
-              ].map((num) => (
+              {searchList.data?.slice(0, 6).map((searchDevice) => (
                 <SearchTextButtonDiv>
                   <SearchTextButton
                     width="auto"
@@ -305,16 +300,17 @@ function SearchPage() {
                     fontColor={theme.app.grayFont}
                     bgColor={theme.app.whiteFont}
                     border={`1px solid ${theme.app.grayFont}`}
-                    text={String(num)}
-                    onClick={() => null}
+                    text={searchDevice.name}
+                    onClick={() => navigate(`/search/${searchDevice.name}`)}
                   />
                 </SearchTextButtonDiv>
               ))}
             </SearchRelationContainer>
             <SearchCountContainer>
-              <SearchCountSpan>"{'SampleSearchText'}"</SearchCountSpan>
-              {'에 대한 검색결과는 총 '}
-              <SearchCountSpan>{`SampleCount`}</SearchCountSpan>건 입니다!!
+              <SearchCountSpan>'{params.keyword}'</SearchCountSpan>
+              <span> 에 대한 검색결과는 총 </span>
+              <SearchCountSpan>{searchList.data?.length}</SearchCountSpan>건
+              입니다!!
             </SearchCountContainer>
           </>
         )}
