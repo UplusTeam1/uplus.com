@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import {
@@ -14,24 +15,31 @@ const SearchBarContainer = styled.div`
 `
 
 interface SearchBarProps {
-  searchList: any
+  keyword: string
+  autoCompletionList: Array<string>
+  handleKeyPress: (e: React.KeyboardEvent<HTMLDivElement>) => void
+  handleChangeKeyword: (keyword: string) => void
 }
 
-function SearchBar({ searchList }: SearchBarProps) {
-  const navigate = useNavigate()
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter') {
-      navigate(`/device`)
-    }
-  }
-
+function SearchBar({
+  keyword,
+  autoCompletionList,
+  handleKeyPress,
+  handleChangeKeyword,
+}: SearchBarProps) {
   return (
     <SearchBarContainer>
       <Autocomplete
         id="search-bar"
+        inputValue={keyword}
+        onInputChange={(e, newInputValue) => {
+          handleChangeKeyword(newInputValue)
+        }}
         sx={{ width: 500 }}
-        freeSolo
-        options={searchList.map((option: any) => option.title)}
+        options={autoCompletionList.map(
+          (autoCompletion: string) => autoCompletion
+        )}
+        filterOptions={(x) => x}
         renderInput={(params: AutocompleteRenderInputParams) => (
           <TextField
             {...params}

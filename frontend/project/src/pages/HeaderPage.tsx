@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useQuery } from 'react-query'
+import {
+  AutoCompletion,
+  autoCompletion,
+  AutoCompletionList,
+} from '../api/search'
+import { AxiosError } from 'axios'
 // styles
 import styled, { css, useTheme } from 'styled-components'
 import { flexBetween } from '../styles/basicStyles'
@@ -77,12 +84,20 @@ function HeaderPage() {
   const [isDarkBackground, setIsDarkBackground] = useState(true)
   const navigate = useNavigate()
   const location = useLocation()
-  const dummyDevice: any = [
-    { title: 'Galaxy 1' },
-    { title: 'Galaxy 2' },
-    { title: 'Iphone 1' },
-    { title: 'Iphone 2' },
-  ]
+  const [keyword, setKeyword] = useState('')
+  const [autoCompletionList, setAutoCompletionList] = useState<Array<string>>(
+    []
+  )
+  const completionList = useQuery<AutoCompletionList, AxiosError>(
+    ['completionList', keyword],
+    () => autoCompletion(keyword)
+  )
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      navigate(`/search/${keyword}`)
+    }
+  }
 
   useEffect(() => {
     if (location.pathname === '/') {
@@ -93,13 +108,32 @@ function HeaderPage() {
     window.scrollTo(0, 0)
   }, [location.pathname])
 
+  useEffect(() => {
+    if (completionList.data) {
+      setAutoCompletionList(
+        completionList.data.map(
+          (completionData: AutoCompletion) => completionData.name
+        )
+      )
+    }
+  }, [completionList.data])
+
+  const handleChangeKeyword = (keyword: string) => {
+    setKeyword(keyword)
+  }
+
   return (
     <RootContainer
       backgroundColor={
         isDarkBackground ? theme.app.mainBackground : theme.app.background
       }
     >
-      <SearchBar searchList={dummyDevice} />
+      <SearchBar
+        keyword={keyword}
+        autoCompletionList={autoCompletionList}
+        handleKeyPress={handleKeyPress}
+        handleChangeKeyword={handleChangeKeyword}
+      />
       <InnerContainer>
         <HeaderContainer
           backgroundColor={

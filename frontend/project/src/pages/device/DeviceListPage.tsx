@@ -46,7 +46,6 @@ function DeviceListPage() {
   const { sortDevice } = useSortDevice()
   const priceMutation = useMutation(getDevicePrice)
   const { calculatePrice } = useCalculatedPrice()
-  const theme = useTheme()
 
   const filteredDeviceList = useMemo(
     () => filterDevice(deviceList.data, deviceFilter),
@@ -77,7 +76,7 @@ function DeviceListPage() {
   }, [sortDevice, filteredDeviceList, deviceFilter.sortIndex])
 
   useEffect(() => {
-    if (compareDeviceList[0].installmentIndex !== 4) {
+    if (compareDeviceList[0].discountIndex !== 4) {
       setIsOpenCompareTab(true)
     }
   }, [])

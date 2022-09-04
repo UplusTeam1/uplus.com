@@ -518,7 +518,7 @@ function FeeChart({ deviceList }: DeviceListProps) {
             (total: any, self: any) => total + self.data[idx],
             0
           )
-          return total + '원'
+          return total.toLocaleString('ko-KR') + '원'
         },
         style: {
           fontSize: '22px',
