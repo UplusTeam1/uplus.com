@@ -1,6 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import produce from 'immer'
+// custom hooks
+import usePlanList from '../../hooks/plan/usePlanList'
+// import interface
 import { CompareDevice } from '../../modules/device'
+import {
+  DiscountType,
+  DISCOUNT_TYPE_LIST,
+  InstallmentType,
+  INSTALLMENT_LIST,
+  JoinType,
+  JOIN_TYPE_LIST,
+} from '../../data/staticData'
+import { PlanData, PlanListData } from '../../api/plan'
 // styles
 import styled, { css, useTheme } from 'styled-components'
 import { flexBetween, flexCenter } from '../../styles/basicStyles'
@@ -201,7 +214,7 @@ const SpecInfoDiv = styled.div`
   ${flexBetween}
   flex-direction: column;
   width: 300px;
-  height: 100px;
+  height: 120px;
   padding: 30px;
   background-color: ${({ theme }) => theme.app.lightGray};
 `
@@ -251,12 +264,15 @@ const CustomCloseIcon = styled(CloseIcon)<{ size: string }>`
 
 // interface
 interface DeviceProps {
-  device: any
-  deleteCompareDevice?: (deviceCode: string) => void
+  device: CompareDevice
+}
+
+interface CompareDeviceProps extends DeviceProps {
+  deleteCompareDevice: (deviceCode: string) => void
 }
 
 interface DeviceListProps {
-  deviceList: any
+  deviceList: Array<CompareDevice>
 }
 
 interface InfoTitleProps {
@@ -265,19 +281,21 @@ interface InfoTitleProps {
   onClick: () => void
 }
 
+interface PlanProps extends DeviceProps {
+  planList: PlanListData
+  changeCompareDeviceOption: (compareDevice: CompareDevice) => void
+}
+
 interface DeviceCompareDialogProps {
   open: boolean
   onClose: () => void
   compareDeviceList: Array<CompareDevice>
+  changeCompareDeviceOption: (compareDevice: CompareDevice) => void
   deleteCompareDevice: (deviceCode: string) => void
 }
 
 // components
-function priceFormat(value: number) {
-  return `${value.toLocaleString('ko-KR')}`
-}
-
-function Device({ device, deleteCompareDevice }: DeviceProps) {
+function Device({ device, deleteCompareDevice }: CompareDeviceProps) {
   const theme = useTheme()
   const navigate = useNavigate()
 
@@ -290,10 +308,15 @@ function Device({ device, deleteCompareDevice }: DeviceProps) {
         </>
       ) : (
         <>
-          <CustomCloseIcon size="28px" onClick={() => null} />
+          <CustomCloseIcon
+            size="28px"
+            onClick={() => deleteCompareDevice(device.deviceCode)}
+          />
           <DeviceImage alt="Device Image" src={device.picPath} />
           <ContentText>{device.deviceName}</ContentText>
-          <PriceText>{priceFormat(device.price)}원</PriceText>
+          <PriceText>
+            월 {device.calculatedPrice?.totalMonthlyCharge}원
+          </PriceText>
           <ButtonContainer>
             <UplusButton
               width="120px"
@@ -303,7 +326,15 @@ function Device({ device, deleteCompareDevice }: DeviceProps) {
               fontColor={theme.app.grayFont}
               bgColor={theme.app.background}
               border={`1px solid ${theme.app.grayFont}`}
-              onClick={() => navigate(`/device/${device.deviceCode}`)}
+              onClick={() =>
+                navigate(`/device/${device.deviceCode}`, {
+                  state: {
+                    planName: device.planName,
+                    discountIndex: device.discountIndex,
+                    installmentIndex: device.installmentIndex,
+                  },
+                })
+              }
             />
             <CartButton>
               <AddShoppingCartOutlinedIcon color="secondary" fontSize="small" />
@@ -328,28 +359,62 @@ function PlanFee({ device }: DeviceProps) {
   return (
     <InfoDiv>
       <InfoTopTextDiv>
-        <InfoTopText>{device.name === '' ? '-' : '휴대폰 가격'}</InfoTopText>
-        <PriceText>{device.name === '' ? '' : `${device.price}원`}</PriceText>
+        <InfoTopText>
+          {device.deviceName === ''
+            ? '-'
+            : `${
+                device.installmentIndex === 0
+                  ? '기기 완납 결제 가격'
+                  : '월 휴대폰 할부금'
+              }`}
+        </InfoTopText>
+        <PriceText>
+          {device.deviceName === ''
+            ? ''
+            : `${device.calculatedPrice?.monthlyDiscountedDevicePrice}원`}
+        </PriceText>
       </InfoTopTextDiv>
       <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '출고가'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '1,353,000원'}</InfoText>
+        <InfoText>{device.deviceName === '' ? '-' : '출고가'}</InfoText>
+        <InfoText>
+          {device.deviceName === ''
+            ? ''
+            : `${device.calculatedPrice?.realDevicePrice}원`}
+        </InfoText>
       </InfoTextDiv>
       <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '공시지원금'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '0원'}</InfoText>
+        <InfoText>{device.deviceName === '' ? '-' : '공시지원금'}</InfoText>
+        <InfoText>
+          {device.deviceName === ''
+            ? ''
+            : `-${
+                device.discountIndex === 0
+                  ? device.calculatedPrice?.deviceDiscount
+                  : '0'
+              }원`}
+        </InfoText>
       </InfoTextDiv>
       <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '15% 추가지원금'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '0원'}</InfoText>
+        <InfoText>{device.deviceName === '' ? '-' : '실구매가'}</InfoText>
+        <InfoText>
+          {device.deviceName === ''
+            ? ''
+            : `${
+                device.discountIndex === 0
+                  ? device.calculatedPrice?.discountedDevicePrice
+                  : device.calculatedPrice?.realDevicePrice
+              }원`}
+        </InfoText>
       </InfoTextDiv>
       <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '할부수수료(연5.9%)'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '84,720원'}</InfoText>
-      </InfoTextDiv>
-      <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '실구매가'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '1,353,000원'}</InfoText>
+        <InfoText>
+          {device.deviceName === '' ? '-' : '할부수수료(연5.9%)'}
+        </InfoText>
+        <InfoText>
+          {device.deviceName === ''
+            ? ''
+            : `${device.calculatedPrice?.interestCharge}원`}
+        </InfoText>
       </InfoTextDiv>
     </InfoDiv>
   )
@@ -359,35 +424,54 @@ function DeviceFee({ device }: DeviceProps) {
   return (
     <InfoDiv>
       <InfoTopTextDiv>
-        <InfoTopText>{device.name === '' ? '-' : '통신료'}</InfoTopText>
-        <PriceText>{device.name === '' ? '' : `${device.price}원`}</PriceText>
+        <InfoTopText>
+          {device.deviceName === '' ? '-' : '월 통신료'}
+        </InfoTopText>
+        <PriceText>
+          {device.deviceName === ''
+            ? ''
+            : `${device.calculatedPrice?.monthlyDiscountedPlanCharge}원`}
+        </PriceText>
       </InfoTopTextDiv>
       <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '월정액'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '65,000원'}</InfoText>
+        <InfoText>{device.deviceName === '' ? '-' : '월정액'}</InfoText>
+        <InfoText>
+          {device.deviceName === ''
+            ? ''
+            : `${device.calculatedPrice?.monthlyRealPlanCharge}원`}
+        </InfoText>
       </InfoTextDiv>
       <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '선택약정할인'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '0원'}</InfoText>
-      </InfoTextDiv>
-      <InfoTextDiv>
-        <InfoText>{device.name === '' ? '-' : '7%추가요금할인'}</InfoText>
-        <InfoText>{device.name === '' ? '' : '0원'}</InfoText>
+        <InfoText>{device.deviceName === '' ? '-' : '선택약정할인'}</InfoText>
+        <InfoText>
+          {device.deviceName === ''
+            ? ''
+            : `-${device.calculatedPrice?.monthlyPlanDiscount}원`}
+        </InfoText>
       </InfoTextDiv>
     </InfoDiv>
   )
 }
 
 function FeeChart({ deviceList }: DeviceListProps) {
+  const textAnchor: 'start' | 'middle' | 'end' = 'end'
   const [chartData, setChartData] = useState({
     series: [
       {
         name: '휴대폰 가격',
-        data: [61360, 7880, 0],
+        data: deviceList.map((device) =>
+          device.calculatedPrice && device.installmentIndex !== 0
+            ? device.calculatedPrice._monthlyDiscountedDevicePrice
+            : 0
+        ),
       },
       {
         name: '통신료',
-        data: [65000, 55000, 0],
+        data: deviceList.map((device) =>
+          device.calculatedPrice
+            ? device.calculatedPrice._monthlyDiscountedPlanCharge
+            : 0
+        ),
       },
     ],
     options: {
@@ -397,10 +481,13 @@ function FeeChart({ deviceList }: DeviceListProps) {
       plotOptions: {
         bar: {
           horizontal: true,
+          dataLabels: {
+            position: 'right',
+          },
         },
       },
       xaxis: {
-        categories: ['갤럭시 Z 플립1', '갤럭시 Z 플립2', ''],
+        categories: deviceList.map((device) => device.deviceName),
         labels: {
           show: false,
         },
@@ -408,14 +495,34 @@ function FeeChart({ deviceList }: DeviceListProps) {
       yaxis: {
         labels: {
           style: {
-            fontSize: '18px',
+            fontSize: '12px',
             fontWeight: 'bold',
           },
         },
       },
+      tooltip: {
+        y: {
+          formatter: function (val: any) {
+            return val + '원'
+          },
+        },
+      },
       dataLabels: {
+        enabled: true,
+        enabledOnSeries: [1],
+        textAnchor: textAnchor,
+        formatter: function (_val: any, opt: any) {
+          let series = opt.w.config.series
+          let idx = opt.dataPointIndex
+          const total = series.reduce(
+            (total: any, self: any) => total + self.data[idx],
+            0
+          )
+          return total + '원'
+        },
         style: {
-          fontSize: '18px',
+          fontSize: '22px',
+          colors: ['#000'],
         },
       },
       fill: {
@@ -428,6 +535,26 @@ function FeeChart({ deviceList }: DeviceListProps) {
     },
   })
 
+  useEffect(() => {
+    setChartData(
+      produce(chartData, (draft) => {
+        draft.series[0].data = deviceList.map((device) =>
+          device.calculatedPrice && device.installmentIndex !== 0
+            ? device.calculatedPrice._monthlyDiscountedDevicePrice
+            : 0
+        )
+        draft.series[1].data = deviceList.map((device) =>
+          device.calculatedPrice
+            ? device.calculatedPrice._monthlyDiscountedPlanCharge
+            : 0
+        )
+        draft.options.xaxis.categories = deviceList.map(
+          (device) => device.deviceName
+        )
+      })
+    )
+  }, [deviceList])
+
   return (
     <ReactApexChart
       options={chartData.options}
@@ -439,70 +566,97 @@ function FeeChart({ deviceList }: DeviceListProps) {
   )
 }
 
-function Plan({ device }: DeviceProps) {
+function Plan({ device, planList, changeCompareDeviceOption }: PlanProps) {
   return (
     <PlanInfoDiv>
-      {device.name === '' ? (
-        <>
-          <InfoText>-</InfoText>
-          <InfoText>-</InfoText>
-          <InfoText>-</InfoText>
-          <InfoText>-</InfoText>
-        </>
+      {device.deviceName === '' ? (
+        Array.from(Array(4).keys()).map((key: number) => (
+          <InfoText key={key}>-</InfoText>
+        ))
       ) : (
         <>
           <FormControl variant="standard" fullWidth>
             <Select
               labelId="select-1-label"
               id="select-1"
-              value={0}
-              onChange={() => null}
+              value={device.joinTypeIndex}
+              onChange={(e) =>
+                changeCompareDeviceOption({
+                  ...device,
+                  joinTypeIndex: Number(e.target.value),
+                })
+              }
               label="1"
             >
-              <MenuItem value={0}>기기변경</MenuItem>
-              <MenuItem value={1}>번호이동</MenuItem>
-              <MenuItem value={2}>신규가입</MenuItem>
+              {JOIN_TYPE_LIST.map((joinType: JoinType, index: number) => (
+                <MenuItem key={index} value={joinType.indexValue}>
+                  {joinType.label}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <FormControl variant="standard" fullWidth>
             <Select
               labelId="select-2-label"
               id="select-2"
-              value={2}
-              onChange={() => null}
+              value={device.installmentIndex}
+              onChange={(e) =>
+                changeCompareDeviceOption({
+                  ...device,
+                  installmentIndex: Number(e.target.value),
+                })
+              }
               label="2"
             >
-              <MenuItem value={0}>일시불</MenuItem>
-              <MenuItem value={1}>12개월</MenuItem>
-              <MenuItem value={2}>24개월</MenuItem>
-              <MenuItem value={3}>36개월</MenuItem>
+              {INSTALLMENT_LIST.map(
+                (installmentType: InstallmentType, index: number) => (
+                  <MenuItem key={index} value={installmentType.indexValue}>
+                    {installmentType.label}
+                  </MenuItem>
+                )
+              )}
             </Select>
           </FormControl>
           <FormControl variant="standard" fullWidth>
             <Select
               labelId="select-3-label"
               id="select-3"
-              value={0}
-              onChange={() => null}
+              value={device.discountIndex}
+              onChange={(e) =>
+                changeCompareDeviceOption({
+                  ...device,
+                  discountIndex: Number(e.target.value),
+                })
+              }
               label="3"
             >
-              <MenuItem value={0}>공시지원금</MenuItem>
-              <MenuItem value={1}>선택약정24개월</MenuItem>
-              <MenuItem value={2}>선택약정12개월</MenuItem>
+              {DISCOUNT_TYPE_LIST.slice(1).map(
+                (discountType: DiscountType, index: number) => (
+                  <MenuItem key={index} value={discountType.indexValue}>
+                    {discountType.label}
+                  </MenuItem>
+                )
+              )}
             </Select>
           </FormControl>
           <FormControl variant="standard" fullWidth>
             <Select
               labelId="select-4-label"
               id="select-4"
-              value={0}
-              onChange={() => null}
+              value={device.planName}
+              onChange={(e) =>
+                changeCompareDeviceOption({
+                  ...device,
+                  planName: e.target.value,
+                })
+              }
               label="4"
             >
-              <MenuItem value={0}>5G 시그니처</MenuItem>
-              <MenuItem value={1}>5G 프리미어 슈퍼</MenuItem>
-              <MenuItem value={2}>5G 프리미어 플러스</MenuItem>
-              <MenuItem value={3}>5G 라이트+</MenuItem>
+              {planList.map((planData: PlanData, index: number) => (
+                <MenuItem key={index} value={planData.name}>
+                  {planData.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </>
@@ -515,12 +669,16 @@ function Spec({ device }: DeviceProps) {
   return (
     <SpecInfoDiv>
       <SpecInfoTextDiv>
-        <InfoTopText>{device.name === '' ? '-' : '색상'}</InfoTopText>
-        <InfoText>{device.name === '' ? '-' : '화이트'}</InfoText>
+        <InfoTopText>{device.deviceName === '' ? '-' : '색상'}</InfoTopText>
+        <InfoText>
+          {device.deviceName === '' ? '-' : `${device.color.join(', ')}`}
+        </InfoText>
       </SpecInfoTextDiv>
       <SpecInfoTextDiv>
-        <InfoTopText>{device.name === '' ? '-' : '용량'}</InfoTopText>
-        <InfoText>{device.name === '' ? '-' : '256GB'}</InfoText>
+        <InfoTopText>{device.deviceName === '' ? '-' : '용량'}</InfoTopText>
+        <InfoText>
+          {device.deviceName === '' ? '-' : `${device.storage}GB`}
+        </InfoText>
       </SpecInfoTextDiv>
     </SpecInfoDiv>
   )
@@ -530,31 +688,13 @@ function DeviceCompareDialog({
   open,
   onClose,
   compareDeviceList,
+  changeCompareDeviceOption,
   deleteCompareDevice,
 }: DeviceCompareDialogProps) {
   const [isFoldFee, setIsFoldFee] = useState(false)
   const [isFoldPlan, setIsFoldPlan] = useState(false)
   const [isFoldSpec, setIsFoldSpec] = useState(false)
-  const deviceList: any = [
-    {
-      name: '갤럭시 Z 플립1',
-      picPath:
-        'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 126,360',
-    },
-    {
-      name: '갤럭시 Z 플립2',
-      picPath:
-        'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 62,880',
-    },
-    {
-      name: '',
-      picPath:
-        'https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg',
-      price: '월 82,970',
-    },
-  ]
+  const planList = usePlanList()
 
   const clickFeeTitle = () => {
     setIsFoldFee(!isFoldFee)
@@ -589,15 +729,15 @@ function DeviceCompareDialog({
           isFold={isFoldFee}
           onClick={clickFeeTitle}
         />
-        <FeeListDiv height={isFoldFee ? '0' : '810px'}>
-          <FeeChart deviceList={deviceList} />
+        <FeeListDiv height={isFoldFee ? '0' : '770px'}>
+          <FeeChart deviceList={compareDeviceList} />
           <DeviceFeeListDiv>
-            {deviceList.map((device: any, index: number) => (
+            {compareDeviceList.map((device: CompareDevice, index: number) => (
               <PlanFee key={index} device={device}></PlanFee>
             ))}
           </DeviceFeeListDiv>
           <PlanFeeListDiv>
-            {deviceList.map((device: any, index: number) => (
+            {compareDeviceList.map((device: CompareDevice, index: number) => (
               <DeviceFee key={index} device={device}></DeviceFee>
             ))}
           </PlanFeeListDiv>
@@ -608,8 +748,13 @@ function DeviceCompareDialog({
           onClick={clickPlanTitle}
         />
         <InfoListDiv height={isFoldPlan ? '0' : '300px'}>
-          {deviceList.map((device: any, index: number) => (
-            <Plan key={index} device={device}></Plan>
+          {compareDeviceList.map((device: CompareDevice, index: number) => (
+            <Plan
+              key={index}
+              device={device}
+              planList={planList.data ? planList.data : []}
+              changeCompareDeviceOption={changeCompareDeviceOption}
+            ></Plan>
           ))}
         </InfoListDiv>
         <InfoTitle
@@ -617,8 +762,8 @@ function DeviceCompareDialog({
           isFold={isFoldSpec}
           onClick={clickSpecTitle}
         />
-        <InfoListDiv height={isFoldSpec ? '0' : '160px'}>
-          {deviceList.map((device: any, index: number) => (
+        <InfoListDiv height={isFoldSpec ? '0' : '180px'}>
+          {compareDeviceList.map((device: CompareDevice, index: number) => (
             <Spec key={index} device={device}></Spec>
           ))}
         </InfoListDiv>

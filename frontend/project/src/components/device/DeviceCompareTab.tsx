@@ -175,7 +175,11 @@ function Device({ device, deleteCompareDevice }: DeviceProps) {
               <div>
                 <ContentText>{device.deviceName}</ContentText>
               </div>
-              <PriceText>{priceFormat(device.price)}</PriceText>
+              <PriceText>
+                {device.calculatedPrice
+                  ? priceFormat(device.calculatedPrice._totalMonthlyCharge)
+                  : ''}
+              </PriceText>
               <ContentText>원</ContentText>
             </div>
           </DeviceInfoDiv>

@@ -1,20 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { useMutation } from 'react-query'
+import styled, { useTheme } from 'styled-components'
 import produce from 'immer'
 // import interface
-import { DeviceData, DeviceListData } from '../../api/device'
-import { CompareDevice, DeviceFilterType } from '../../modules/device'
+import { DeviceData, DeviceListData, getDevicePrice } from '../../api/device'
+import { CompareDevice } from '../../modules/device'
 // import components
 import DeviceFilter from '../../components/device/DeviceFilter'
 import DeviceSubFilter from '../../components/device/DeviceSubFilter'
 import DeviceItem from '../../components/device/DeviceItem'
 import DeviceCompareTab from '../../components/device/DeviceCompareTab'
 import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
+import Swal from 'sweetalert2'
 // custom hooks
 import useDeviceList from '../../hooks/device/useDeviceList'
 import useFilter from '../../hooks/device/useFilter'
 import useCompareDeviceList from '../../hooks/device/useCompareDeviceList'
 import usePlanList from '../../hooks/plan/usePlanList'
+import useFilterDevice from '../../hooks/device/useFilterDevice'
+import useSortDevice from '../../hooks/device/useSortDevice'
+import useCalculatedPrice from '../../hooks/device/useCalculatedPrice'
 
 const DeviceListContainer = styled.div`
   display: flex;
@@ -23,91 +28,29 @@ const DeviceListContainer = styled.div`
   & > div:nth-child(4n) {
     margin-right: 0;
   }
+  margin-bottom: 200px;
 `
-
-function filterDeviceList(
-  deviceList: DeviceListData,
-  deviceFilter: DeviceFilterType
-) {
-  const recommendCheck = deviceFilter.discountIndex === -1 ? true : false
-  const installmentCheck = deviceFilter.installmentIndex === -1 ? false : true
-  const storageCheck = deviceFilter.storage === 0 ? false : true
-
-  if (installmentCheck) {
-    return deviceList
-      .filter((device) =>
-        storageCheck ? device.storage === deviceFilter.storage : true
-      )
-      .filter((device) =>
-        deviceFilter.maker === '' ? true : device.brand === deviceFilter.maker
-      )
-      .filter(
-        (device) =>
-          deviceFilter.price[0] <=
-          device.monthlyChargeList[
-            recommendCheck
-              ? device.recommendedDiscountIndex
-              : deviceFilter.discountIndex
-          ].totalCharge[deviceFilter.installmentIndex]
-      )
-      .filter(
-        (device) =>
-          device.monthlyChargeList[
-            recommendCheck
-              ? device.recommendedDiscountIndex
-              : deviceFilter.discountIndex
-          ].totalCharge[deviceFilter.installmentIndex] <= deviceFilter.price[1]
-      )
-      .filter((device) => (deviceFilter.stock ? device.totalStock > 0 : true))
-  } else {
-    return deviceList
-      .filter((device) =>
-        storageCheck ? device.storage === deviceFilter.storage : true
-      )
-      .filter((device) =>
-        deviceFilter.maker === '' ? true : device.brand === deviceFilter.maker
-      )
-      .filter(
-        (device) =>
-          deviceFilter.price[0] <=
-          device.monthlyChargeList[
-            recommendCheck
-              ? device.recommendedDiscountIndex
-              : deviceFilter.discountIndex
-          ].planCharge
-      )
-      .filter(
-        (device) =>
-          device.monthlyChargeList[
-            recommendCheck
-              ? device.recommendedDiscountIndex
-              : deviceFilter.discountIndex
-          ].planCharge <= deviceFilter.price[1]
-      )
-      .filter((device) => (deviceFilter.stock ? device.totalStock > 0 : true))
-  }
-}
 
 function DeviceListPage() {
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
   const [sortedDeviceList, setSortedDeviceList] =
     useState<DeviceListData | null>(null)
-  const {
-    planFilter,
-    deviceFilter,
-    setPlanFilter,
-    setDeviceFilter,
-    resetFilter,
-  } = useFilter()
+  const { planFilter, deviceFilter, setPlanFilter, setDeviceFilter } =
+    useFilter()
   const { data: planListData, isLoading: planListIsLoading } = usePlanList()
   const { deviceList, getDeviceList } = useDeviceList()
   const { compareDeviceList, setCompareDeviceList, resetCompareDeviceList } =
     useCompareDeviceList()
+  const { filterDevice } = useFilterDevice()
+  const { sortDevice } = useSortDevice()
+  const priceMutation = useMutation(getDevicePrice)
+  const { calculatePrice } = useCalculatedPrice()
+  const theme = useTheme()
+
   const filteredDeviceList = useMemo(
-    () =>
-      deviceList.data ? filterDeviceList(deviceList.data, deviceFilter) : null,
-    [deviceList.data, deviceFilter]
+    () => filterDevice(deviceList.data, deviceFilter),
+    [filterDevice, deviceList.data, deviceFilter]
   )
   const selectedCompareDeviceCode = useMemo(
     () =>
@@ -130,46 +73,14 @@ function DeviceListPage() {
   }, [planFilter, planListData, setPlanFilter])
 
   useEffect(() => {
-    if (filteredDeviceList) {
-      const _filteredDeviceList = [...filteredDeviceList]
-      const recommendCheck = deviceFilter.discountIndex === -1
-      const installmentCheck = !(deviceFilter.installmentIndex === -1)
-      if (deviceFilter.sortIndex === 0) {
-        if (installmentCheck) {
-          _filteredDeviceList.sort(function (a, b) {
-            return (
-              a.monthlyChargeList[
-                recommendCheck
-                  ? a.recommendedDiscountIndex
-                  : deviceFilter.discountIndex
-              ].totalCharge[deviceFilter.installmentIndex] -
-              b.monthlyChargeList[
-                recommendCheck
-                  ? b.recommendedDiscountIndex
-                  : deviceFilter.discountIndex
-              ].totalCharge[deviceFilter.installmentIndex]
-            )
-          })
-        } else {
-          _filteredDeviceList.sort(function (a, b) {
-            return (
-              a.monthlyChargeList[deviceFilter.discountIndex].planCharge -
-              b.monthlyChargeList[deviceFilter.discountIndex].planCharge
-            )
-          })
-        }
-      } else if (deviceFilter.sortIndex === 1) {
-        _filteredDeviceList.sort(function (a, b) {
-          return a.price - b.price
-        })
-      } else {
-        _filteredDeviceList.sort(function (a, b) {
-          return b.price - a.price
-        })
-      }
-      setSortedDeviceList(_filteredDeviceList)
+    setSortedDeviceList(sortDevice(filteredDeviceList, deviceFilter))
+  }, [sortDevice, filteredDeviceList, deviceFilter.sortIndex])
+
+  useEffect(() => {
+    if (compareDeviceList[0].installmentIndex !== 4) {
+      setIsOpenCompareTab(true)
     }
-  }, [filteredDeviceList, deviceFilter.sortIndex])
+  }, [])
 
   const handlePlanFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPlanFilter((e.target as HTMLInputElement).value)
@@ -196,8 +107,18 @@ function DeviceListPage() {
   }, [])
 
   const clickOpenDialog = useCallback(() => {
-    setOpenDialog(true)
-  }, [])
+    if (compareDeviceList[1].discountIndex !== 4) {
+      setOpenDialog(true)
+    } else {
+      Swal.fire({
+        text: '2개 이상의 상품을 선택하셔야 비교하기가 가능합니다.',
+        icon: 'warning',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+        },
+      })
+    }
+  }, [compareDeviceList])
 
   const closeDialog = useCallback(() => {
     setOpenDialog(false)
@@ -206,10 +127,9 @@ function DeviceListPage() {
   const addCompareDevice = (compareDevice: CompareDevice) => {
     clickCompareButton()
     for (let i = 0; i < 3; i++) {
-      if (compareDeviceList[i].discountIndex === 3) {
-        const _compareDeviceList = [...compareDeviceList]
+      if (compareDeviceList[i].discountIndex === 4) {
         setCompareDeviceList(
-          produce(_compareDeviceList, (draft) => {
+          produce(compareDeviceList, (draft) => {
             draft[i] = compareDevice
           })
         )
@@ -219,17 +139,42 @@ function DeviceListPage() {
         return
       }
     }
-    alert('최대 3개 상품까지 비교하기가 가능합니다.')
+    Swal.fire({
+      text: '최대 3개 상품까지 비교하기가 가능합니다.',
+      icon: 'warning',
+      customClass: {
+        confirmButton: 'btn btn-primary',
+      },
+    })
   }
 
   const changeCompareDeviceOption = (compareDevice: CompareDevice) => {
     for (let i = 0; i < 3; i++) {
       if (compareDeviceList[i].deviceCode === compareDevice.deviceCode) {
-        const _compareDeviceList = [...compareDeviceList]
-        setCompareDeviceList(
-          produce(_compareDeviceList, (draft) => {
-            draft[i] = compareDevice
-          })
+        priceMutation.mutate(
+          {
+            deviceCode: compareDevice.deviceCode,
+            planName: compareDevice.planName,
+          },
+          {
+            onSuccess: (devicePrice) => {
+              setCompareDeviceList(
+                produce(compareDeviceList, (draft) => {
+                  draft[i] = {
+                    ...compareDevice,
+                    calculatedPrice: calculatePrice(
+                      devicePrice,
+                      compareDevice.discountIndex,
+                      compareDevice.installmentIndex
+                    ),
+                  }
+                })
+              )
+            },
+            onError: (e) => {
+              console.error(e)
+            },
+          }
         )
         break
       }
@@ -245,10 +190,12 @@ function DeviceListPage() {
       deviceName: '',
       joinTypeIndex: 0,
       installmentIndex: 0,
-      discountIndex: 3,
+      discountIndex: 4,
       planName: '',
       picPath: '',
-      price: 0,
+      calculatedPrice: null,
+      color: [''],
+      storage: 0,
     })
     setCompareDeviceList(_compareDeviceList)
   }
@@ -283,13 +230,7 @@ function DeviceListPage() {
               key={index}
               device={device}
               planFilter={planFilter}
-              recommendCheck={deviceFilter.discountIndex === -1}
-              installmentCheck={!(deviceFilter.installmentIndex === -1)}
-              discountIndex={
-                deviceFilter.discountIndex === -1
-                  ? device.recommendedDiscountIndex
-                  : deviceFilter.discountIndex
-              }
+              discountIndex={deviceFilter.discountIndex}
               installmentIndex={deviceFilter.installmentIndex}
               addCompareDevice={addCompareDevice}
               deleteCompareDevice={deleteCompareDevice}
@@ -301,6 +242,7 @@ function DeviceListPage() {
         open={openDialog}
         onClose={closeDialog}
         compareDeviceList={compareDeviceList}
+        changeCompareDeviceOption={changeCompareDeviceOption}
         deleteCompareDevice={deleteCompareDevice}
       />
     </>

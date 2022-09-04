@@ -6,6 +6,7 @@ export interface DiscountType {
 export interface InstallmentType {
   label: string
   indexValue: number
+  value: number
 }
 
 export interface StorageType {
@@ -34,8 +35,8 @@ export interface JoinType {
 
 export interface CartDiscountTypeList {
   DEVICE_DISCOUNT: string
-  PLAN_DISCOUNT_24: string
   PLAN_DISCOUNT_12: string
+  PLAN_DISCOUNT_24: string
   NO_DISCOUNT: string
 }
 
@@ -56,22 +57,22 @@ export const PLAN_INFO_LIST: Array<string> = [
 export const DISCOUNT_TYPE_LIST: Array<DiscountType> = [
   { label: '추천', indexValue: -1 },
   { label: '공시지원금', indexValue: 0 },
-  { label: '선택약정 24개월', indexValue: 1 },
-  { label: '선택약정 12개월', indexValue: 2 },
+  { label: '선택약정 12개월', indexValue: 1 },
+  { label: '선택약정 24개월', indexValue: 2 },
 ]
 
 export const DICOUNT_INFO_LIST: Array<string> = [
   '',
   '휴대폰 가격 1회 할인',
-  '24개월간 통신요금 25% 할인',
   '12개월간 통신요금 25% 할인',
+  '24개월간 통신요금 25% 할인',
 ]
 
 export const INSTALLMENT_LIST: Array<InstallmentType> = [
-  { label: '일시불', indexValue: -1 },
-  { label: '12개월', indexValue: 0 },
-  { label: '24개월', indexValue: 1 },
-  { label: '36개월', indexValue: 2 },
+  { label: '일시불', indexValue: 0, value: 1 },
+  { label: '12개월', indexValue: 1, value: 12 },
+  { label: '24개월', indexValue: 2, value: 24 },
+  { label: '36개월', indexValue: 3, value: 36 },
 ]
 
 export const STORAGE_LIST: Array<StorageType> = [
@@ -116,15 +117,15 @@ export const JOIN_TYPE_LIST: Array<JoinType> = [
 
 export const DISCOUNT_VALUE_LIST: Array<string> = [
   'DEVICE_DISCOUNT',
-  'PLAN_DISCOUNT_24',
   'PLAN_DISCOUNT_12',
+  'PLAN_DISCOUNT_24',
   'NO_DISCOUNT',
 ]
 
 export const CART_DISCOUNT_TYPE_LIST: CartDiscountTypeList = {
   DEVICE_DISCOUNT: '공시지원금',
-  PLAN_DISCOUNT_24: '선택약정 24개월',
   PLAN_DISCOUNT_12: '선택약정 12개월',
+  PLAN_DISCOUNT_24: '선택약정 24개월',
   NO_DISCOUNT: '',
 }
 

@@ -4,12 +4,13 @@ import { RootState } from '../../modules'
 import { deviceActions, DeviceFilterType } from '../../modules/device'
 
 function useFilter() {
-  const planFilter = useSelector<RootState, string>(
+  const planFilter: string = useSelector<RootState, string>(
     (state) => state.device.planFilter
   )
-  const deviceFilter = useSelector<RootState, DeviceFilterType>(
-    (state) => state.device.deviceFilter
-  )
+  const deviceFilter: DeviceFilterType = useSelector<
+    RootState,
+    DeviceFilterType
+  >((state) => state.device.deviceFilter)
   const dispatch = useDispatch()
 
   const setPlanFilter = useCallback(

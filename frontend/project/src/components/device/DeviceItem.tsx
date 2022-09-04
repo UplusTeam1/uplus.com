@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { DISCOUNT_TYPE_LIST } from '../../data/staticData'
 import { CompareDevice } from '../../modules/device'
 // styles
 import styled, { css, useTheme } from 'styled-components'
@@ -9,6 +8,7 @@ import UplusButton from '../UplusButton'
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined'
 // import interface
 import { DetailPerColor, DeviceData } from '../../api/device'
+import useCalculatedPrice from '../../hooks/device/useCalculatedPrice'
 
 // styled
 const DeviceItemContainer = styled.div`
@@ -128,8 +128,6 @@ interface ContentTextProps {
 interface DeviceItemProps {
   device: DeviceData
   planFilter: string
-  recommendCheck: boolean
-  installmentCheck: boolean
   discountIndex: number
   installmentIndex: number
   addCompareDevice: (compareDevice: CompareDevice) => void
@@ -144,8 +142,6 @@ function priceFormat(value: number) {
 function DeviceItem({
   device,
   planFilter,
-  recommendCheck,
-  installmentCheck,
   discountIndex,
   installmentIndex,
   addCompareDevice,
@@ -154,6 +150,12 @@ function DeviceItem({
 }: DeviceItemProps) {
   const theme = useTheme()
   const navigate = useNavigate()
+  const { calculatePrice } = useCalculatedPrice()
+  const calculatedPrice = calculatePrice(
+    device,
+    discountIndex,
+    installmentIndex
+  )
 
   return (
     <DeviceItemContainer>
@@ -162,7 +164,7 @@ function DeviceItem({
           navigate(`/device/${device.code}`, {
             state: {
               planName: planFilter,
-              discountIndex: discountIndex,
+              discountIndex: calculatedPrice?.discountType.index,
               installmentIndex: installmentIndex,
             },
           })
@@ -184,51 +186,18 @@ function DeviceItem({
         </ImageContainer>
         <ContentContainer>
           <DeviceName>{device.name}</DeviceName>
-          <DiscountText>
-            {
-              DISCOUNT_TYPE_LIST[
-                recommendCheck
-                  ? device.recommendedDiscountIndex + 1
-                  : discountIndex + 1
-              ].label
-            }
-          </DiscountText>
+          <DiscountText>{calculatedPrice?.discountType.name}</DiscountText>
           <div>
             <ContentText color={theme.app.grayFont} marginLeft="0">
               휴대폰
             </ContentText>
-            {installmentCheck ? (
-              <ContentText color={theme.app.grayFont} marginLeft="8px">
-                월{' '}
-                {priceFormat(
-                  device.monthlyChargeList[discountIndex].deviceCharge[
-                    installmentIndex
-                  ]
-                )}
-                원
-              </ContentText>
-            ) : (
-              <ContentText color={theme.app.grayFont} marginLeft="8px">
-                {priceFormat(
-                  discountIndex === 0
-                    ? device.price - device.deviceDiscount
-                    : device.price
-                )}
-                원
-              </ContentText>
-            )}
+            <ContentText color={theme.app.grayFont} marginLeft="8px">
+              {!(installmentIndex === 0) && '월 '}
+              {calculatedPrice?.monthlyDiscountedDevicePrice}원
+            </ContentText>
             {discountIndex === 0 && (
               <ContentText color={theme.app.blackFont} marginLeft="4px">
-                <del>
-                  {priceFormat(
-                    installmentCheck
-                      ? device.monthlyChargeList[1].deviceCharge[
-                          installmentIndex
-                        ]
-                      : device.price
-                  )}
-                  원
-                </del>
+                <del>{calculatedPrice?.monthlyRealDeviceCharge}원</del>
               </ContentText>
             )}
           </div>
@@ -237,16 +206,12 @@ function DeviceItem({
               통신료
             </ContentText>
             <ContentText color={theme.app.grayFont} marginLeft="8px">
-              월{' '}
-              {priceFormat(device.monthlyChargeList[discountIndex].planCharge)}
-              원
+              월 {calculatedPrice?.monthlyDiscountedPlanCharge}원
             </ContentText>
             {!(discountIndex === 0) && (
               <>
                 <ContentText color={theme.app.blackFont} marginLeft="4px">
-                  <del>
-                    {priceFormat(device.monthlyChargeList[0].planCharge)}원
-                  </del>
+                  <del>{calculatedPrice?.monthlyRealPlanCharge}원</del>
                 </ContentText>
                 <ContentText color={theme.app.uplusPink} marginLeft="4px">
                   (25% ↓)
@@ -255,15 +220,7 @@ function DeviceItem({
             )}
           </div>
           <MonthlyChargeText>
-            월{' '}
-            {installmentCheck
-              ? priceFormat(
-                  device.monthlyChargeList[discountIndex].totalCharge[
-                    installmentIndex
-                  ]
-                )
-              : priceFormat(device.monthlyChargeList[discountIndex].planCharge)}
-            원
+            월 {calculatedPrice?.totalMonthlyCharge}원
           </MonthlyChargeText>
         </ContentContainer>
       </LinkedContainer>
@@ -290,14 +247,14 @@ function DeviceItem({
                     deviceName: device.name,
                     joinTypeIndex: 0,
                     installmentIndex: installmentIndex,
-                    discountIndex: discountIndex,
+                    discountIndex: calculatedPrice
+                      ? calculatedPrice.discountType.index
+                      : 0,
                     planName: planFilter,
                     picPath: device.detailPerColor[0].picPaths[0],
-                    price: installmentCheck
-                      ? device.monthlyChargeList[discountIndex].totalCharge[
-                          installmentIndex
-                        ]
-                      : device.monthlyChargeList[discountIndex].planCharge,
+                    calculatedPrice: calculatedPrice,
+                    color: device.detailPerColor.map((detail) => detail.color),
+                    storage: device.storage,
                   })
             }
           />
