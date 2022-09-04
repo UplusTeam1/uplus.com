@@ -11,7 +11,7 @@ import DeviceSubFilter from '../../components/device/DeviceSubFilter'
 import DeviceItem from '../../components/device/DeviceItem'
 import DeviceCompareTab from '../../components/device/DeviceCompareTab'
 import DeviceCompareDialog from '../../components/device/DeviceCompareDialog'
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 // custom hooks
 import useDeviceList from '../../hooks/device/useDeviceList'
 import useFilter from '../../hooks/device/useFilter'
@@ -110,13 +110,13 @@ function DeviceListPage() {
     if (compareDeviceList[1].discountIndex !== 4) {
       setOpenDialog(true)
     } else {
-      Swal.fire({
-        text: '2개 이상의 상품을 선택하셔야 비교하기가 가능합니다.',
-        icon: 'warning',
-        customClass: {
-          confirmButton: 'btn btn-primary',
-        },
-      })
+      // Swal.fire({
+      //   text: '2개 이상의 상품을 선택하셔야 비교하기가 가능합니다.',
+      //   icon: 'warning',
+      //   customClass: {
+      //     confirmButton: 'btn btn-primary',
+      //   },
+      // })
     }
   }, [compareDeviceList])
 
@@ -139,13 +139,13 @@ function DeviceListPage() {
         return
       }
     }
-    Swal.fire({
-      text: '최대 3개 상품까지 비교하기가 가능합니다.',
-      icon: 'warning',
-      customClass: {
-        confirmButton: 'btn btn-primary',
-      },
-    })
+    // Swal.fire({
+    //   text: '최대 3개 상품까지 비교하기가 가능합니다.',
+    //   icon: 'warning',
+    //   customClass: {
+    //     confirmButton: 'btn btn-primary',
+    //   },
+    // })
   }
 
   const changeCompareDeviceOption = (compareDevice: CompareDevice) => {

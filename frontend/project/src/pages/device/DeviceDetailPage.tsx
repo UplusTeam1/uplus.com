@@ -8,7 +8,7 @@ import { darken } from 'polished'
 import { Radio } from '@mui/material'
 import UplusButton from '../../components/UplusButton'
 import PlanListDialog from '../../components/device/PlanListDialog'
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 // custom hooks
 import useDeviceOption from '../../hooks/device/useDeviceOption'
 import useDevicePrice from '../../hooks/device/useDevicePrice'
@@ -336,41 +336,41 @@ function DeviceDetailPage() {
 
   const clickOrder = () => {
     if (params.deviceCode && deviceOption.data && calculatedPrice) {
-      Swal.fire({
-        title: '온라인 주문',
-        text: '상품을 주문하시겠습니까?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '주문하기',
-        cancelButtonText: '취소',
-      }).then((result: any) => {
-        if (result.isConfirmed) {
-          orderSave({
-            deviceCode: params.deviceCode,
-            planName: selectedPlan,
-            joinType: JOIN_TYPE_LIST[selectedJoin].value,
-            monthlyFee: calculatedPrice._totalMonthlyCharge,
-            discountType: DISCOUNT_VALUE_LIST[selectedDiscount],
-            color: deviceOption.data.detailPerColor[selectedColor].color,
-          })
-          Swal.fire({
-            title: '주문 완료!',
-            text: '주문 내역을 확인하시겠습니까?',
-            icon: 'success',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '확인',
-            cancelButtonText: '취소',
-          }).then((result: any) => {
-            if (result.isConfirmed) {
-              navigate('/order')
-            }
-          })
-        }
-      })
+      // Swal.fire({
+      //   title: '온라인 주문',
+      //   text: '상품을 주문하시겠습니까?',
+      //   icon: 'question',
+      //   showCancelButton: true,
+      //   confirmButtonColor: '#3085d6',
+      //   cancelButtonColor: '#d33',
+      //   confirmButtonText: '주문하기',
+      //   cancelButtonText: '취소',
+      // }).then((result: any) => {
+      //   if (result.isConfirmed) {
+      //     orderSave({
+      //       deviceCode: params.deviceCode,
+      //       planName: selectedPlan,
+      //       joinType: JOIN_TYPE_LIST[selectedJoin].value,
+      //       monthlyFee: calculatedPrice._totalMonthlyCharge,
+      //       discountType: DISCOUNT_VALUE_LIST[selectedDiscount],
+      //       color: deviceOption.data.detailPerColor[selectedColor].color,
+      //     })
+      //     Swal.fire({
+      //       title: '주문 완료!',
+      //       text: '주문 내역을 확인하시겠습니까?',
+      //       icon: 'success',
+      //       showCancelButton: true,
+      //       confirmButtonColor: '#3085d6',
+      //       cancelButtonColor: '#d33',
+      //       confirmButtonText: '확인',
+      //       cancelButtonText: '취소',
+      //     }).then((result: any) => {
+      //       if (result.isConfirmed) {
+      //         navigate('/order')
+      //       }
+      //     })
+      //   }
+      // })
     }
   }
 
