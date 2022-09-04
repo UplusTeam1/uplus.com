@@ -1,21 +1,44 @@
-import React, { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie'
 
-function useCookieCart() {
-  const [cookies, setCookie, removeCookie] = useCookies(['cookieCart'])
+export interface CartData {
+  name: string
+  expires: Date | null
+  deviceCode: string
+  deviceNmae: string
+  joinTypeIndex: number
+  installmentIndex: number
+  discountIndex: number
+  planName: string
+  picPath: string
+  color: string
+  storage: number
+}
 
-  const setCookieFunc = (param: any) => {
+export interface CartDataList extends Array<CartData> {}
+
+function useCookieCart() {
+  const [cookies, setCookie, removeCookie] = useCookies()
+
+  const setCookieFunc = (cartData: CartData) => {
     const date = new Date()
-    date.setDate(date.getDay() + 90)
-    setCookie('cookieCart', param, { expires: date })
+    date.setDate(date.getDate() + 90)
+    const name = String(date.valueOf() * Math.random())
+    setCookie(
+      name,
+      { ...cartData, name: name, expires: date },
+      { path: '/', expires: date }
+    )
   }
 
   const getCookieFunc = () => {
-    return cookies.cookieCart
+    const allCookies: CartDataList = Object.keys(cookies).map((key: string) => {
+      return cookies[key]
+    })
+    return allCookies
   }
 
-  const removeCookieFunc = () => {
-    removeCookie('cookieCart')
+  const removeCookieFunc = (cartData: CartData) => {
+    removeCookie(cartData.name)
   }
 
   return { setCookieFunc, getCookieFunc, removeCookieFunc }
