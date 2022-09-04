@@ -20,8 +20,6 @@ on:
       paths:
          - 'frontend/project/**'
          - '.github/workflows/fe-msa.yml'
-      types:
-        - merged
         
 jobs:
   build:
