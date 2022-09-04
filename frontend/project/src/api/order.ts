@@ -27,6 +27,8 @@ export interface OrderRequest {
 export interface OrderData extends OrderRequest {
   orderNumber: string
   joinDate: string
+  deviceName: string
+  picPaths: Array<string>
 }
 
 export interface OrderListData extends Array<OrderData> {}

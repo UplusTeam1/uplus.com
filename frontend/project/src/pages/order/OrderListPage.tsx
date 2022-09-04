@@ -64,15 +64,16 @@ function OrderListPage() {
   //     },
   //   ],
   // }
+  console.log(orderList)
   return (
     <OrderListContainer>
       <MainText>주문 목록</MainText>
       <Line></Line>
-      {orderList.data &&
+      {orderList.data?.length &&
         orderList.data.map((order: OrderData) => (
           <OrderItem order={order} clickDeleteButton={orderDelete} />
         ))}
-      {!orderList.data && <MainText>주문 정보가 없습니다</MainText>}
+      {!orderList.data?.length && <MainText>주문 정보가 없습니다</MainText>}
     </OrderListContainer>
   )
 }

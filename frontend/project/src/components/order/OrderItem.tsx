@@ -2,6 +2,7 @@ import { UseMutateFunction } from 'react-query'
 import styled, { useTheme } from 'styled-components'
 import { OrderData } from '../../api/order'
 import UplusButton from '../UplusButton'
+import Swal from 'sweetalert2'
 
 const OrderItemContainer = styled.div`
   display: flex;
@@ -47,16 +48,38 @@ interface OrderItemProps {
 
 function OrderItem({ order, clickDeleteButton }: OrderItemProps) {
   const theme = useTheme()
-  const price = 1000000
+  const clickButton = () => {
+    Swal.fire({
+      title: '주문 취소',
+      text: '주문을 취소하시겠습니까?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '주문 취소',
+      cancelButtonText: '나기기',
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        // delete order
+        clickDeleteButton(order.orderNumber)
+        Swal.fire({
+          title: '주문 취소 완료',
+          text: '주문이 취소되었습니다',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: '확인',
+        })
+      }
+    })
+  }
   return (
     <OrderItemContainer>
       <ImageContainer>
-        <OrderImage src="https://image.lguplus.com/common/images/hphn/product/A2638-128/list/ushop_A2638-128_SU_A20210928152740918.jpg" />
+        <OrderImage src={order.picPaths[0]} />
       </ImageContainer>
       <ContentContainer>
         <OrderText>주문번호 {order.orderNumber}</OrderText>
         <OrderText>주문날짜 {order.joinDate}</OrderText>
-        <OrderText>제품명 {order.deviceCode}</OrderText>
+        <OrderText>제품명 {order.deviceName}</OrderText>
         <OrderText>색상 {order.color}</OrderText>
         <OrderText>요금제 {order.planName}</OrderText>
         <OrderText>
@@ -72,7 +95,7 @@ function OrderItem({ order, clickDeleteButton }: OrderItemProps) {
           fontColor={theme.app.blackFont}
           bgColor={theme.app.lightGray}
           border={`1px solid ${theme.app.grayFont}`}
-          onClick={() => clickDeleteButton(order.orderNumber)}
+          onClick={() => clickButton()}
         />
       </ButtonContainer>
     </OrderItemContainer>
