@@ -10,19 +10,19 @@ env:
   CONTAINER_NAME: be-search
   yaml: ${{secrets.YAML_SEARCH}}
   
-on:
-  push:
-    branches: [ "develop"]
-    paths: 
-       - 'MSA/backend/project/search/*'
-       - '.github/workflows/be-search.yml'
-  pull_request:
-    branches: [ "develop"]
-    paths: 
-       - 'MSA/backend/project/search/*'
-       - '.github/workflows/be-search.yml'
-    types:
-       - closed
+# on:
+#   push:
+#     branches: [ "develop"]
+#     paths: 
+#        - 'MSA/backend/project/search/*'
+#        - '.github/workflows/be-search.yml'
+#   pull_request:
+#     branches: [ "develop"]
+#     paths: 
+#        - 'MSA/backend/project/search/*'
+#        - '.github/workflows/be-search.yml'
+#     types:
+#        - closed
 
 permissions:
   contents: read
