@@ -52,19 +52,19 @@ const ButtonDiv = styled.div`
   width: 200px;
   padding-right: 40px;
 `
-const CustomCartIcon = styled(ShoppingCartIcon)<{ fColor: string }>`
+const CustomCartIcon = styled(ShoppingCartIcon)<{ fcolor: string }>`
   font-size: 36px;
-  color: ${({ fColor }) => fColor};
+  color: ${({ fcolor }) => fcolor};
   cursor: pointer;
 `
-const CustomStoreIcon = styled(StorefrontIcon)<{ fColor: string }>`
+const CustomStoreIcon = styled(StorefrontIcon)<{ fcolor: string }>`
   font-size: 36px;
-  color: ${({ fColor }) => fColor};
+  color: ${({ fcolor }) => fcolor};
   cursor: pointer;
 `
-const CustomInventoryIcon = styled(InventoryIcon)<{ fColor: string }>`
+const CustomInventoryIcon = styled(InventoryIcon)<{ fcolor: string }>`
   font-size: 36px;
-  color: ${({ fColor }) => fColor};
+  color: ${({ fcolor }) => fcolor};
   cursor: pointer;
 `
 const ContentContainer = styled.div`
@@ -143,19 +143,19 @@ function HeaderPage() {
           <UplusLogo color={isDarkBackground ? 'white' : 'black'} />
           <ButtonDiv>
             <CustomStoreIcon
-              fColor={
+              fcolor={
                 isDarkBackground ? theme.app.whiteFont : theme.app.blackFont
               }
               onClick={() => navigate('/device')}
             />
             <CustomCartIcon
-              fColor={
+              fcolor={
                 isDarkBackground ? theme.app.whiteFont : theme.app.blackFont
               }
               onClick={() => navigate('/cart')}
             />
             <CustomInventoryIcon
-              fColor={
+              fcolor={
                 isDarkBackground ? theme.app.whiteFont : theme.app.blackFont
               }
               onClick={() => navigate('/order')}

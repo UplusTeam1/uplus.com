@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter } from 'react-router-dom'
+import { CookiesProvider } from 'react-cookie'
 // Redux
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
@@ -48,7 +49,9 @@ root.render(
             <StyledEngineProvider injectFirst>
               <StyledThemeProvider theme={theme}>
                 <MuiThemeProvider theme={theme}>
-                  <App />
+                  <CookiesProvider>
+                    <App />
+                  </CookiesProvider>
                 </MuiThemeProvider>
               </StyledThemeProvider>
             </StyledEngineProvider>
