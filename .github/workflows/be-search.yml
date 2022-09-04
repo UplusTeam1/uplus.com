@@ -4,25 +4,25 @@ env:
   RESOURCE_PATH: ./MSA/backend/project/search/src/main/resources/application.yaml
   working-directory: ./MSA/backend/project/search
   ECR_REPOSITORY: lguplus
-  ECS_SERVICE: fargate-be-search
+  ECS_SERVICE: search
   ECS_CLUSTER: uplus-cluster
   ECS_TASK_DEFINITION: ./MSA/backend/project/search/task-definition.json
   CONTAINER_NAME: be-search
   yaml: ${{secrets.YAML_SEARCH}}
   
-# on:
-#   push:
-#     branches: [ "develop"]
-#     paths: 
-#        - 'MSA/backend/project/search/*'
-#        - '.github/workflows/be-search.yml'
-#   pull_request:
-#     branches: [ "develop"]
-#     paths: 
-#        - 'MSA/backend/project/search/*'
-#        - '.github/workflows/be-search.yml'
-#     types:
-#        - closed
+on:
+  push:
+    branches: [ "develop"]
+    paths: 
+       - 'MSA/backend/project/search/*'
+       - '.github/workflows/be-search.yml'
+  pull_request:
+    branches: [ "develop"]
+    paths: 
+       - 'MSA/backend/project/search/*'
+       - '.github/workflows/be-search.yml'
+    types:
+       - closed
 
 permissions:
   contents: read
