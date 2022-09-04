@@ -1,17 +1,17 @@
-import Api from '../lib/customApi'
+import orderApi from '../lib/customApi'
 
 export async function getOrderList() {
-  const response = await Api.get<OrderListData>(`/api/order`)
+  const response = await orderApi.get<OrderListData>(`/api/order`)
   return response.data
 }
 
 export async function saveOrder(orderRequest: OrderRequest) {
-  const response = await Api.post<OrderData>(`/api/order`, orderRequest)
+  const response = await orderApi.post<OrderData>(`/api/order`, orderRequest)
   return response.data
 }
 
 export async function deleteOrder(orderNumber: string) {
-  const response = await Api.delete(`/api/order/${orderNumber}`)
+  const response = await orderApi.delete(`/api/order/${orderNumber}`)
   return response.data
 }
 
