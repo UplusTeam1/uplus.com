@@ -1,4 +1,4 @@
-import searchApi from '../lib/customApi'
+import { searchApi } from '../lib/customApi'
 import { DeviceData } from './device'
 
 export async function autoCompletion(input: string) {

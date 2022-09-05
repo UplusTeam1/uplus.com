@@ -1,4 +1,4 @@
-import orderApi from '../lib/customApi'
+import { orderApi } from '../lib/customApi'
 
 export async function getOrderList() {
   const response = await orderApi.get<OrderListData>(`/api/order`)
