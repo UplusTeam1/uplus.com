@@ -21,8 +21,6 @@ on:
     paths: 
        - 'MSA/backend/project/search/*'
        - '.github/workflows/be-search.yml'
-    types:
-       - closed
 
 permissions:
   contents: read
