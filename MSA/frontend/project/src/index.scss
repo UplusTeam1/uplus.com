@@ -1,0 +1,37 @@
+html,
+body,
+#root {
+  & > ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #d38db4;
+    border-radius: 8px;
+    background-clip: padding-box;
+    border: 1px solid transparent;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: #c4c4c4;
+    border-radius: 8px;
+    box-shadow: inset 0px 0px 5px white;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR',-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.swal2-container {
+  z-index: 10000;
+}
