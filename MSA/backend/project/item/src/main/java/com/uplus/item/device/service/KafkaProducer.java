@@ -20,7 +20,6 @@ public class KafkaProducer {
     private static final String CREATE_ORDER_FAIL = "createOrderFail";
     private static final String DELETE_ORDER_SUCCESS = "deleteOrderSuccess";
     private static final String DELETE_ORDER_FAIL = "deleteOrderFail";
-    private static final String TEST_KAFKA = "testKafka";
 
     public void sendCreateOrderSuccessObject(KafkaCreateOrderSuccessResponse kafkaCreateOrderSuccessResponse) throws IOException{
         String value = MAPPER.writeValueAsString(kafkaCreateOrderSuccessResponse);
@@ -38,11 +37,6 @@ public class KafkaProducer {
 
     public void sendDeleteOrderFailMessage() {
         this.kafkaTemplate.send(DELETE_ORDER_FAIL, DELETE_ORDER_FAIL);
-    }
-
-    public void sendTestKafka(KafkaCreateOrderRequest kafkaCreateOrderRequest) throws IOException {
-        String value = MAPPER.writeValueAsString(kafkaCreateOrderRequest);
-        this.kafkaTemplate.send(TEST_KAFKA, value);
     }
 
 }

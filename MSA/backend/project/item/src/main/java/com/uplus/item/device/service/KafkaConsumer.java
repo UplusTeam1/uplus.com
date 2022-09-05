@@ -19,7 +19,6 @@ public class KafkaConsumer {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final String CREATE_ORDER = "createOrder";
     private static final String DELETE_ORDER = "deleteOrder";
-    private static final String TEST_KAFKA = "testKafka";
 
     @KafkaListener(topics = CREATE_ORDER, groupId = CREATE_ORDER)
     public void consumeCreateOrder(String value) throws IOException {
@@ -34,10 +33,4 @@ public class KafkaConsumer {
         deviceKafkaService.deleteOrder(kafkaDeleteOrderRequest);
     }
 
-    @KafkaListener(topics = TEST_KAFKA, groupId = TEST_KAFKA)
-    public void consumeTestKafka(String value) throws IOException {
-        KafkaCreateOrderRequest kafkaCreateOrderRequest = MAPPER.readValue(value, KafkaCreateOrderRequest.class);
-        log.info(kafkaCreateOrderRequest.toString());
-        deviceKafkaService.testKafka(kafkaCreateOrderRequest);
-    }
 }

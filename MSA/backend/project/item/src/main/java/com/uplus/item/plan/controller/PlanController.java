@@ -28,7 +28,6 @@ public class PlanController {
     })
     @GetMapping
     public ResponseEntity<?> getAllPlan() {
-        log.info("Get All Plan, Get All Plan, Get All Plan, Get All Plan, Get All Plan, Get All Plan");
         return new ResponseEntity<>(planService.getPlanList(), HttpStatus.OK);
     }
 
