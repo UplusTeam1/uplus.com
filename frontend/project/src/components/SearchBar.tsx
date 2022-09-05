@@ -5,10 +5,15 @@ import {
   TextField,
   Autocomplete,
   AutocompleteRenderInputParams,
+  InputAdornment,
+  IconButton,
 } from '@mui/material'
+import SearchIcon from '@mui/icons-material/Search'
 
 const SearchBarContainer = styled.div`
   position: fixed;
+  display: flex;
+  align-items: center;
   margin-top: 60px;
   background-color: white;
   z-index: 10;
@@ -17,7 +22,7 @@ const SearchBarContainer = styled.div`
 interface SearchBarProps {
   keyword: string
   autoCompletionList: Array<string>
-  handleKeyPress: (e: React.KeyboardEvent<HTMLDivElement>) => void
+  handleKeyPress: (key: string) => void
   handleChangeKeyword: (keyword: string) => void
 }
 
@@ -31,6 +36,7 @@ function SearchBar({
     <SearchBarContainer>
       <Autocomplete
         id="search-bar"
+        freeSolo
         inputValue={keyword}
         onInputChange={(e, newInputValue) => {
           handleChangeKeyword(newInputValue)
@@ -45,12 +51,19 @@ function SearchBar({
             {...params}
             fullWidth
             hiddenLabel
-            onKeyPress={handleKeyPress}
+            onKeyPress={(e) => handleKeyPress(e.key)}
             color="primary"
             variant="standard"
           />
         )}
       />
+      <IconButton
+        aria-label="toggle password visibility"
+        onClick={() => handleKeyPress('Enter')}
+        edge="end"
+      >
+        <SearchIcon fontSize="large" />
+      </IconButton>
     </SearchBarContainer>
   )
 }
