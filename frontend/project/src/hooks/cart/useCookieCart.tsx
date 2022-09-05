@@ -48,9 +48,11 @@ function useCookieCart() {
   }
 
   const getCookieFunc = () => {
-    const allCookies: CartDataList = Object.keys(cookies).map((key: string) => {
-      return cookies[key]
-    })
+    const allCookies: CartDataList = Object.keys(cookies)
+      .map((key: string) => {
+        return cookies[key]
+      })
+      .filter((value: CartData) => value.hasOwnProperty('installmentIndex'))
     return allCookies
   }
 
