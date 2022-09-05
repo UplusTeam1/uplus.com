@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/UPLUS-BE-TASK",
+          "awslogs-group": "/ecs/be-item",
           "awslogs-region": "ap-northeast-2",
           "awslogs-stream-prefix": "ecs"
         }
@@ -33,7 +33,7 @@
       "workingDirectory": null,
       "secrets": null,
       "dockerSecurityOptions": null,
-      "memory": 300,
+      "memory": null,
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
@@ -54,18 +54,18 @@
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
-      "name": "uplus-be-item-container"
+      "name": "be-item"
     }
   ],
   "placementConstraints": [],
-  "memory": null,
-  "taskRoleArn": null,
+  "memory": "512",
+  "taskRoleArn": "arn:aws:iam::825207681038:role/ecsTaskExecutionRole",
   "compatibilities": [
-    "EXTERNAL",
-    "EC2"
+    "EC2",
+    "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:825207681038:task-definition/UPLUS-BE-ITEM:10",
-  "family": "UPLUS-BE-ITEM",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:825207681038:task-definition/be-item:5",
+  "family": "be-item",
   "requiresAttributes": [
     {
       "targetId": null,
@@ -95,17 +95,38 @@
       "targetId": null,
       "targetType": null,
       "value": null,
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
       "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.task-eni"
     }
   ],
   "pidMode": null,
   "requiresCompatibilities": [
-    "EC2"
+    "FARGATE"
   ],
-  "networkMode": "bridge",
-  "runtimePlatform": null,
-  "cpu": null,
-  "revision": 10,
+  "networkMode": "awsvpc",
+  "runtimePlatform": {
+    "operatingSystemFamily": "LINUX",
+    "cpuArchitecture": null
+  },
+  "cpu": "256",
+  "revision": 5,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
