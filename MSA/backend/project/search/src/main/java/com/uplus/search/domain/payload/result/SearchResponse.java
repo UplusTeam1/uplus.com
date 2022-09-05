@@ -42,19 +42,7 @@ public class SearchResponse {
 
     private List<Integer> discountedInterestList;
 
-    public static SearchResponse of(Source source, ChargeInfo chargeInfo) {
-        return SearchResponse.builder()
-                .code(source.getCode())
-                .name(source.getName())
-                .brand(source.getBrand())
-                .price(source.getPrice())
-                .monthlyChargeList(chargeInfo.getMonthlyCharges())
-                .recommendedDiscountIndex(chargeInfo.getRecommendedIndex())
-                .deviceDiscount(source.getDeviceDiscount())
-                .defaultInterestList(chargeInfo.getDefaultInterestList())
-                .discountedInterestList(chargeInfo.getDiscountedInterestList())
-                .build();
-    }
+    private Double score;
 
     public void setValues(ChargeInfo chargeInfo) {
         setMonthlyChargeList(chargeInfo.getMonthlyCharges());

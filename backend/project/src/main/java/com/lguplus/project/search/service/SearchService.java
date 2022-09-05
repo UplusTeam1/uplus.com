@@ -37,6 +37,7 @@ public class SearchService {
                 .getHits()
                 .getHits()
                 .forEach(hitInfo -> {
+                    System.out.println(hitInfo.getScore());
                     Source s = hitInfo.getSource();
                     SearchResponse searchResponse = map.getOrDefault(s.getCode(), SearchResponse.builder()
                             .code(s.getCode())
@@ -49,6 +50,7 @@ public class SearchService {
                             .weeklySale(s.getWeeklySale())
                             .totalStock(0)
                             .planCharge(s.getPlanPrice())
+                            .score(hitInfo.getScore())
                             .build());
                     Detail detail = Detail.builder()
                             .color(s.getColor())
@@ -72,6 +74,7 @@ public class SearchService {
             )));
             searchResponses.add(searchResponse);
         }
+        Collections.sort(searchResponses, (s1, s2) -> Double.compare(s1.getScore(), s2.getScore()) * -1);
         return searchResponses;
     }
 
