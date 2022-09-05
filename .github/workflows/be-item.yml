@@ -21,8 +21,6 @@ on:
     paths: 
        - 'MSA/backend/project/item/**'
        - '.github/workflows/be-item.yml'
-    types:
-       - closed
 
 permissions:
   contents: read
