@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("api/plan")
+@Slf4j
 public class PlanController {
 
     private final PlanService planService;
@@ -26,6 +28,7 @@ public class PlanController {
     })
     @GetMapping
     public ResponseEntity<?> getAllPlan() {
+        log.info("Get All Plan, Get All Plan, Get All Plan, Get All Plan, Get All Plan, Get All Plan");
         return new ResponseEntity<>(planService.getPlanList(), HttpStatus.OK);
     }
 
