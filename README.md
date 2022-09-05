@@ -6,6 +6,7 @@
 ## :bookmark_tabs: 프로젝트 목차
 - :book: [주요 기능](#book-주요-기능)
 - :desktop_computer: [개발 환경](#desktop_computer-개발-환경)
+- :classical_building: [서비스 구성도](#classical_building-서비스-구성도)
 - :file_folder: [프로젝트 산출물](#file_folder-프로젝트-산출물)
 
 <br>
@@ -55,6 +56,11 @@
 - IDE & Tool
   - intelliJ
   - Visual Studio Code
+
+<br>
+
+## :classical_building: 서비스 구성도
+![image](https://user-images.githubusercontent.com/87461594/188477911-f898ce03-2405-40ed-a750-aeec9287a389.png)
 
 <br>
 
