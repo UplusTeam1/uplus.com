@@ -63,8 +63,6 @@ public class DeviceController {
             @PathVariable Long orderNumber, @PathVariable String deviceCode,
             @PathVariable String color, @PathVariable String planName) throws IOException {
         KafkaCreateOrderRequest kafkaCreateOrderRequest = new KafkaCreateOrderRequest(orderNumber, deviceCode, color, planName);
-        System.out.println("DeviceController.testKafka");
-        System.out.println("kafkaOrderDetail = " + kafkaCreateOrderRequest);
         kafkaProducer.sendTestKafka(kafkaCreateOrderRequest);
         return new ResponseEntity<>("send Success!", HttpStatus.OK);
     }
