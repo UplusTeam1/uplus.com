@@ -32,8 +32,8 @@ public class SearchRepository {
                 .host(HOST)
                 .port(PORT)
                 .path("/device/_search")
-                .queryParam("q", keyword)
-                .queryParam("size", 32)
+                .queryParam("q", String.format("name:%s",keyword))
+                .queryParam("size", 100)
                 .build();
 
         return restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, SearchResult.class);

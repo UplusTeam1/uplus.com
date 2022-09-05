@@ -10,6 +10,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Repository
 @RequiredArgsConstructor
 public class SearchRepository {
@@ -32,8 +35,8 @@ public class SearchRepository {
                 .host(HOST)
                 .port(PORT)
                 .path("/device/_search")
-                .queryParam("q", keyword)
-                .queryParam("size", 32)
+                .queryParam("q", String.format("name:%s",keyword))
+                .queryParam("size", 100)
                 .build();
 
         return restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, SearchResult.class);
