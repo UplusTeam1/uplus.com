@@ -17,6 +17,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import StorefrontIcon from '@mui/icons-material/Storefront'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import { SearchParams } from './search/SearchPage'
+import Swal from 'sweetalert2'
 
 // styled
 const RootContainer = styled.div<ContainerProps>`
@@ -97,12 +98,34 @@ function HeaderPage() {
 
   const handleKeyPress = (key: string) => {
     if (key === 'Enter') {
-      navigate(`/search/${keyword}`)
+      if (keyword !== '' && keyword.length <= 30) {
+        navigate(`/search/${keyword}`)
+      } else if (keyword === '') {
+        Swal.fire({
+          text: '검색어를 입력해주세요!',
+          icon: 'warning',
+          customClass: {
+            confirmButton: 'btn btn-primary',
+          },
+        })
+      } else {
+        Swal.fire({
+          text: '최대 검색 가능 글자 수는 30자 입니다',
+          icon: 'warning',
+          customClass: {
+            confirmButton: 'btn btn-primary',
+          },
+        })
+      }
     }
   }
 
   useEffect(() => {
-    setKeyword(params.keyword)
+    if (params.keyword) {
+      if (keyword !== '' && keyword.length <= 30) {
+        setKeyword(params.keyword)
+      }
+    }
   }, [params.keyword])
 
   useEffect(() => {
