@@ -37,7 +37,6 @@ public class SearchService {
                 .getHits()
                 .getHits()
                 .forEach(hitInfo -> {
-                    System.out.println(hitInfo.getScore());
                     Source s = hitInfo.getSource();
                     SearchResponse searchResponse = map.getOrDefault(s.getCode(), SearchResponse.builder()
                             .code(s.getCode())
