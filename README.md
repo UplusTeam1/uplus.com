@@ -53,6 +53,8 @@
 - Back-end
   - Java 8
   - Spring Boot, Spring JPA
+  - Kafka
+  - Elastic Search
 - IDE & Tool
   - intelliJ
   - Visual Studio Code
