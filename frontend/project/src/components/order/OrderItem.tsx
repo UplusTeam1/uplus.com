@@ -57,7 +57,7 @@ function OrderItem({ order, clickDeleteButton }: OrderItemProps) {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: '주문 취소',
-      cancelButtonText: '나기기',
+      cancelButtonText: '나가기',
     }).then((result: any) => {
       if (result.isConfirmed) {
         // delete order

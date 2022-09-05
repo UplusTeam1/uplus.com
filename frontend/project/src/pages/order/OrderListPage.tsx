@@ -35,8 +35,12 @@ function OrderListPage() {
       <MainText>주문 목록</MainText>
       <Line></Line>
       {orderList.data && orderList.data.length != 0 ? (
-        orderList.data.map((order: OrderData) => (
-          <OrderItem order={order} clickDeleteButton={orderDelete} />
+        orderList.data.map((order: OrderData, index: number) => (
+          <OrderItem
+            key={index}
+            order={order}
+            clickDeleteButton={orderDelete}
+          />
         ))
       ) : (
         <MainText>주문 정보가 없습니다</MainText>

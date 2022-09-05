@@ -14,7 +14,7 @@ import Swal from 'sweetalert2'
 import { useMutation, useQuery } from 'react-query'
 import useCalculatedPrice from '../../hooks/device/useCalculatedPrice'
 import { AxiosError } from 'axios'
-import { searchDevice, SearchDeviceList } from '../../api/search'
+import { SearchDevice, searchDevice, SearchDeviceList } from '../../api/search'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const SearchRelationContainer = styled.div`
@@ -103,7 +103,6 @@ export type SearchParams = {
 function SearchPage() {
   const [isOpenCompareTab, setIsOpenCompareTab] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
-  const { deviceList, getDeviceList } = useDeviceList()
   const { compareDeviceList, setCompareDeviceList, resetCompareDeviceList } =
     useCompareDeviceList()
   const params = useParams<keyof SearchParams>() as SearchParams
@@ -122,16 +121,6 @@ function SearchPage() {
         : [''],
     [compareDeviceList]
   )
-
-  useEffect(() => {
-    if (searchList.data) {
-      console.log(searchList.data)
-    }
-  }, [searchList.data])
-
-  useEffect(() => {
-    getDeviceList('5G 심플+')
-  }, [getDeviceList])
 
   useEffect(() => {
     if (compareDeviceList[0].discountIndex !== 4) {
@@ -325,8 +314,8 @@ function SearchPage() {
         />
       )}
       <SearchListContainer>
-        {deviceList.data &&
-          deviceList.data.map((device: DeviceData, index: number) => (
+        {searchList.data &&
+          searchList.data.map((device: SearchDevice, index: number) => (
             <DeviceItem
               key={index}
               device={device}

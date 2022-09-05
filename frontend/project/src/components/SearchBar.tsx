@@ -36,7 +36,7 @@ function SearchBar({
     <SearchBarContainer>
       <Autocomplete
         id="search-bar"
-        freeSolo
+        freeSolo={true}
         inputValue={keyword}
         onInputChange={(e, newInputValue) => {
           handleChangeKeyword(newInputValue)
@@ -58,11 +58,12 @@ function SearchBar({
         )}
       />
       <IconButton
+        sx={{ marginRight: '3px' }}
         aria-label="toggle password visibility"
         onClick={() => handleKeyPress('Enter')}
         edge="end"
       >
-        <SearchIcon fontSize="large" />
+        <SearchIcon />
       </IconButton>
     </SearchBarContainer>
   )

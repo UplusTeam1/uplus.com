@@ -1,4 +1,5 @@
 import searchApi from '../lib/customApi'
+import { DeviceData } from './device'
 
 export async function autoCompletion(input: string) {
   const response = await searchApi.get<AutoCompletionList>(
@@ -23,13 +24,8 @@ export interface AutoCompletion {
 
 export interface AutoCompletionList extends Array<AutoCompletion> {}
 
-export interface SearchDevice {
-  code: string
-  name: string
-  brand: string
-  price: number
-  weeklySale: number
-  picPaths: Array<string>
+export interface SearchDevice extends DeviceData {
+  planCharge: number
 }
 
 export interface SearchDeviceList extends Array<SearchDevice> {}
