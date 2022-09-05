@@ -34,11 +34,11 @@ COPY . ./
 RUN yarn install
 # 빌드 -> 빌드 폴더 생성
 RUN yarn build
-RUN yarn start
+# RUN yarn start
 
-nginx 설정용
+# nginx 설정용
 FROM nginx:1.21.0-alpine
-nginx의 기본 설정을 삭제하고 앱에서 설정한 파일을 복사
+# nginx의 기본 설정을 삭제하고 앱에서 설정한 파일을 복사
 RUN rm -rf /etc/nginx/conf.d
 # nginx 폴더 도커 속 /etc/nginx로 복사
 COPY /nginx /etc/nginx
