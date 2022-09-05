@@ -1,12 +1,12 @@
 name: FE Dockerize and Deploy
 
 env:
-  working-directory: ./frontend/project
+  working-directory: ./MSA/frontend/project
   ECR_REPOSITORY: lguplus
   CONTAINER_NAME: uplus-fe-container
   ECS_SERVICE: uplus-fe-service
   ECS_CLUSTER: uplus-cluster
-  ECS_TASK_DEFINITION: ./frontend/project/task-definition.json
+  ECS_TASK_DEFINITION: ./MSA/frontend/project/task-definition.json
 
 on:
    push:
