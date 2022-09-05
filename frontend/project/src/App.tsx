@@ -20,7 +20,7 @@ function App() {
         <Route path="device/:deviceCode" element={<DeviceDetailPage />} />
         <Route path="order" element={<OrderListPage />} />
         <Route path="cart" element={<CartPage />} />
-        <Route path="search" element={<SearchPage />} />
+        <Route path="search/:keyword" element={<SearchPage />} />
       </Route>
     </Routes>
   )

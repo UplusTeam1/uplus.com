@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import {
   AutoCompletion,
@@ -16,6 +16,7 @@ import UplusLogo from '../components/UplusLogo'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import StorefrontIcon from '@mui/icons-material/Storefront'
 import InventoryIcon from '@mui/icons-material/Inventory'
+import { SearchParams } from './search/SearchPage'
 
 // styled
 const RootContainer = styled.div<ContainerProps>`
@@ -88,16 +89,21 @@ function HeaderPage() {
   const [autoCompletionList, setAutoCompletionList] = useState<Array<string>>(
     []
   )
+  const params = useParams<keyof SearchParams>() as SearchParams
   const completionList = useQuery<AutoCompletionList, AxiosError>(
     ['completionList', keyword],
     () => autoCompletion(keyword)
   )
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter') {
+  const handleKeyPress = (key: string) => {
+    if (key === 'Enter') {
       navigate(`/search/${keyword}`)
     }
   }
+
+  useEffect(() => {
+    setKeyword(params.keyword)
+  }, [params.keyword])
 
   useEffect(() => {
     if (location.pathname === '/') {
