@@ -13,12 +13,12 @@ on:
      branches: [ "develop" ]
      paths: 
         - '.github/workflows/fe-msa.yml'
-        - 'frontend/project/**'
+        - 'MSA/frontend/project/**'
         
    pull_request:
       branches: [ "develop" ]
       paths:
-         - 'frontend/project/**'
+         - 'MSA/frontend/project/**'
          - '.github/workflows/fe-msa.yml'
         
 jobs:
