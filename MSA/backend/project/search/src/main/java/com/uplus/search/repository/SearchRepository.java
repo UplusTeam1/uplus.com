@@ -32,7 +32,7 @@ public class SearchRepository {
                 .host(HOST)
                 .port(PORT)
                 .path("/device/_search")
-                .queryParam("q", String.format("name:%s",keyword))
+                .queryParam("q", keyword)
                 .queryParam("size", 100)
                 .build();
 
