@@ -4,10 +4,23 @@
 <br>
 
 ## :bookmark_tabs: 프로젝트 목차
+- :raising_hand_man: [팀원 소개](#raising_hand_man-팀원-소개)
 - :book: [주요 기능](#book-주요-기능)
 - :desktop_computer: [개발 환경](#desktop_computer-개발-환경)
 - :classical_building: [서비스 구성도](#classical_building-서비스-구성도)
 - :file_folder: [프로젝트 산출물](#file_folder-프로젝트-산출물)
+
+<br>
+
+## :raising_hand_man: 팀원 소개
+
+팀원 | 담당 기능
+-- | --
+[권나영](https://github.com/i-zro) | [Infra] CI/CD 구축, 모놀리식/MSA 클라우드 서버 구축
+[박상우](https://github.com/sangwoo420) | [FE] 주문 목록 조회 페이지 <br> [BE] 상품 목록 조회, Elastic Search 를 활용한 검색 서비스
+[서동완](https://github.com/mssdfg0708) | [FE] 상품 검색 결과 페이지 <br> [BE] 상품 상세 조회, Kafka 를 사용한 서버간 통신
+[이재희](https://github.com/Hui-Story) | [FE] 메인 화면, 상단 메뉴, 상품 조회 및 비교하기 기능 <br> [BE] 요금제 목록 조회
+[전시영](https://github.com/jjssyy) | [FE] 장바구니 페이지 <br> [BE] 주문 관련 서비스, Kafka 를 사용한 서버간 통신
 
 <br>
 
@@ -16,27 +29,27 @@
 ### 1. 상품 리스트 조회
 > 필터를 통한 사용자 맞춤형 모바일 상품 리스트 조회
 
-![image](https://user-images.githubusercontent.com/87461594/188477339-8a1490ae-96b5-42a1-86e1-49b842169ea1.png)
+![Device List](https://user-images.githubusercontent.com/87461594/188543802-3a3ce19e-d8d8-4830-b7c1-ecbc7e4fb74f.gif)
 
 ### 2. 상품 상세 비교
 > 최대 3개 상품을 선택한 뒤 가격 비교
 
-![image](https://user-images.githubusercontent.com/87461594/188477572-150dec6b-4968-41e4-8659-b5fdf7cf665d.png)
+![Compare Device](https://user-images.githubusercontent.com/87461594/188543810-e142177e-fd56-4a06-8175-2be74d5ce88f.gif)
 
 ### 3. 상품 상세 정보 & 주문
 > 상품 상세 정보 체크 후 주문 (주문 내역 표시)
 
-![image](https://user-images.githubusercontent.com/87461594/188477614-e2c8f93f-03ec-4bf2-9b41-efe874876ac6.png)
+![Device Detail](https://user-images.githubusercontent.com/87461594/188543818-d9c49215-298a-4943-8719-033b413c5bd8.gif)
 
 ### 4. 상품 검색
 > 초성, 유사어 검색을 통한 원하는 상품 조회
 
-![image](https://user-images.githubusercontent.com/87461594/188477778-dd7cd7f7-1684-4030-88dd-04612a75d9ff.png)
+![Search List](https://user-images.githubusercontent.com/87461594/188543832-e9d9d1d4-6a01-47d5-9eff-d0cb446361b3.gif)
 
 ### 5. 장바구니
 > 최대 90일간 유지되는 장바구니 기능
 
-![image](https://user-images.githubusercontent.com/87461594/188477811-0db30ee2-01b7-4f25-8bbb-e59f71e20d89.png)
+![Cart](https://user-images.githubusercontent.com/87461594/188543836-3734cb30-3311-4e0d-bd89-ef57ddee43ce.gif)
 
 <br>
 
