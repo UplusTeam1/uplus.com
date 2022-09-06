@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-const ITEM_BASE_URL = ''
-const ORDER_BASE_URL = ''
-const SEARCH_BASE_URL = ''
+const ITEM_BASE_URL = 'item.msa-myuplus:8080'
+const ORDER_BASE_URL = 'order.msa-myuplus:8081'
+const SEARCH_BASE_URL = 'search.msa-myuplus:8082'
 
 axios.defaults.withCredentials = true
 
